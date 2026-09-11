@@ -1,79 +1,158 @@
-import { motion } from 'framer-motion'
-import { Leaf, Hammer, Heart, Globe } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import Img from '../components/Img'
+import Reveal from '../components/Reveal'
+import Marquee from '../components/Marquee'
+import PageMeta from '../components/PageMeta'
+import { imageUrl } from '../data/products'
 
-const values = [
-  { icon: Hammer, title: 'Honest Craft', desc: 'Every joint, finish, and stitch is made to be examined. We have nothing to hide in our process.' },
-  { icon: Leaf, title: 'Natural Materials', desc: 'Wood, linen, clay, stone. Materials that come from the earth and age alongside you.' },
-  { icon: Heart, title: 'Designed to Last', desc: 'We reject the disposable. Our pieces are made to be repaired, re-finished, and handed on.' },
-  { icon: Globe, title: 'Considered Impact', desc: 'Local sourcing where possible. Waste reduction built in from the very first sketch.' },
+const principles = [
+  {
+    t: 'Design for the second year',
+    d: 'A piece proves itself after the novelty has gone. We test proportions, finishes and joints against how they will read once they are ordinary.',
+  },
+  {
+    t: 'Honest materials only',
+    d: 'Solid timber rather than veneer over board. Natural fibres rather than blends. Where we use steel or brass, it is left as itself.',
+  },
+  {
+    t: 'Small runs, named makers',
+    d: 'Forty units per run across four workshops we have worked with since 2019. Every piece carries the workshop mark on its underside.',
+  },
+  {
+    t: 'Repair before replace',
+    d: 'Re-upholstery, re-weaving and refinishing are offered for the life of the piece. Frames carry a ten-year guarantee.',
+  },
+]
+
+const numbers = [
+  { n: '2019', l: 'Studio founded' },
+  { n: '4', l: 'Partner workshops' },
+  { n: '40', l: 'Units per run' },
+  { n: '10 yr', l: 'Frame guarantee' },
 ]
 
 export default function About() {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-    >
-      {/* Hero */}
-      <section className="relative h-[70vh] flex items-end pb-20">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(https://images.unsplash.com/photo-1538688525198-9b88f6f53126?w=1600&q=80)` }}
-        />
-        <div className="absolute inset-0 bg-walnut/50" />
-        <div className="relative z-10 max-w-7xl mx-auto px-6">
-          <p className="section-tag text-cream/60 mb-3">Our Story</p>
-          <h1 className="font-display text-5xl md:text-7xl text-cream max-w-xl leading-tight">
-            Built with intention. Made to stay.
+    <>
+      <PageMeta
+        title="Studio"
+        description="Aethera is a small design studio in Bengaluru making furniture and objects for calm, functional rooms."
+      />
+
+      <header className="shell pb-14 pt-[112px] sm:pt-[136px]">
+        <Reveal>
+          <p className="eyebrow mb-5">The studio — est. 2019, Bengaluru</p>
+          <h1 className="d1 max-w-[15ch]">
+            We make <em className="italic">quiet</em> things carefully.
           </h1>
-        </div>
-      </section>
+        </Reveal>
+      </header>
 
-      {/* Story */}
-      <section className="max-w-7xl mx-auto px-6 py-24 grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-        <div>
-          <p className="section-tag mb-4">How it started</p>
-          <h2 className="font-heading text-4xl text-walnut mb-6">A workshop, a belief, a name.</h2>
-          <p className="font-body text-base text-stone leading-relaxed mb-4">
-            Athera began in a small workshop in Bangalore in 2021. Our founder, frustrated with furniture that fell apart within years and looked identical to everything else, set out to make pieces that were genuinely worth keeping.
-          </p>
-          <p className="font-body text-base text-stone leading-relaxed mb-4">
-            The name comes from the Sanskrit root meaning 'to hold' or 'to carry'. That felt right — furniture that holds your life, carries your stories, and doesn't need replacing every decade.
-          </p>
-          <p className="font-body text-base text-stone leading-relaxed">
-            Today we work with a small group of craftspeople across Karnataka and Tamil Nadu. Every piece is made to order, which means no warehouse of unsold furniture and no compromises on material quality.
-          </p>
-        </div>
-        <div className="aspect-[4/5] overflow-hidden">
-          <img
-            src="https://images.unsplash.com/photo-1581539250439-c96689b516dd?w=900&q=80"
-            alt="Our workshop"
-            className="w-full h-full object-cover"
+      <section className="shell">
+        <Reveal variant="clip">
+          <Img
+            src={imageUrl('photo-1524484485831-a92ffc0de03f', 2000)}
+            alt="The Aethera studio in Richmond Town"
+            ratio="16 / 9"
+            priority
           />
-        </div>
+        </Reveal>
       </section>
 
-      {/* Values */}
-      <section className="bg-cream py-24">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-14">
-            <p className="section-tag mb-2">What we stand for</p>
-            <h2 className="font-heading text-4xl text-walnut">Our Values</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {values.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="text-center">
-                <div className="w-12 h-12 bg-warm-sand rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Icon size={20} className="text-terracotta" />
+      <section className="shell grid gap-10 py-16 md:grid-cols-12 md:py-28">
+        <Reveal className="md:col-span-5">
+          <h2 className="d3 max-w-sm">
+            Aethera began with one chair and an argument about lacquer.
+          </h2>
+        </Reveal>
+        <Reveal delay={0.08} className="md:col-span-6 md:col-start-7">
+          <p className="lede">
+            The chair took nine months. The argument — whether a finish should
+            hide a material or admit it — took considerably longer, and it
+            settled everything that came afterwards.
+          </p>
+          <p className="body-copy mt-5">
+            We are a studio of seven working out of a converted warehouse in
+            Richmond Town. We design the whole catalogue in-house and
+            manufacture it with four independent workshops across Karnataka,
+            Rajasthan and Gujarat — the same four we started with. That
+            relationship is the reason we can run forty units at a time and
+            still ask for a hand-hemmed selvedge.
+          </p>
+          <p className="body-copy mt-5">
+            We do not run sales, we do not release seasonally, and we do not
+            discontinue pieces that are still good. A catalogue that grows by
+            four or five pieces a year is a slower business and a much better
+            one to buy from.
+          </p>
+        </Reveal>
+      </section>
+
+      <Marquee
+        items={[
+          'Designed in Bengaluru',
+          'Made in Karnataka, Rajasthan & Gujarat',
+          'Seven people',
+          'Four workshops',
+          'No seasonal sales',
+        ]}
+      />
+
+      <section className="shell grid gap-10 py-16 md:grid-cols-12 md:py-28">
+        <Reveal variant="clip" className="md:col-span-5">
+          <Img
+            src={imageUrl('photo-1567538096630-e0c55bd6374c', 1200)}
+            alt="A frame resting in the workshop"
+            ratio="3 / 4"
+          />
+        </Reveal>
+
+        <div className="md:col-span-6 md:col-start-7">
+          <p className="eyebrow mb-8">Four principles</p>
+          <div className="rule">
+            {principles.map((p, i) => (
+              <Reveal key={p.t} delay={i * 0.06}>
+                <div className="flex items-baseline gap-5 border-b border-rule py-6">
+                  <span className="w-8 shrink-0 text-[11px] tracking-widest2 text-mute">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <div>
+                    <h3 className="d4">{p.t}</h3>
+                    <p className="body-copy mt-2 max-w-md">{p.d}</p>
+                  </div>
                 </div>
-                <h3 className="font-heading text-xl text-walnut mb-2">{title}</h3>
-                <p className="font-body text-sm text-stone leading-relaxed">{desc}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
-    </motion.div>
+
+      <section className="bg-bone py-16 md:py-20">
+        <div className="shell grid grid-cols-2 gap-8 md:grid-cols-4">
+          {numbers.map((n, i) => (
+            <Reveal key={n.l} delay={i * 0.06}>
+              <p className="d2">{n.n}</p>
+              <p className="eyebrow mt-2">{n.l}</p>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      <section className="shell py-20 text-center md:py-28">
+        <Reveal>
+          <p className="eyebrow mb-6">Visit</p>
+          <h2 className="d2 mx-auto max-w-2xl">
+            The showroom is small and the tea is good.
+          </h2>
+          <p className="body-copy mx-auto mt-5 max-w-md">
+            14 Wood Street, Richmond Town, Bengaluru. Open Tuesday to Sunday,
+            eleven until seven. No appointment needed, though one helps.
+          </p>
+          <Link to="/contact" className="btn-solid mt-8">
+            Plan a visit
+          </Link>
+        </Reveal>
+      </section>
+    </>
   )
 }

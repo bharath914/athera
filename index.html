@@ -4,21 +4,34 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/athera/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Athera — Thoughtfully crafted furniture and accessories for modern living." />
-    <meta property="og:title" content="Athera — Furniture & Accessories" />
-    <meta property="og:description" content="Thoughtfully crafted furniture for modern living." />
-    <meta property="og:image" content="/athera/images/og-image.jpg" />
+    <meta name="theme-color" content="#F6F4EF" />
+    <title>Aethera — Furniture & Objects for Considered Living</title>
+    <meta
+      name="description"
+      content="Aethera curates furniture and home accessories designed for calm, functional living. Timeless craftsmanship, honest materials, quietly modern design."
+    />
+    <meta property="og:title" content="Aethera — Furniture & Objects for Considered Living" />
+    <meta
+      property="og:description"
+      content="Furniture and home accessories designed for calm, functional living."
+    />
     <meta property="og:type" content="website" />
+    <meta property="og:image" content="/athera/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <script>
-      const redirect = new URLSearchParams(window.location.search).get('p');
+      // GitHub Pages SPA redirect (paired with public/404.html)
+      var redirect = new URLSearchParams(window.location.search).get('p');
       if (redirect) {
-        history.replaceState(null, '', redirect + window.location.hash);
+        history.replaceState(null, '', '/athera' + redirect + window.location.hash);
       }
     </script>
-    <title>Athera — Furniture & Accessories</title>
   </head>
   <body>
     <div id="root"></div>

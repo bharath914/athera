@@ -1,36 +1,62 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { formatPrice } from '../utils/formatPrice'
+import Img from './Img'
+import { formatPrice, cx } from '../lib/format'
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, index, ratio = '4 / 5' }) {
+  const [hover, setHover] = useState(false)
+  const hasAlt = product.images.length > 1
+
   return (
-    <motion.div
-      whileHover={{ scale: 1.02 }}
-      transition={{ duration: 0.25 }}
-      className="group"
+    <Link
+      to={`/shop/${product.slug}`}
+      className="group block"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
     >
-      <Link to={`/products/${product.slug}`} className="block">
-        <div className="relative overflow-hidden bg-cream aspect-[4/5]">
-          <img
-            src={product.images[0]}
-            alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            loading="lazy"
-          />
-          <span className="absolute top-3 left-3 bg-cream/90 text-walnut font-body text-xs font-medium px-2.5 py-1 tracking-wide capitalize">
-            {product.category}
-          </span>
-        </div>
-        <div className="pt-4 pb-2">
-          <div className="flex items-start justify-between gap-2">
-            <h3 className="font-heading text-lg text-walnut leading-tight">{product.name}</h3>
-            <p className="font-body text-sm font-medium text-walnut whitespace-nowrap">
-              {formatPrice(product.price, product.currency)}
-            </p>
+      <div className="img-zoom relative">
+        <Img
+          src={product.img(0, 900)}
+          alt={product.name}
+          ratio={ratio}
+          sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+        />
+        {hasAlt && (
+          <div
+            className={cx(
+              'pointer-events-none absolute inset-0 transition-opacity duration-700 ease-editorial',
+              hover ? 'opacity-100' : 'opacity-0'
+            )}
+          >
+            <Img
+              src={product.img(1, 900)}
+              alt=""
+              ratio={ratio}
+              className="h-full w-full"
+            />
           </div>
-          <p className="font-body text-xs text-stone mt-1 capitalize">{product.category}</p>
+        )}
+        {product.lead === 'In stock' && (
+          <span className="absolute left-3 top-3 bg-paper/90 px-2.5 py-1 text-[10px] uppercase tracking-widest2 text-ink">
+            In stock
+          </span>
+        )}
+      </div>
+
+      <div className="mt-4 flex items-baseline justify-between gap-4">
+        <div className="min-w-0">
+          <h3 className="d4 truncate">{product.name}</h3>
+          <p className="mt-1 text-[12px] uppercase tracking-widest2 text-mute">
+            {typeof index === 'number'
+              ? String(index + 1).padStart(2, '0') + ' — '
+              : ''}
+            {product.category}
+          </p>
         </div>
-      </Link>
-    </motion.div>
+        <p className="shrink-0 text-[14px] font-light tabular-nums text-graphite">
+          {formatPrice(product.price)}
+        </p>
+      </div>
+    </Link>
   )
 }

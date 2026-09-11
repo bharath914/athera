@@ -1,122 +1,344 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowRight } from 'lucide-react'
+import Img from '../components/Img'
+import Reveal from '../components/Reveal'
+import SectionHead from '../components/SectionHead'
+import Marquee from '../components/Marquee'
 import ProductCard from '../components/ProductCard'
-import products from '../data/products.json'
-import collections from '../data/collections.json'
+import PageMeta from '../components/PageMeta'
+import { products, categories, collections, imageUrl } from '../data/products'
+import { journal, formatDate } from '../data/journal'
 
-const featured = products.filter(p => p.featured)
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
-}
-
-const stagger = {
-  show: { transition: { staggerChildren: 0.1 } },
-}
+const featured = products.filter((p) => p.featured).slice(0, 6)
+const lead = collections[0]
 
 export default function Home() {
+  const [active, setActive] = useState(0)
+
   return (
-    <motion.div initial="hidden" animate="show" variants={stagger}>
-      {/* Hero */}
-      <section className="relative min-h-screen flex items-end pb-20">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(https://images.unsplash.com/photo-1556020685-ae41abfc9365?w=1600&q=80)` }}
-        />
-        <div className="absolute inset-0 bg-walnut/40" />
-        <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
-          <motion.p variants={fadeUp} className="section-tag text-cream/60 mb-4">
-            New Arrivals — Summer 2026
+    <>
+      <PageMeta
+        title="Furniture & Objects for Considered Living"
+        description="Aethera curates furniture and home accessories designed for calm, functional living. Timeless craftsmanship, honest materials, quietly modern design."
+      />
+
+      {/* ─── Hero ─────────────────────────────────────────────── */}
+      <section className="relative h-[92svh] min-h-[560px] w-full overflow-hidden">
+        <motion.div
+          initial={{ scale: 1.08 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute inset-0"
+        >
+          <Img
+            src={imageUrl('photo-1556020685-ae41abfc9365', 2000)}
+            alt="A quiet living room in morning light"
+            ratio="auto"
+            priority
+            className="h-full w-full"
+          />
+        </motion.div>
+
+        <div className="absolute inset-0 bg-gradient-to-b from-ink/55 via-ink/20 to-ink/70" />
+
+        <div className="shell relative flex h-full flex-col justify-end pb-10 sm:pb-14">
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="eyebrow mb-6 text-paper/70"
+          >
+            Chapter 04 — Autumn 2026
           </motion.p>
-          <motion.h1 variants={fadeUp} className="font-display text-5xl md:text-7xl text-cream leading-tight max-w-2xl mb-6">
-            Furniture that earns its place.
+
+          <motion.h1
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.45, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            className="d1 max-w-[14ch] text-paper"
+          >
+            Rooms that ask <em className="italic">nothing</em> of you.
           </motion.h1>
-          <motion.p variants={fadeUp} className="font-body text-lg text-cream/80 max-w-md mb-8 leading-relaxed">
-            Every piece is designed to slow you down — crafted from honest materials, built to age well.
-          </motion.p>
-          <motion.div variants={fadeUp}>
-            <Link to="/products" className="btn-primary">
-              Explore Products
-            </Link>
-          </motion.div>
-        </div>
-      </section>
 
-      {/* Featured Products */}
-      <section className="max-w-7xl mx-auto px-6 pt-24">
-        <motion.div variants={fadeUp} className="flex items-end justify-between mb-10">
-          <div>
-            <p className="section-tag mb-2">Handpicked</p>
-            <h2 className="font-heading text-4xl text-walnut">Featured Pieces</h2>
-          </div>
-          <Link to="/products" className="hidden sm:flex items-center gap-2 font-body text-sm text-stone hover:text-terracotta transition-colors">
-            View all <ArrowRight size={14} />
-          </Link>
-        </motion.div>
-        <motion.div variants={stagger} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {featured.map(p => (
-            <motion.div key={p.id} variants={fadeUp}>
-              <ProductCard product={p} />
-            </motion.div>
-          ))}
-        </motion.div>
-      </section>
-
-      {/* Brand Philosophy */}
-      <section className="max-w-7xl mx-auto px-6 pt-28">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <motion.div variants={fadeUp} className="order-2 md:order-1">
-            <p className="section-tag mb-4">Our Philosophy</p>
-            <h2 className="font-heading text-4xl md:text-5xl text-walnut leading-tight mb-6">
-              Made to be lived with, not looked at.
-            </h2>
-            <p className="font-body text-base text-stone leading-relaxed mb-4">
-              We believe the best furniture disappears into your life. It holds your morning coffee, bears the weight of your longest days, and quietly becomes part of how you experience home.
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-8 grid gap-6 border-t border-paper/25 pt-6 md:grid-cols-12 md:items-end"
+          >
+            <p className="lede max-w-md text-paper/85 md:col-span-5">
+              Furniture and objects built for the way a room is actually
+              used — honest materials, small production runs, nothing
+              designed to be replaced.
             </p>
-            <p className="font-body text-base text-stone leading-relaxed mb-8">
-              That's why we work only with materials that develop character over time — woods that deepen, linens that soften, metals that patina. Nothing that pretends to be something it isn't.
-            </p>
-            <Link to="/about" className="btn-outline">Our Story</Link>
-          </motion.div>
-          <motion.div variants={fadeUp} className="order-1 md:order-2">
-            <div className="aspect-[4/5] overflow-hidden">
-              <img
-                src="https://images.unsplash.com/photo-1538688525198-9b88f6f53126?w=900&q=80"
-                alt="Craftsman at work"
-                className="w-full h-full object-cover"
-              />
+            <div className="flex flex-wrap items-center gap-3 md:col-span-4 md:col-start-9 md:justify-end">
+              <Link
+                to="/shop"
+                className="btn bg-paper text-ink hover:bg-clay hover:text-paper"
+              >
+                Shop all
+              </Link>
+              <Link
+                to="/collections"
+                className="btn border border-paper/40 text-paper hover:border-paper hover:bg-paper hover:text-ink"
+              >
+                Collections
+              </Link>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Collections Teaser */}
-      <section className="max-w-7xl mx-auto px-6 pt-28">
-        <motion.div variants={fadeUp} className="text-center mb-12">
-          <p className="section-tag mb-2">Curated Worlds</p>
-          <h2 className="font-heading text-4xl text-walnut">Collections</h2>
-        </motion.div>
-        <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {collections.map(col => (
-            <motion.div key={col.id} variants={fadeUp}>
-              <Link to={`/collections`} className="group block relative overflow-hidden aspect-[16/9]">
-                <img
-                  src={col.coverImage}
-                  alt={col.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-walnut/40 group-hover:bg-walnut/30 transition-colors duration-300" />
-                <div className="absolute bottom-6 left-6">
-                  <p className="font-body text-xs text-cream/60 tracking-widest uppercase mb-1">{col.tagline}</p>
-                  <h3 className="font-display text-3xl text-cream">{col.name}</h3>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </motion.div>
+      <Marquee
+        items={[
+          'Solid timber, never veneer-over-board',
+          'Made in runs of forty',
+          'Ten-year frame guarantee',
+          'Repairable by design',
+          'Delivered and placed by us',
+        ]}
+      />
+
+      {/* ─── Statement ────────────────────────────────────────── */}
+      <section className="shell grid gap-10 py-20 md:grid-cols-12 md:py-32">
+        <Reveal className="md:col-span-7">
+          <p className="eyebrow mb-6">01 — The idea</p>
+          <p className="d3 max-w-2xl">
+            We design for the second year of ownership, not the first
+            afternoon. A piece earns its place by being easy to live
+            beside — <em className="italic text-clay">quiet, useful, and
+            still standing straight a decade in.</em>
+          </p>
+          <div className="mt-10 grid max-w-xl gap-8 sm:grid-cols-2">
+            <div>
+              <p className="eyebrow mb-3">Material honesty</p>
+              <p className="body-copy">
+                Solid ash, oak, stone and undyed cloth. Finishes that can be
+                repaired at home rather than sent away.
+              </p>
+            </div>
+            <div>
+              <p className="eyebrow mb-3">Small production</p>
+              <p className="body-copy">
+                Forty units a run, made with four workshops we&apos;ve worked
+                with since 2019. Slower, and considerably better.
+              </p>
+            </div>
+          </div>
+        </Reveal>
+
+        <Reveal variant="clip" delay={0.1} className="md:col-span-4 md:col-start-9">
+          <Img
+            src={imageUrl('photo-1567538096630-e0c55bd6374c', 1000)}
+            alt="Sorrel Lounge Chair in a bare room"
+            ratio="3 / 4"
+          />
+          <p className="mt-4 text-[12px] font-light leading-relaxed text-mute">
+            Sorrel Lounge Chair — steam-bent ash, undyed bouclé.
+            <br />
+            Photographed at the Richmond Town showroom.
+          </p>
+        </Reveal>
       </section>
-    </motion.div>
+
+      {/* ─── Category index ───────────────────────────────────── */}
+      <section className="shell py-8 md:py-16">
+        <SectionHead
+          index="02"
+          eyebrow="The catalogue"
+          title="Six categories. Nothing surplus."
+          note="Everything we make agrees with everything else we make. Start anywhere."
+          action={{ to: '/shop', label: 'View everything' }}
+        />
+
+        <div className="mt-14 grid gap-10 md:grid-cols-12">
+          <div className="md:col-span-7">
+            <ul className="rule">
+              {categories.map((c, i) => (
+                <li key={c.slug}>
+                  <Link
+                    to={`/shop?category=${c.slug}`}
+                    onMouseEnter={() => setActive(i)}
+                    onFocus={() => setActive(i)}
+                    className="group flex items-baseline gap-5 border-b border-rule py-6 transition-colors duration-500 hover:bg-bone/60 md:py-8"
+                  >
+                    <span className="w-8 shrink-0 text-[11px] tracking-widest2 text-mute">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <span className="flex-1">
+                      <span className="d3 block transition-transform duration-500 ease-editorial group-hover:translate-x-2">
+                        {c.name}
+                      </span>
+                      <span className="body-copy mt-1 block max-w-md">
+                        {c.tagline}
+                      </span>
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="shrink-0 text-[11px] tracking-widest2 text-mute transition-transform duration-500 ease-editorial group-hover:translate-x-1"
+                    >
+                      →
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="hidden md:col-span-4 md:col-start-9 md:block">
+            <div className="sticky top-28">
+              <Img
+                key={categories[active].slug}
+                src={imageUrl(categories[active].image, 1000)}
+                alt={categories[active].name}
+                ratio="3 / 4"
+              />
+              <p className="eyebrow mt-4">{categories[active].name}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Collection spread ────────────────────────────────── */}
+      <section className="mt-20 bg-bone py-20 md:mt-32 md:py-32">
+        <div className="shell grid gap-10 md:grid-cols-12 md:items-center">
+          <Reveal variant="clip" className="md:col-span-7">
+            <Img
+              src={imageUrl(lead.cover, 1600)}
+              alt={`${lead.name} collection`}
+              ratio="16 / 11"
+            />
+          </Reveal>
+
+          <Reveal delay={0.1} className="md:col-span-4 md:col-start-9">
+            <p className="eyebrow mb-4">{lead.season} — Featured collection</p>
+            <h2 className="d2">{lead.name}</h2>
+            <p className="lede mt-5">{lead.tagline}</p>
+            <p className="body-copy mt-4">{lead.description}</p>
+            <Link to={`/collections/${lead.slug}`} className="btn-ghost mt-8">
+              See the collection
+            </Link>
+          </Reveal>
+        </div>
+
+        <div className="shell mt-10 grid gap-5 sm:grid-cols-2 md:mt-16">
+          {lead.spread.map((img, i) => (
+            <Reveal key={img} delay={i * 0.08} variant="clip">
+              <Img
+                src={imageUrl(img, 1200)}
+                alt={`${lead.name} — detail ${i + 1}`}
+                ratio={i === 0 ? '4 / 5' : '4 / 5'}
+              />
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* ─── Selected pieces ──────────────────────────────────── */}
+      <section className="shell py-20 md:py-32">
+        <SectionHead
+          index="03"
+          eyebrow="Selected pieces"
+          title="A short list of things worth keeping."
+          action={{ to: '/shop', label: 'All 18 pieces' }}
+        />
+
+        <div className="mt-14 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          {featured.map((p, i) => (
+            <Reveal key={p.id} delay={(i % 3) * 0.07}>
+              <ProductCard product={p} index={i} />
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* ─── Editorial break ──────────────────────────────────── */}
+      <section className="relative">
+        <Img
+          src={imageUrl('photo-1513694203232-719a280e022f', 2000)}
+          alt="Evening light across a low sofa"
+          ratio="21 / 9"
+          className="hidden md:block"
+        />
+        <Img
+          src={imageUrl('photo-1513694203232-719a280e022f', 1200)}
+          alt="Evening light across a low sofa"
+          ratio="4 / 5"
+          className="md:hidden"
+        />
+        <div className="absolute inset-0 bg-ink/35" />
+        <div className="shell absolute inset-0 flex items-center">
+          <Reveal className="max-w-2xl">
+            <p className="eyebrow mb-5 text-paper/70">From the journal</p>
+            <blockquote className="d2 text-paper">
+              “A room reaches its final form long before the last object
+              arrives.”
+            </blockquote>
+            <Link
+              to="/journal/the-case-for-fewer-things"
+              className="link-underline mt-7 inline-block text-[11px] uppercase tracking-widest2 text-paper"
+            >
+              Read the essay
+            </Link>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ─── Journal ──────────────────────────────────────────── */}
+      <section className="shell py-20 md:py-32">
+        <SectionHead
+          index="04"
+          eyebrow="Journal"
+          title="Notes on making, materials and living quietly."
+          action={{ to: '/journal', label: 'Read the journal' }}
+        />
+
+        <div className="mt-14 grid gap-x-6 gap-y-12 md:grid-cols-3">
+          {journal.slice(0, 3).map((a, i) => (
+            <Reveal key={a.slug} delay={i * 0.08}>
+              <Link to={`/journal/${a.slug}`} className="group block">
+                <div className="img-zoom">
+                  <Img
+                    src={imageUrl(a.cover, 900)}
+                    alt={a.title}
+                    ratio="4 / 3"
+                  />
+                </div>
+                <p className="eyebrow mt-5">
+                  {a.kicker} · {formatDate(a.date)}
+                </p>
+                <h3 className="d4 mt-2 max-w-sm">{a.title}</h3>
+                <p className="body-copy mt-3 max-w-sm">{a.excerpt}</p>
+              </Link>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* ─── Service ──────────────────────────────────────────── */}
+      <section className="shell grid gap-10 border-t border-rule py-16 md:grid-cols-3 md:py-20">
+        {[
+          {
+            t: 'Made to order',
+            d: 'Most pieces are built after you order them. Lead times are stated honestly on every product page, and we do not move them.',
+          },
+          {
+            t: 'Delivered and placed',
+            d: 'Our own team delivers within Bengaluru, Mumbai and Delhi NCR — unpacked, positioned, packaging taken away.',
+          },
+          {
+            t: 'Repaired, not replaced',
+            d: 'Ten-year frame guarantee. Re-upholstery, re-weaving and refinishing are offered for the life of the piece.',
+          },
+        ].map((s, i) => (
+          <Reveal key={s.t} delay={i * 0.07}>
+            <p className="eyebrow mb-4">{String(i + 1).padStart(2, '0')}</p>
+            <h3 className="d4 mb-3">{s.t}</h3>
+            <p className="body-copy max-w-sm">{s.d}</p>
+          </Reveal>
+        ))}
+      </section>
+    </>
   )
 }

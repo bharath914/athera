@@ -4,17 +4,28 @@ export default {
   theme: {
     extend: {
       colors: {
-        'warm-sand': '#F5F0E8',
-        walnut: '#5C3D2E',
-        terracotta: '#C16A44',
-        sage: '#7A9E7E',
-        stone: '#A89F94',
-        cream: '#FBF8F3',
+        paper: '#F6F4EF',
+        bone: '#EFEBE3',
+        linen: '#E4DED3',
+        ink: '#171614',
+        graphite: '#3B3833',
+        mute: '#7C766C',
+        rule: '#D9D2C6',
+        clay: '#9C5B3C',
+        moss: '#5E6650',
       },
       fontFamily: {
-        display: ['"Playfair Display"', 'serif'],
-        heading: ['"Cormorant Garamond"', 'serif'],
-        body: ['"DM Sans"', 'sans-serif'],
+        display: ['"Instrument Serif"', 'Georgia', 'serif'],
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
+      letterSpacing: {
+        widest2: '0.22em',
+      },
+      maxWidth: {
+        edge: '96rem',
+      },
+      transitionTimingFunction: {
+        editorial: 'cubic-bezier(0.22, 1, 0.36, 1)',
       },
     },
   },

@@ -1,122 +1,187 @@
-import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { ArrowLeft } from 'lucide-react'
-import ImageGallery from '../components/ImageGallery'
+import { Link, Navigate, useParams } from 'react-router-dom'
+import Img from '../components/Img'
+import Reveal from '../components/Reveal'
 import ProductCard from '../components/ProductCard'
-import { formatPrice } from '../utils/formatPrice'
-import products from '../data/products.json'
+import PageMeta from '../components/PageMeta'
+import { getProduct, products } from '../data/products'
+import { formatPrice, cx } from '../lib/format'
+
+function Spec({ label, value }) {
+  return (
+    <div className="flex items-baseline justify-between gap-6 border-b border-rule py-3">
+      <dt className="eyebrow">{label}</dt>
+      <dd className="text-right text-[14px] font-light text-graphite">{value}</dd>
+    </div>
+  )
+}
 
 export default function ProductDetail() {
   const { slug } = useParams()
-  const navigate = useNavigate()
-  const product = products.find(p => p.slug === slug)
+  const product = getProduct(slug)
+  const [finish, setFinish] = useState(0)
+  const [requested, setRequested] = useState(false)
 
-  const [activeVariant, setActiveVariant] = useState(0)
+  if (!product) return <Navigate to="/shop" replace />
 
-  if (!product) {
-    return (
-      <div className="max-w-7xl mx-auto px-6 pt-40 pb-20 text-center">
-        <p className="font-heading text-3xl text-stone mb-4">Product not found.</p>
-        <Link to="/products" className="btn-outline">Back to Products</Link>
-      </div>
-    )
-  }
+  const related = products
+    .filter((p) => p.id !== product.id && p.category === product.category)
+    .slice(0, 3)
+  const fallback = products
+    .filter((p) => p.id !== product.id && p.category !== product.category)
+    .slice(0, 3 - related.length)
+  const also = [...related, ...fallback]
 
-  const related = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 3)
+  const d = product.dimensions
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="max-w-7xl mx-auto px-6 pt-24 pb-20"
-    >
-      {/* Back */}
-      <button
-        onClick={() => navigate(-1)}
-        className="flex items-center gap-2 font-body text-sm text-stone hover:text-walnut transition-colors mb-10"
-      >
-        <ArrowLeft size={14} /> Back
-      </button>
+    <>
+      <PageMeta title={product.name} description={product.excerpt} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+      <div className="shell pb-8 pt-[100px] sm:pt-[120px]">
+        <nav className="eyebrow flex items-center gap-2">
+          <Link to="/shop" className="link-underline">
+            Shop
+          </Link>
+          <span aria-hidden="true">/</span>
+          <Link to={`/shop?category=${product.category}`} className="link-underline">
+            {product.category}
+          </Link>
+          <span aria-hidden="true">/</span>
+          <span className="text-ink">{product.name}</span>
+        </nav>
+      </div>
+
+      <section className="shell grid gap-10 md:grid-cols-12 md:gap-12">
         {/* Gallery */}
-        <ImageGallery images={product.images} alt={product.name} />
+        <div className="flex flex-col gap-4 md:col-span-7">
+          {product.images.map((_, i) => (
+            <Reveal key={i} variant={i === 0 ? 'fade' : 'clip'} amount={0.1}>
+              <Img
+                src={product.img(i, 1400)}
+                alt={`${product.name} — view ${i + 1}`}
+                ratio={i === 0 ? '4 / 5' : '4 / 3'}
+                priority={i === 0}
+                sizes="(min-width: 768px) 55vw, 100vw"
+              />
+            </Reveal>
+          ))}
+        </div>
 
-        {/* Details */}
-        <div>
-          <p className="section-tag mb-2 capitalize">{product.category}</p>
-          <h1 className="font-display text-4xl text-walnut mb-3">{product.name}</h1>
-          <p className="font-heading text-3xl text-terracotta mb-6">
-            {formatPrice(product.price, product.currency)}
-          </p>
+        {/* Detail column */}
+        <div className="md:col-span-5">
+          <div className="md:sticky md:top-[104px]">
+            <p className="eyebrow mb-4">
+              {product.collection ? 'Collection piece · ' : ''}
+              {product.designer} · {product.year}
+            </p>
+            <h1 className="d2">{product.name}</h1>
+            <p className="mt-4 text-[17px] font-light tabular-nums text-graphite">
+              {formatPrice(product.price)}
+              <span className="ml-3 text-[12px] uppercase tracking-widest2 text-mute">
+                incl. taxes
+              </span>
+            </p>
 
-          <p className="font-body text-base text-stone leading-relaxed mb-8">{product.description}</p>
+            <p className="body-copy mt-7">{product.description}</p>
 
-          {/* Variants */}
-          {product.variants.length > 0 && (
-            <div className="mb-8">
-              <p className="font-body text-sm font-medium text-walnut mb-3">
-                Colour — <span className="text-stone font-normal">{product.variants[activeVariant].label}</span>
+            {/* Finishes */}
+            <div className="mt-9">
+              <p className="eyebrow mb-4">
+                Finish — {product.finishes[finish].label}
               </p>
-              <div className="flex gap-3">
-                {product.variants.map((v, i) => (
+              <div className="flex flex-wrap gap-3">
+                {product.finishes.map((f, i) => (
                   <button
-                    key={v.label}
-                    onClick={() => setActiveVariant(i)}
-                    title={v.label}
-                    className={`w-8 h-8 rounded-full transition-all duration-200 ${i === activeVariant ? 'ring-2 ring-offset-2 ring-walnut' : ''}`}
-                    style={{ backgroundColor: v.hex }}
+                    key={f.label}
+                    type="button"
+                    onClick={() => setFinish(i)}
+                    aria-label={f.label}
+                    aria-pressed={i === finish}
+                    className={cx(
+                      'h-9 w-9 rounded-full border transition-all duration-300',
+                      i === finish
+                        ? 'border-ink ring-1 ring-ink ring-offset-2 ring-offset-paper'
+                        : 'border-rule hover:border-mute'
+                    )}
+                    style={{ backgroundColor: f.hex }}
                   />
                 ))}
               </div>
             </div>
-          )}
 
-          {/* Materials */}
-          <div className="mb-6">
-            <p className="font-body text-sm font-medium text-walnut mb-2">Materials</p>
-            <div className="flex flex-wrap gap-2">
-              {product.materials.map(m => (
-                <span key={m} className="font-body text-xs text-stone border border-stone/30 px-3 py-1">{m}</span>
-              ))}
+            {/* Action */}
+            <div className="mt-9 flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setRequested(true)}
+                className="btn-solid flex-1 sm:flex-none"
+              >
+                {requested ? 'Piece reserved' : 'Reserve this piece'}
+              </button>
+              <Link to="/contact" className="btn-ghost flex-1 sm:flex-none">
+                Book a viewing
+              </Link>
             </div>
-          </div>
+            {requested && (
+              <p className="body-copy mt-4">
+                Held for 48 hours. A member of the studio will write to you at
+                the address on your account to confirm finish and delivery
+                window.
+              </p>
+            )}
 
-          {/* Dimensions */}
-          <div className="mb-8 bg-cream p-4">
-            <p className="font-body text-sm font-medium text-walnut mb-3">Dimensions</p>
-            <div className="grid grid-cols-3 gap-4 text-center">
-              {[['W', product.dimensions.w], ['D', product.dimensions.d], ['H', product.dimensions.h]].map(([label, val]) => (
-                <div key={label}>
-                  <p className="font-display text-xl text-walnut">{val}</p>
-                  <p className="font-body text-xs text-stone">{label} ({product.dimensions.unit})</p>
-                </div>
-              ))}
-            </div>
-          </div>
+            <p className="eyebrow mt-6">
+              Lead time — <span className="text-ink">{product.lead}</span>
+            </p>
 
-          {/* CTA */}
-          <Link
-            to={`/contact?product=${encodeURIComponent(product.name)}`}
-            className="btn-primary w-full text-center block"
-          >
-            Enquire About This Piece
-          </Link>
+            {/* Specs */}
+            <dl className="mt-10 border-t border-rule">
+              <Spec label="Materials" value={product.materials.join(', ')} />
+              <Spec
+                label="Dimensions"
+                value={[
+                  d.w ? `W ${d.w}` : null,
+                  d.d ? `D ${d.d}` : null,
+                  d.h ? `H ${d.h}` : null,
+                ]
+                  .filter(Boolean)
+                  .join(' × ') + ' cm'}
+              />
+              {d.seat && <Spec label="Seat height" value={`${d.seat} cm`} />}
+              <Spec label="Designed by" value={`${product.designer}, ${product.year}`} />
+              <Spec label="Guarantee" value="10 years, frame" />
+              <Spec label="Delivery" value="Placed in room, packaging removed" />
+            </dl>
+
+            <p className="body-copy mt-6 text-[13px] text-mute">
+              Made to order in small runs. Timber is a living material —
+              grain, tone and figure will vary between pieces, and that
+              variation is not a fault.
+            </p>
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* Related */}
-      {related.length > 0 && (
-        <div className="mt-24">
-          <p className="section-tag mb-2">You might also like</p>
-          <h2 className="font-heading text-3xl text-walnut mb-8">Related Pieces</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {related.map(p => <ProductCard key={p.id} product={p} />)}
-          </div>
+      <section className="shell mt-24 md:mt-36">
+        <div className="mb-10 flex items-baseline justify-between border-t border-rule pt-8">
+          <h2 className="d3">Also consider</h2>
+          <Link
+            to="/shop"
+            className="link-underline text-[11px] uppercase tracking-widest2"
+          >
+            All pieces
+          </Link>
         </div>
-      )}
-    </motion.div>
+        <div className="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          {also.map((p, i) => (
+            <Reveal key={p.id} delay={i * 0.07}>
+              <ProductCard product={p} index={i} />
+            </Reveal>
+          ))}
+        </div>
+      </section>
+    </>
   )
 }

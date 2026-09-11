@@ -2,49 +2,137 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --color-warm-sand: #F5F0E8;
-  --color-walnut: #5C3D2E;
-  --color-terracotta: #C16A44;
-  --color-sage: #7A9E7E;
-  --color-stone: #A89F94;
-  --color-cream: #FBF8F3;
-}
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
 
-* {
-  box-sizing: border-box;
-}
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    font-weight: 400;
+    overflow-x: hidden;
+  }
 
-html {
-  scroll-behavior: smooth;
-}
+  ::selection {
+    @apply bg-ink text-paper;
+  }
 
-body {
-  background-color: var(--color-warm-sand);
-  color: var(--color-walnut);
-  font-family: 'DM Sans', sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
+  /* Editorial display type: tight, high-contrast, optically balanced */
+  .font-display {
+    font-feature-settings: 'liga' 1, 'kern' 1;
+  }
 
-::selection {
-  background-color: #C16A4430;
-  color: var(--color-walnut);
+  :focus-visible {
+    outline: 1px solid #171614;
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
 
 @layer components {
-  .btn-primary {
-    @apply inline-block bg-terracotta text-cream px-8 py-3 font-body font-medium tracking-wide transition-all duration-200 hover:bg-walnut;
+  .shell {
+    @apply mx-auto w-full max-w-edge px-5 sm:px-8 lg:px-12;
   }
 
-  .btn-outline {
-    @apply inline-block border border-walnut text-walnut px-8 py-3 font-body font-medium tracking-wide transition-all duration-200 hover:bg-walnut hover:text-cream;
+  .eyebrow {
+    @apply font-sans text-[10px] sm:text-[11px] uppercase tracking-widest2 text-mute font-medium;
   }
 
-  .section-tag {
-    @apply text-xs font-body font-medium tracking-widest uppercase text-stone;
+  .rule {
+    @apply border-t border-rule;
   }
 
-  .card-hover {
-    @apply transition-transform duration-300 hover:scale-[1.02];
+  /* Display scale — fluid, editorial */
+  .d1 {
+    @apply font-display font-normal leading-[0.92] tracking-[-0.02em];
+    font-size: clamp(3rem, 11vw, 10rem);
+  }
+
+  .d2 {
+    @apply font-display font-normal leading-[0.98] tracking-[-0.015em];
+    font-size: clamp(2.25rem, 6vw, 5rem);
+  }
+
+  .d3 {
+    @apply font-display font-normal leading-[1.05] tracking-[-0.01em];
+    font-size: clamp(1.75rem, 3.4vw, 3rem);
+  }
+
+  .d4 {
+    @apply font-display font-normal leading-[1.1];
+    font-size: clamp(1.375rem, 2vw, 1.875rem);
+  }
+
+  .lede {
+    @apply font-sans font-light text-graphite leading-[1.65];
+    font-size: clamp(1rem, 1.25vw, 1.1875rem);
+  }
+
+  .body-copy {
+    @apply font-sans font-light text-graphite leading-[1.75] text-[15px] sm:text-base;
+  }
+
+  .link-underline {
+    @apply relative inline-block;
+  }
+  .link-underline::after {
+    content: '';
+    @apply absolute left-0 -bottom-0.5 h-px w-full origin-right scale-x-0 bg-current transition-transform duration-500 ease-editorial;
+  }
+  .link-underline:hover::after {
+    @apply origin-left scale-x-100;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-7 py-3.5 text-[12px] uppercase tracking-widest2 font-medium transition-colors duration-300 ease-editorial;
+  }
+  .btn-solid {
+    @apply btn bg-ink text-paper hover:bg-clay;
+  }
+  .btn-ghost {
+    @apply btn border border-ink/25 text-ink hover:border-ink hover:bg-ink hover:text-paper;
+  }
+
+  .field {
+    @apply w-full border-b border-rule bg-transparent py-3 text-[15px] font-light text-ink placeholder:text-mute/70 focus:border-ink focus:outline-none transition-colors;
+  }
+
+  .img-zoom img {
+    @apply transition-transform duration-[1200ms] ease-editorial;
+  }
+  .img-zoom:hover img {
+    transform: scale(1.045);
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .marquee-track {
+    animation: marquee 42s linear infinite;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
   }
 }

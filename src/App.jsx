@@ -1,38 +1,65 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
-import { AnimatePresence } from 'framer-motion'
-import Navbar from './components/Navbar'
+import { Routes, Route, useLocation } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
+import Nav from './components/Nav'
 import Footer from './components/Footer'
+import ScrollToTop from './components/ScrollToTop'
 import Home from './pages/Home'
-import Products from './pages/Products'
+import Shop from './pages/Shop'
 import ProductDetail from './pages/ProductDetail'
 import Collections from './pages/Collections'
+import CollectionDetail from './pages/CollectionDetail'
+import Journal from './pages/Journal'
+import Article from './pages/Article'
 import About from './pages/About'
 import Contact from './pages/Contact'
+import NotFound from './pages/NotFound'
 
-function AnimatedRoutes() {
-  const location = useLocation()
+function Page({ children }) {
   return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<Home />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/products/:slug" element={<ProductDetail />} />
-        <Route path="/collections" element={<Collections />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-      </Routes>
-    </AnimatePresence>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {children}
+    </motion.div>
   )
 }
 
 export default function App() {
+  const location = useLocation()
+
   return (
-    <BrowserRouter basename="/athera">
-      <Navbar />
-      <main>
-        <AnimatedRoutes />
+    <>
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:bg-ink focus:px-4 focus:py-2 focus:text-paper"
+      >
+        Skip to content
+      </a>
+      <ScrollToTop />
+      <Nav />
+      <main id="main">
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            <Route path="/" element={<Page><Home /></Page>} />
+            <Route path="/shop" element={<Page><Shop /></Page>} />
+            <Route path="/shop/:slug" element={<Page><ProductDetail /></Page>} />
+            <Route path="/collections" element={<Page><Collections /></Page>} />
+            <Route
+              path="/collections/:slug"
+              element={<Page><CollectionDetail /></Page>}
+            />
+            <Route path="/journal" element={<Page><Journal /></Page>} />
+            <Route path="/journal/:slug" element={<Page><Article /></Page>} />
+            <Route path="/about" element={<Page><About /></Page>} />
+            <Route path="/contact" element={<Page><Contact /></Page>} />
+            <Route path="*" element={<Page><NotFound /></Page>} />
+          </Routes>
+        </AnimatePresence>
       </main>
       <Footer />
-    </BrowserRouter>
+    </>
   )
 }

@@ -1,128 +1,159 @@
 import { useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { CheckCircle } from 'lucide-react'
+import Img from '../components/Img'
+import Reveal from '../components/Reveal'
+import PageMeta from '../components/PageMeta'
+import { imageUrl } from '../data/products'
+
+const subjects = ['A piece', 'Interiors & trade', 'Care or repair', 'Something else']
 
 export default function Contact() {
-  const [searchParams] = useSearchParams()
-  const prefilledProduct = searchParams.get('product') || ''
-
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    product: prefilledProduct,
-    message: '',
-  })
-  const [status, setStatus] = useState('idle') // idle | sending | success | error
-
-  const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
-
-  const handleSubmit = async e => {
-    e.preventDefault()
-    setStatus('sending')
-    try {
-      const res = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(form),
-      })
-      if (res.ok) setStatus('success')
-      else setStatus('error')
-    } catch {
-      setStatus('error')
-    }
-  }
+  const [subject, setSubject] = useState(subjects[0])
+  const [sent, setSent] = useState(false)
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="max-w-7xl mx-auto px-6 pt-28 pb-20"
-    >
-      <div className="max-w-2xl">
-        <p className="section-tag mb-2">Get in Touch</p>
-        <h1 className="font-heading text-5xl text-walnut mb-4">Let's talk.</h1>
-        <p className="font-body text-base text-stone leading-relaxed mb-12">
-          Interested in a piece? Have a question about materials, lead times, or custom dimensions? We'd love to hear from you. We typically respond within one business day.
-        </p>
+    <>
+      <PageMeta
+        title="Contact"
+        description="Visit the Aethera showroom in Bengaluru, or write to the studio about a piece, a project or a repair."
+      />
 
-        {status === 'success' ? (
-          <div className="flex flex-col items-start gap-4 py-16">
-            <CheckCircle size={40} className="text-sage" />
-            <h2 className="font-heading text-3xl text-walnut">Message received.</h2>
-            <p className="font-body text-stone">We'll be in touch shortly. Thank you for reaching out.</p>
+      <header className="shell pb-14 pt-[112px] sm:pt-[136px]">
+        <Reveal>
+          <p className="eyebrow mb-5">Say hello</p>
+          <h1 className="d1 max-w-[13ch]">Come in, or write.</h1>
+        </Reveal>
+      </header>
+
+      <section className="shell grid gap-12 md:grid-cols-12">
+        {/* Details */}
+        <Reveal className="md:col-span-4">
+          <div className="rule">
+            {[
+              {
+                t: 'Showroom',
+                lines: [
+                  '14 Wood Street',
+                  'Richmond Town, Bengaluru 560025',
+                  'Tuesday–Sunday, 11–7',
+                ],
+              },
+              {
+                t: 'Studio',
+                lines: ['hello@aethera.studio', '+91 80 4000 1900'],
+              },
+              {
+                t: 'Trade & interiors',
+                lines: ['trade@aethera.studio', 'Portfolio required'],
+              },
+              {
+                t: 'Care & repair',
+                lines: ['care@aethera.studio', 'Include your order number'],
+              },
+            ].map((b) => (
+              <div key={b.t} className="border-b border-rule py-6">
+                <p className="eyebrow mb-3">{b.t}</p>
+                {b.lines.map((l) => (
+                  <p key={l} className="text-[15px] font-light leading-relaxed text-graphite">
+                    {l}
+                  </p>
+                ))}
+              </div>
+            ))}
           </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div>
-                <label className="font-body text-sm font-medium text-walnut block mb-1.5">Name *</label>
-                <input
-                  type="text"
-                  name="name"
-                  required
-                  value={form.name}
-                  onChange={handleChange}
-                  placeholder="Your name"
-                  className="w-full border border-stone/30 bg-cream px-4 py-3 font-body text-sm text-walnut placeholder-stone focus:outline-none focus:border-walnut"
-                />
-              </div>
-              <div>
-                <label className="font-body text-sm font-medium text-walnut block mb-1.5">Email *</label>
-                <input
-                  type="email"
-                  name="email"
-                  required
-                  value={form.email}
-                  onChange={handleChange}
-                  placeholder="your@email.com"
-                  className="w-full border border-stone/30 bg-cream px-4 py-3 font-body text-sm text-walnut placeholder-stone focus:outline-none focus:border-walnut"
-                />
-              </div>
-            </div>
 
-            <div>
-              <label className="font-body text-sm font-medium text-walnut block mb-1.5">Product of Interest</label>
-              <input
-                type="text"
-                name="product"
-                value={form.product}
-                onChange={handleChange}
-                placeholder="e.g. Wabi Lounge Chair (optional)"
-                className="w-full border border-stone/30 bg-cream px-4 py-3 font-body text-sm text-walnut placeholder-stone focus:outline-none focus:border-walnut"
-              />
-            </div>
+          <Img
+            src={imageUrl('photo-1538688525198-9b88f6f53126', 1000)}
+            alt="The Aethera showroom entrance"
+            ratio="4 / 3"
+            className="mt-10"
+          />
+        </Reveal>
 
-            <div>
-              <label className="font-body text-sm font-medium text-walnut block mb-1.5">Message *</label>
-              <textarea
-                name="message"
-                required
-                rows={6}
-                value={form.message}
-                onChange={handleChange}
-                placeholder="Tell us what you're looking for..."
-                className="w-full border border-stone/30 bg-cream px-4 py-3 font-body text-sm text-walnut placeholder-stone focus:outline-none focus:border-walnut resize-none"
-              />
-            </div>
-
-            {status === 'error' && (
-              <p className="font-body text-sm text-terracotta">
-                Something went wrong. Please try emailing us directly at hello@atherafurniture.in
+        {/* Form */}
+        <Reveal delay={0.08} className="md:col-span-7 md:col-start-6">
+          {sent ? (
+            <div className="rule pt-10">
+              <p className="d2 max-w-lg">Thank you — your note is with us.</p>
+              <p className="body-copy mt-5 max-w-md">
+                Someone from the studio replies to everything within two working
+                days. If it&apos;s urgent, the showroom phone is answered during
+                opening hours.
               </p>
-            )}
-
-            <button
-              type="submit"
-              disabled={status === 'sending'}
-              className="btn-primary w-fit disabled:opacity-60 disabled:cursor-not-allowed"
+              <button
+                type="button"
+                onClick={() => setSent(false)}
+                className="btn-ghost mt-8"
+              >
+                Write another
+              </button>
+            </div>
+          ) : (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                setSent(true)
+              }}
+              className="rule pt-10"
             >
-              {status === 'sending' ? 'Sending…' : 'Send Message'}
-            </button>
-          </form>
-        )}
-      </div>
-    </motion.div>
+              <p className="eyebrow mb-5">What is this about?</p>
+              <div className="mb-10 flex flex-wrap gap-2">
+                {subjects.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setSubject(s)}
+                    aria-pressed={subject === s}
+                    className={
+                      'px-4 py-2 text-[11px] uppercase tracking-widest2 transition-colors duration-300 ' +
+                      (subject === s
+                        ? 'bg-ink text-paper'
+                        : 'border border-rule text-mute hover:border-ink hover:text-ink')
+                    }
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+
+              <div className="grid gap-8 sm:grid-cols-2">
+                <label>
+                  <span className="eyebrow">Name</span>
+                  <input required className="field mt-2" placeholder="Your name" />
+                </label>
+                <label>
+                  <span className="eyebrow">Email</span>
+                  <input
+                    required
+                    type="email"
+                    className="field mt-2"
+                    placeholder="your@email.com"
+                  />
+                </label>
+                <label className="sm:col-span-2">
+                  <span className="eyebrow">City</span>
+                  <input className="field mt-2" placeholder="Bengaluru" />
+                </label>
+                <label className="sm:col-span-2">
+                  <span className="eyebrow">Message</span>
+                  <textarea
+                    required
+                    rows={5}
+                    className="field mt-2 resize-none"
+                    placeholder="Tell us about the room, or the piece."
+                  />
+                </label>
+              </div>
+
+              <button type="submit" className="btn-solid mt-10">
+                Send note
+              </button>
+              <p className="body-copy mt-4 text-[13px] text-mute">
+                This is a demonstration form — nothing is transmitted.
+              </p>
+            </form>
+          )}
+        </Reveal>
+      </section>
+    </>
   )
 }

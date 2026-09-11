@@ -1,53 +1,79 @@
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { ArrowRight } from 'lucide-react'
-import collections from '../data/collections.json'
+import Img from '../components/Img'
+import Reveal from '../components/Reveal'
+import PageMeta from '../components/PageMeta'
+import { collections, products, imageUrl } from '../data/products'
+import { cx } from '../lib/format'
 
 export default function Collections() {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="max-w-7xl mx-auto px-6 pt-28 pb-20"
-    >
-      <div className="mb-14">
-        <p className="section-tag mb-2">Curated Worlds</p>
-        <h1 className="font-heading text-5xl text-walnut">Collections</h1>
-      </div>
+    <>
+      <PageMeta
+        title="Collections"
+        description="Four chapters of Aethera — Quiet Hours, The Long Table, Atelier Series and Low Light."
+      />
 
-      <div className="flex flex-col gap-16">
-        {collections.map((col, i) => (
-          <motion.div
-            key={col.id}
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className={`grid grid-cols-1 lg:grid-cols-2 gap-10 items-center ${i % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}
-          >
-            <div className={i % 2 === 1 ? 'lg:order-2' : ''}>
-              <div className="aspect-[4/3] overflow-hidden">
-                <img
-                  src={col.coverImage}
-                  alt={col.name}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-            </div>
-            <div className={i % 2 === 1 ? 'lg:order-1' : ''}>
-              <p className="font-body text-xs text-stone tracking-widest uppercase mb-2">{col.tagline}</p>
-              <h2 className="font-display text-5xl text-walnut mb-5">{col.name}</h2>
-              <p className="font-body text-base text-stone leading-relaxed mb-8">{col.description}</p>
-              <Link
-                to={`/products?collection=${col.id}`}
-                className="btn-outline flex items-center gap-2 w-fit"
+      <header className="shell pb-14 pt-[112px] sm:pt-[136px]">
+        <Reveal>
+          <p className="eyebrow mb-5">Four chapters</p>
+          <h1 className="d1 max-w-[13ch]">Collections</h1>
+          <p className="lede mt-6 max-w-xl">
+            We release work in chapters rather than seasons. Each one is a
+            small, closed set of pieces designed to be lived with together —
+            and they keep working once the chapter closes.
+          </p>
+        </Reveal>
+      </header>
+
+      <div className="shell space-y-20 md:space-y-32">
+        {collections.map((c, i) => {
+          const count = products.filter((p) => p.collection === c.slug).length
+          const flip = i % 2 === 1
+          return (
+            <section
+              key={c.slug}
+              className="grid gap-8 md:grid-cols-12 md:items-center"
+            >
+              <Reveal
+                variant="clip"
+                className={cx(
+                  'md:col-span-7',
+                  flip ? 'md:order-2 md:col-start-6' : ''
+                )}
               >
-                Shop the Collection <ArrowRight size={14} />
-              </Link>
-            </div>
-          </motion.div>
-        ))}
+                <Link to={`/collections/${c.slug}`} className="img-zoom block">
+                  <Img
+                    src={imageUrl(c.cover, 1600)}
+                    alt={c.name}
+                    ratio="16 / 11"
+                  />
+                </Link>
+              </Reveal>
+
+              <Reveal
+                delay={0.08}
+                className={cx(
+                  'md:col-span-4',
+                  flip ? 'md:order-1 md:col-start-1' : 'md:col-start-9'
+                )}
+              >
+                <p className="eyebrow mb-4">
+                  {c.season} · {count} {count === 1 ? 'piece' : 'pieces'}
+                </p>
+                <h2 className="d2">{c.name}</h2>
+                <p className="lede mt-4 italic">{c.tagline}</p>
+                <p className="body-copy mt-4">{c.description}</p>
+                <Link
+                  to={`/collections/${c.slug}`}
+                  className="link-underline mt-7 inline-block text-[11px] uppercase tracking-widest2"
+                >
+                  Open chapter
+                </Link>
+              </Reveal>
+            </section>
+          )
+        })}
       </div>
-    </motion.div>
+    </>
   )
 }
