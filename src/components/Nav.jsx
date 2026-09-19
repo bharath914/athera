@@ -3,31 +3,23 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { cx } from '../lib/format'
 
-const links = [
+const primary = [
   { to: '/shop', label: 'Shop' },
-  { to: '/collections', label: 'Collections' },
+  { to: '/furniture', label: 'Furniture' },
+  { to: '/design-by-ai', label: 'Design by AI' },
   { to: '/journal', label: 'Journal' },
-  { to: '/about', label: 'Studio' },
-  { to: '/contact', label: 'Contact' },
+  { to: '/about', label: 'About' },
 ]
 
-// Routes that open with a full-bleed dark image behind the header.
-const OVERLAY_ROUTES = [/^\/$/, /^\/collections\/[^/]+$/, /^\/journal\/[^/]+$/]
+const utility = [
+  { to: '/profile', label: 'Profile' },
+  { to: '/cart', label: 'Cart' },
+  { to: '/wishlist', label: 'Wishlist' },
+]
 
 export default function Nav() {
   const { pathname } = useLocation()
-  const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
-
-  const overlay = OVERLAY_ROUTES.some((r) => r.test(pathname))
-  const light = overlay && !scrolled && !open
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
 
   useEffect(() => setOpen(false), [pathname])
 
@@ -38,38 +30,35 @@ export default function Nav() {
     }
   }, [open])
 
+  const linkClass = ({ isActive }) =>
+    cx(
+      'text-[14px] leading-none transition-colors duration-200',
+      isActive ? 'text-[#1a1a1a]' : 'text-[#3d3d3d] hover:text-[#1a1a1a]'
+    )
+
   return (
     <>
-      <header
-        className={cx(
-          'fixed inset-x-0 top-0 z-50 transition-colors duration-500 ease-editorial',
-          light ? 'text-paper' : 'text-ink',
-          scrolled && !open
-            ? 'bg-paper/85 backdrop-blur-md border-b border-rule/70'
-            : 'bg-transparent border-b border-transparent'
-        )}
-      >
-        <div className="shell flex h-[64px] items-center justify-between sm:h-[76px]">
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-t border-[#d2d2d2] bg-white">
+        <div className="mx-auto grid h-[56px] w-full max-w-edge grid-cols-[1fr_auto_1fr] items-center px-5 sm:h-[64px] sm:px-8 lg:px-12">
           <Link
             to="/"
             aria-label="Aethera — home"
-            className="font-display text-[22px] leading-none tracking-[0.16em] sm:text-[26px]"
+            className="justify-self-start text-[15px] leading-none text-[#1a1a1a]"
           >
-            AETHERA
+            Aethera
           </Link>
 
-          <nav className="hidden items-center gap-9 md:flex">
-            {links.map((l) => (
-              <NavLink
-                key={l.to}
-                to={l.to}
-                className={({ isActive }) =>
-                  cx(
-                    'link-underline text-[11px] uppercase tracking-widest2 transition-opacity duration-300',
-                    isActive ? 'opacity-100' : 'opacity-65 hover:opacity-100'
-                  )
-                }
-              >
+          <nav className="hidden items-center gap-7 justify-self-center md:flex">
+            {primary.map((l) => (
+              <NavLink key={l.to} to={l.to} className={linkClass}>
+                {l.label}
+              </NavLink>
+            ))}
+          </nav>
+
+          <nav className="hidden items-center gap-6 justify-self-end md:flex">
+            {utility.map((l) => (
+              <NavLink key={l.to} to={l.to} className={linkClass}>
                 {l.label}
               </NavLink>
             ))}
@@ -80,19 +69,18 @@ export default function Nav() {
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-label={open ? 'Close menu' : 'Open menu'}
-            className="relative z-50 flex h-10 w-10 items-center justify-center md:hidden"
+            className="relative z-50 col-start-3 flex h-10 w-10 items-center justify-center justify-self-end text-[#1a1a1a] md:hidden"
           >
-            <span className="sr-only">Menu</span>
             <span className="relative block h-3 w-6">
               <span
                 className={cx(
-                  'absolute left-0 block h-px w-6 bg-current transition-transform duration-400 ease-editorial',
+                  'absolute left-0 block h-px w-6 bg-current transition-transform duration-300',
                   open ? 'top-1.5 rotate-45' : 'top-0'
                 )}
               />
               <span
                 className={cx(
-                  'absolute left-0 block h-px w-6 bg-current transition-transform duration-400 ease-editorial',
+                  'absolute left-0 block h-px w-6 bg-current transition-transform duration-300',
                   open ? 'top-1.5 -rotate-45' : 'top-3'
                 )}
               />
@@ -108,38 +96,28 @@ export default function Nav() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 z-40 bg-paper md:hidden"
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-40 bg-white md:hidden"
           >
-            <div className="shell flex h-full flex-col justify-between pb-12 pt-[104px]">
+            <div className="flex h-full flex-col justify-between px-5 pb-12 pt-[88px]">
               <nav className="flex flex-col">
-                {links.map((l, i) => (
-                  <motion.div
+                {primary.map((l) => (
+                  <Link
                     key={l.to}
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      delay: 0.06 * i + 0.05,
-                      duration: 0.5,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
+                    to={l.to}
+                    className="border-b border-[#e2e2e2] py-4 text-[20px] text-[#1a1a1a]"
                   >
-                    <Link
-                      to={l.to}
-                      className="block border-b border-rule py-5 font-display text-4xl"
-                    >
-                      {l.label}
-                    </Link>
-                  </motion.div>
+                    {l.label}
+                  </Link>
                 ))}
               </nav>
-              <div className="eyebrow">
-                Aethera — Bengaluru
-                <br />
-                <span className="normal-case tracking-normal text-mute">
-                  hello@aethera.studio
-                </span>
-              </div>
+              <nav className="flex flex-wrap gap-6">
+                {utility.map((l) => (
+                  <Link key={l.to} to={l.to} className="text-[14px] text-[#3d3d3d]">
+                    {l.label}
+                  </Link>
+                ))}
+              </nav>
             </div>
           </motion.div>
         )}

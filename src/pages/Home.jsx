@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import Hero from '../components/Hero'
 import Img from '../components/Img'
 import Reveal from '../components/Reveal'
 import SectionHead from '../components/SectionHead'
@@ -23,72 +23,7 @@ export default function Home() {
         description="Aethera curates furniture and home accessories designed for calm, functional living. Timeless craftsmanship, honest materials, quietly modern design."
       />
 
-      {/* ─── Hero ─────────────────────────────────────────────── */}
-      <section className="relative h-[92svh] min-h-[560px] w-full overflow-hidden">
-        <motion.div
-          initial={{ scale: 1.08 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute inset-0"
-        >
-          <Img
-            src={imageUrl('photo-1556020685-ae41abfc9365', 2000)}
-            alt="A quiet living room in morning light"
-            ratio="auto"
-            priority
-            className="h-full w-full"
-          />
-        </motion.div>
-
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/55 via-ink/20 to-ink/70" />
-
-        <div className="shell relative flex h-full flex-col justify-end pb-10 sm:pb-14">
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="eyebrow mb-6 text-paper/70"
-          >
-            Chapter 04 — Autumn 2026
-          </motion.p>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 28 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.45, duration: 1, ease: [0.22, 1, 0.36, 1] }}
-            className="d1 max-w-[14ch] text-paper"
-          >
-            Rooms that ask <em className="italic">nothing</em> of you.
-          </motion.h1>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-8 grid gap-6 border-t border-paper/25 pt-6 md:grid-cols-12 md:items-end"
-          >
-            <p className="lede max-w-md text-paper/85 md:col-span-5">
-              Furniture and objects built for the way a room is actually
-              used — honest materials, small production runs, nothing
-              designed to be replaced.
-            </p>
-            <div className="flex flex-wrap items-center gap-3 md:col-span-4 md:col-start-9 md:justify-end">
-              <Link
-                to="/shop"
-                className="btn bg-paper text-ink hover:bg-clay hover:text-paper"
-              >
-                Shop all
-              </Link>
-              <Link
-                to="/collections"
-                className="btn border border-paper/40 text-paper hover:border-paper hover:bg-paper hover:text-ink"
-              >
-                Collections
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+      <Hero />
 
       <Marquee
         items={[

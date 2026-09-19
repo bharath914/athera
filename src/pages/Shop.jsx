@@ -66,7 +66,7 @@ export default function Shop() {
       </header>
 
       {/* Filter bar — one row: categories scroll, sort pinned right */}
-      <div className="sticky top-[64px] z-30 border-y border-rule bg-paper/90 backdrop-blur-md sm:top-[76px]">
+      <div className="sticky top-[56px] z-30 border-y border-rule bg-paper/90 backdrop-blur-md sm:top-[64px]">
         <div className="shell flex items-center gap-4 py-3.5">
           <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto no-scrollbar">
             <span className="eyebrow mr-2 hidden shrink-0 lg:inline">Category</span>

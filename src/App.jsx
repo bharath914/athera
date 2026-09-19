@@ -12,6 +12,9 @@ import Journal from './pages/Journal'
 import Article from './pages/Article'
 import About from './pages/About'
 import Contact from './pages/Contact'
+import Furniture from './pages/Furniture'
+import DesignByAI from './pages/DesignByAI'
+import { Profile, Cart, Wishlist } from './pages/Account'
 import NotFound from './pages/NotFound'
 
 function Page({ children }) {
@@ -53,6 +56,11 @@ export default function App() {
             />
             <Route path="/journal" element={<Page><Journal /></Page>} />
             <Route path="/journal/:slug" element={<Page><Article /></Page>} />
+            <Route path="/furniture" element={<Page><Furniture /></Page>} />
+            <Route path="/design-by-ai" element={<Page><DesignByAI /></Page>} />
+            <Route path="/profile" element={<Page><Profile /></Page>} />
+            <Route path="/cart" element={<Page><Cart /></Page>} />
+            <Route path="/wishlist" element={<Page><Wishlist /></Page>} />
             <Route path="/about" element={<Page><About /></Page>} />
             <Route path="/contact" element={<Page><Contact /></Page>} />
             <Route path="*" element={<Page><NotFound /></Page>} />
