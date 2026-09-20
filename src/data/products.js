@@ -1,43 +1,49 @@
 // Product catalogue. Imagery is served from the Unsplash CDN with a
 // tonal fallback handled in <Img/>, so a missing asset never breaks a layout.
 const u = (id, w = 1200) =>
-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=80`
+  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=90`
 
 export const categories = [
   {
     slug: 'seating',
     name: 'Seating',
     tagline: 'Chairs, lounges and low sofas built around the way a room is actually used.',
-    image: 'photo-1567538096630-e0c55bd6374c',
+    items: 'Sofas, lounge chairs, benches',
+    image: 'photo-1555041469-a586c61ea9bc',
   },
   {
     slug: 'tables',
     name: 'Tables',
     tagline: 'Dining, side and work surfaces in solid timber and honest stone.',
-    image: 'photo-1530018352490-c6eef07fd7d0',
+    items: 'Coffee tables, side tables, dining tables',
+    image: 'photo-1604578762246-41134e37f9cc',
   },
   {
     slug: 'storage',
     name: 'Storage',
     tagline: 'Cabinets and shelving that hold the everyday without announcing it.',
+    items: 'Shelves, cabinets, organizers',
     image: 'photo-1594026112284-02bb6f3352fe',
   },
   {
     slug: 'lighting',
     name: 'Lighting',
     tagline: 'Paper, linen and blown glass — light softened before it reaches the room.',
-    image: 'photo-1550226891-ef816aed4a98',
+    items: 'Floor lamps, table lamps, ambient lighting',
+    image: 'photo-1540932239986-30128078f3c5',
   },
   {
     slug: 'textiles',
     name: 'Textiles',
     tagline: 'Hand-loomed wool, undyed linen and cotton that improves with washing.',
+    items: 'Throws, curtains, cushions',
     image: 'photo-1581428982868-e410dd047a90',
   },
   {
     slug: 'objects',
     name: 'Objects',
     tagline: 'Small ceramics and vessels — the last five percent of a finished room.',
+    items: 'Vases, bowls, mirrors',
     image: 'photo-1533090161767-e6ffed986c88',
   },
 ]
@@ -62,7 +68,7 @@ export const collections = [
     statement: 'Proportioned for the meal that runs long, and the conversation that runs longer.',
     description:
       'Dining pieces proportioned for real gatherings — generous tops, forgiving finishes and chairs you can sit in for three hours without noticing them.',
-    cover: 'photo-1530018352490-c6eef07fd7d0',
+    cover: 'photo-1604578762246-41134e37f9cc',
     spread: ['photo-1600585152220-90363fe7e115', 'photo-1549187774-b4e9b0445b41'],
   },
   {
@@ -138,7 +144,7 @@ const raw = [
     ],
     lead: '8–10 weeks',
     images: [
-      'photo-1530018352490-c6eef07fd7d0',
+      'photo-1604578762246-41134e37f9cc',
       'photo-1600585152220-90363fe7e115',
       'photo-1549187774-b4e9b0445b41',
     ],
@@ -255,7 +261,7 @@ const raw = [
     finishes: [{ label: 'Honed travertine', hex: '#D8CDBB' }],
     lead: '4–5 weeks',
     images: [
-      'photo-1578662996442-48f60103fc96',
+      'photo-1532372320572-cda25653a26d',
       'photo-1604578762246-41134e37f9cc',
       'photo-1583845112203-29329902332e',
     ],
@@ -377,7 +383,7 @@ const raw = [
     images: [
       'photo-1507473885765-e6ed057f782c',
       'photo-1550226891-ef816aed4a98',
-      'photo-1558618666-fcd25c85cd64',
+      'photo-1593062096033-9a26b09da705',
     ],
   },
   {
@@ -401,7 +407,7 @@ const raw = [
     images: [
       'photo-1549187774-b4e9b0445b41',
       'photo-1600585152220-90363fe7e115',
-      'photo-1530018352490-c6eef07fd7d0',
+      'photo-1604578762246-41134e37f9cc',
     ],
   },
   {
@@ -419,8 +425,8 @@ const raw = [
     finishes: [{ label: 'Pale limestone', hex: '#D6CFC0' }],
     lead: '7–9 weeks',
     images: [
-      'photo-1604578762246-41134e37f9cc',
-      'photo-1612198188060-c7c2a3b66eae',
+      'photo-1493663284031-b7e3aefcae8e',
+      'photo-1581428982868-e410dd047a90',
       'photo-1526057565006-20beab8dd2ed',
     ],
   },
@@ -465,7 +471,7 @@ const raw = [
     images: [
       'photo-1586023492125-27b2c045efd7',
       'photo-1583845112203-29329902332e',
-      'photo-1578662996442-48f60103fc96',
+      'photo-1533090161767-e6ffed986c88',
     ],
   },
   {

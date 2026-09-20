@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom'
 import Img from '../components/Img'
 import Reveal from '../components/Reveal'
 import Marquee from '../components/Marquee'
 import PageMeta from '../components/PageMeta'
+import { Button, Eyebrow, Heading, PageHeader, Section, Text } from '../components/ui'
 import { imageUrl } from '../data/products'
 
 const principles = [
@@ -39,16 +39,13 @@ export default function About() {
         description="Aethera is a small design studio in Bengaluru making furniture and objects for calm, functional rooms."
       />
 
-      <header className="shell pb-14 pt-[112px] sm:pt-[136px]">
-        <Reveal>
-          <p className="eyebrow mb-5">The studio — est. 2019, Bengaluru</p>
-          <h1 className="d1 max-w-[15ch]">
-            We make <em className="italic">quiet</em> things carefully.
-          </h1>
-        </Reveal>
-      </header>
+      <PageHeader
+        eyebrow="The studio — est. 2019, Bengaluru"
+        title="We make quiet things carefully."
+        titleClassName="max-w-[16ch]"
+      />
 
-      <section className="shell">
+      <Section flush>
         <Reveal variant="clip">
           <Img
             src={imageUrl('photo-1524484485831-a92ffc0de03f', 2000)}
@@ -57,48 +54,50 @@ export default function About() {
             priority
           />
         </Reveal>
-      </section>
+      </Section>
 
-      <section className="shell grid gap-10 py-16 md:grid-cols-12 md:py-28">
+      <Section innerClassName="grid gap-10 md:grid-cols-12">
         <Reveal className="md:col-span-5">
-          <h2 className="d3 max-w-sm">
+          <Heading size="heading" className="max-w-sm">
             Aethera began with one chair and an argument about lacquer.
-          </h2>
+          </Heading>
         </Reveal>
-        <Reveal delay={0.08} className="md:col-span-6 md:col-start-7">
-          <p className="lede">
+        <Reveal delay={0.08} className="space-y-5 md:col-span-6 md:col-start-7">
+          <Text variant="lead">
             The chair took nine months. The argument — whether a finish should
             hide a material or admit it — took considerably longer, and it
             settled everything that came afterwards.
-          </p>
-          <p className="body-copy mt-5">
+          </Text>
+          <Text>
             We are a studio of seven working out of a converted warehouse in
             Richmond Town. We design the whole catalogue in-house and
             manufacture it with four independent workshops across Karnataka,
             Rajasthan and Gujarat — the same four we started with. That
             relationship is the reason we can run forty units at a time and
             still ask for a hand-hemmed selvedge.
-          </p>
-          <p className="body-copy mt-5">
+          </Text>
+          <Text>
             We do not run sales, we do not release seasonally, and we do not
             discontinue pieces that are still good. A catalogue that grows by
             four or five pieces a year is a slower business and a much better
             one to buy from.
-          </p>
+          </Text>
         </Reveal>
-      </section>
+      </Section>
 
-      <Marquee
-        items={[
-          'Designed in Bengaluru',
-          'Made in Karnataka, Rajasthan & Gujarat',
-          'Seven people',
-          'Four workshops',
-          'No seasonal sales',
-        ]}
-      />
+      <div className="pt-section">
+        <Marquee
+          items={[
+            'Designed in Bengaluru',
+            'Made in Karnataka, Rajasthan & Gujarat',
+            'Seven people',
+            'Four workshops',
+            'No seasonal sales',
+          ]}
+        />
+      </div>
 
-      <section className="shell grid gap-10 py-16 md:grid-cols-12 md:py-28">
+      <Section innerClassName="grid gap-10 md:grid-cols-12">
         <Reveal variant="clip" className="md:col-span-5">
           <Img
             src={imageUrl('photo-1567538096630-e0c55bd6374c', 1200)}
@@ -108,51 +107,57 @@ export default function About() {
         </Reveal>
 
         <div className="md:col-span-6 md:col-start-7">
-          <p className="eyebrow mb-8">Four principles</p>
+          <Eyebrow className="mb-8">Four principles</Eyebrow>
           <div className="rule">
             {principles.map((p, i) => (
               <Reveal key={p.t} delay={i * 0.06}>
-                <div className="flex items-baseline gap-5 border-b border-rule py-6">
-                  <span className="w-8 shrink-0 text-[11px] tracking-widest2 text-mute">
+                <div className="flex items-baseline gap-5 border-b border-rule py-7">
+                  <Eyebrow as="span" className="w-8 shrink-0">
                     {String(i + 1).padStart(2, '0')}
-                  </span>
+                  </Eyebrow>
                   <div>
-                    <h3 className="d4">{p.t}</h3>
-                    <p className="body-copy mt-2 max-w-md">{p.d}</p>
+                    <Heading as="h3" size="heading">
+                      {p.t}
+                    </Heading>
+                    <Text className="mt-2 max-w-md">{p.d}</Text>
                   </div>
                 </div>
               </Reveal>
             ))}
           </div>
         </div>
-      </section>
+      </Section>
 
-      <section className="bg-bone py-16 md:py-20">
-        <div className="shell grid grid-cols-2 gap-8 md:grid-cols-4">
-          {numbers.map((n, i) => (
-            <Reveal key={n.l} delay={i * 0.06}>
-              <p className="d2">{n.n}</p>
-              <p className="eyebrow mt-2">{n.l}</p>
-            </Reveal>
-          ))}
-        </div>
-      </section>
+      <Section tone="bone" className="mt-[clamp(4rem,7vw,7.5rem)]" innerClassName="grid grid-cols-2 gap-8 md:grid-cols-4">
+        {numbers.map((n, i) => (
+          <Reveal key={n.l} delay={i * 0.06}>
+            <Heading as="p" size="title">
+              {n.n}
+            </Heading>
+            <Eyebrow className="mt-3">
+              {n.l}
+            </Eyebrow>
+          </Reveal>
+        ))}
+      </Section>
 
-      <section className="shell py-20 text-center md:py-28">
+      <Section innerClassName="text-center">
         <Reveal>
-          <p className="eyebrow mb-6">Visit</p>
-          <h2 className="d2 mx-auto max-w-2xl">
+          <Eyebrow center className="mb-6">
+            Visit
+          </Eyebrow>
+          <Heading size="heading" className="mx-auto max-w-2xl">
             The showroom is small and the tea is good.
-          </h2>
-          <p className="body-copy mx-auto mt-5 max-w-md">
+          </Heading>
+          <Text className="mx-auto mt-5 max-w-md">
             14 Wood Street, Richmond Town, Bengaluru. Open Tuesday to Sunday,
             eleven until seven. No appointment needed, though one helps.
-          </p>
-          <Link to="/contact" className="btn-solid mt-8">
+          </Text>
+          <Button to="/contact" className="mt-9">
             Plan a visit
-          </Link>
+          </Button>
         </Reveal>
-      </section>
+      </Section>
     </>
   )
 }

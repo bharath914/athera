@@ -1,8 +1,9 @@
-import { Link, Navigate, useParams } from 'react-router-dom'
+import { Navigate, useParams } from 'react-router-dom'
 import Img from '../components/Img'
 import Reveal from '../components/Reveal'
-import ProductCard from '../components/ProductCard'
+import ProductGrid from '../components/ProductGrid'
 import PageMeta from '../components/PageMeta'
+import { Card, Eyebrow, Heading, Section, SectionHeader, Text } from '../components/ui'
 import { getCollection, products, collections, imageUrl } from '../data/products'
 
 export default function CollectionDetail() {
@@ -28,26 +29,34 @@ export default function CollectionDetail() {
           />
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-ink/50 via-ink/15 to-ink/65" />
-        <div className="shell relative flex h-full flex-col justify-end pb-12">
-          <p className="eyebrow mb-5 text-paper/70">{collection.season}</p>
-          <h1 className="d1 text-paper">{collection.name}</h1>
-          <p className="lede mt-5 max-w-lg text-paper/85">{collection.tagline}</p>
+        <div className="shell relative flex h-full flex-col justify-end pb-[clamp(2.5rem,5vw,5rem)]">
+          <Eyebrow tone="light" className="mb-6">
+            {collection.season}
+          </Eyebrow>
+          <Heading as="h1" size="display" tone="light">
+            {collection.name}
+          </Heading>
+          <Text variant="lead" tone="light" className="mt-5 max-w-lg">
+            {collection.tagline}
+          </Text>
         </div>
       </section>
 
-      <section className="shell grid gap-8 py-16 md:grid-cols-12 md:py-24">
+      <Section innerClassName="grid gap-8 md:grid-cols-12">
         <Reveal className="md:col-span-5">
-          <h2 className="d3 max-w-md">{collection.statement}</h2>
+          <Heading size="heading" className="max-w-md">
+            {collection.statement}
+          </Heading>
         </Reveal>
         <Reveal delay={0.08} className="md:col-span-6 md:col-start-7">
-          <p className="lede">{collection.description}</p>
-          <p className="eyebrow mt-8">
+          <Text variant="lead">{collection.description}</Text>
+          <Eyebrow className="mt-8">
             {list.length} {list.length === 1 ? 'piece' : 'pieces'} in this chapter
-          </p>
+          </Eyebrow>
         </Reveal>
-      </section>
+      </Section>
 
-      <section className="shell grid gap-5 sm:grid-cols-2">
+      <Section innerClassName="grid gap-5 sm:grid-cols-2">
         {collection.spread.map((img, i) => (
           <Reveal key={img} variant="clip" delay={i * 0.08}>
             <Img
@@ -57,37 +66,35 @@ export default function CollectionDetail() {
             />
           </Reveal>
         ))}
-      </section>
+      </Section>
 
-      <section className="shell py-20 md:py-28">
-        <h2 className="d3 mb-10 border-t border-rule pt-8">In this chapter</h2>
-        {list.length ? (
-          <div className="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-            {list.map((p, i) => (
-              <Reveal key={p.id} delay={(i % 3) * 0.07}>
-                <ProductCard product={p} index={i} />
-              </Reveal>
-            ))}
-          </div>
-        ) : (
-          <p className="body-copy">This chapter is still in the workshop.</p>
-        )}
-      </section>
+      <Section>
+        <SectionHeader title="In this chapter" />
+        <div className="mt-[clamp(28px,3vw,52px)]">
+          {list.length ? (
+            <ProductGrid products={list} />
+          ) : (
+            <Text>This chapter is still in the workshop.</Text>
+          )}
+        </div>
+      </Section>
 
-      <section className="shell border-t border-rule py-14">
-        <p className="eyebrow mb-8">Other chapters</p>
-        <div className="grid gap-8 sm:grid-cols-3">
+      <Section>
+        <SectionHeader title="Other chapters" />
+        <div className="mt-[clamp(28px,3vw,52px)] grid gap-8 sm:grid-cols-3">
           {others.map((c) => (
-            <Link key={c.slug} to={`/collections/${c.slug}`} className="group">
-              <div className="img-zoom">
-                <Img src={imageUrl(c.cover, 800)} alt={c.name} ratio="3 / 2" />
-              </div>
-              <p className="eyebrow mt-4">{c.season}</p>
-              <h3 className="d4 mt-1">{c.name}</h3>
-            </Link>
+            <Card
+              key={c.slug}
+              to={`/collections/${c.slug}`}
+              image={imageUrl(c.cover, 900)}
+              alt={c.name}
+              ratio="3 / 2"
+              kicker={c.season}
+              title={c.name}
+            />
           ))}
         </div>
-      </section>
+      </Section>
     </>
   )
 }

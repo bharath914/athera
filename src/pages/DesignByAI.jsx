@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Img from '../components/Img'
 import Reveal from '../components/Reveal'
 import PageMeta from '../components/PageMeta'
+import { Button, Chip, Eyebrow, Field, Heading, PageHeader, Section, Text } from '../components/ui'
 import { imageUrl } from '../data/products'
 
 const rooms = ['Living room', 'Bedroom', 'Dining', 'Workspace']
@@ -34,36 +35,27 @@ export default function DesignByAI() {
         description="Describe your room and Aethera drafts a scheme from pieces we actually make — reviewed by the studio before it reaches you."
       />
 
-      <header className="shell pb-14 pt-[104px] sm:pt-[128px]">
-        <Reveal>
-          <p className="eyebrow mb-5">In preview</p>
-          <h1 className="d1 max-w-[14ch]">Design your room.</h1>
-          <p className="lede mt-6 max-w-xl">
-            Describe the space and we&apos;ll draft a scheme from the catalogue —
-            proportions, placement and a shortlist. Then someone in the studio
-            reads it before you do.
-          </p>
-        </Reveal>
-      </header>
+      <PageHeader
+        eyebrow="In preview"
+        title="Design your room."
+        titleClassName="max-w-[14ch]"
+        lede="Describe the space and we'll draft a scheme from the catalogue — proportions, placement and a shortlist. Then someone in the studio reads it before you do."
+      />
 
-      <section className="shell grid gap-10 md:grid-cols-12">
+      <Section flush innerClassName="grid gap-10 md:grid-cols-12">
         <Reveal className="md:col-span-6">
           {sent ? (
             <div className="rule pt-10">
-              <p className="d3 max-w-md">
+              <Heading size="heading" className="max-w-md">
                 Your {room.toLowerCase()} is in the queue.
-              </p>
-              <p className="body-copy mt-4 max-w-md">
+              </Heading>
+              <Text className="mt-4 max-w-md">
                 Schemes take two working days while the preview is running. We
                 write to you once a designer has read the draft.
-              </p>
-              <button
-                type="button"
-                onClick={() => setSent(false)}
-                className="btn-ghost mt-8"
-              >
+              </Text>
+              <Button variant="line" onClick={() => setSent(false)} className="mt-8">
                 Start another
-              </button>
+              </Button>
             </div>
           ) : (
             <form
@@ -73,77 +65,47 @@ export default function DesignByAI() {
               }}
               className="rule pt-10"
             >
-              <p className="eyebrow mb-4">Which room?</p>
+              <Eyebrow className="mb-4">
+                Which room?
+              </Eyebrow>
               <div className="mb-9 flex flex-wrap gap-2">
                 {rooms.map((r) => (
-                  <button
-                    key={r}
-                    type="button"
-                    onClick={() => setRoom(r)}
-                    aria-pressed={room === r}
-                    className={
-                      'px-4 py-2 text-[11px] uppercase tracking-widest2 transition-colors duration-300 ' +
-                      (room === r
-                        ? 'bg-ink text-paper'
-                        : 'border border-rule text-mute hover:border-ink hover:text-ink')
-                    }
-                  >
+                  <Chip key={r} active={room === r} onClick={() => setRoom(r)}>
                     {r}
-                  </button>
+                  </Chip>
                 ))}
               </div>
 
-              <p className="eyebrow mb-4">What should it feel like?</p>
+              <Eyebrow className="mb-4">
+                What should it feel like?
+              </Eyebrow>
               <div className="mb-9 flex flex-wrap gap-2">
                 {moods.map((m) => (
-                  <button
-                    key={m}
-                    type="button"
-                    onClick={() => setMood(m)}
-                    aria-pressed={mood === m}
-                    className={
-                      'px-4 py-2 text-[11px] uppercase tracking-widest2 transition-colors duration-300 ' +
-                      (mood === m
-                        ? 'bg-ink text-paper'
-                        : 'border border-rule text-mute hover:border-ink hover:text-ink')
-                    }
-                  >
+                  <Chip key={m} active={mood === m} onClick={() => setMood(m)}>
                     {m}
-                  </button>
+                  </Chip>
                 ))}
               </div>
 
               <div className="grid gap-8 sm:grid-cols-2">
-                <label>
-                  <span className="eyebrow">Room size</span>
-                  <input className="field mt-2" placeholder="4.2 × 3.6 m" />
-                </label>
-                <label>
-                  <span className="eyebrow">Email</span>
-                  <input
-                    required
-                    type="email"
-                    className="field mt-2"
-                    placeholder="your@email.com"
-                  />
-                </label>
-                <label className="sm:col-span-2">
-                  <span className="eyebrow">Anything we should know</span>
-                  <textarea
-                    rows={4}
-                    className="field mt-2 resize-none"
-                    placeholder="North-facing, two cats, no ceiling light."
-                  />
-                </label>
+                <Field label="Room size" placeholder="4.2 × 3.6 m" />
+                <Field label="Email" required type="email" placeholder="your@email.com" />
+                <Field
+                  label="Anything we should know"
+                  as="textarea"
+                  rows={4}
+                  placeholder="North-facing, two cats, no ceiling light."
+                  wrapperClassName="sm:col-span-2"
+                />
               </div>
 
-              <button type="submit" className="btn-solid mt-10">
+              <Button type="submit" className="mt-10">
                 Draft a scheme
-              </button>
-              <p className="body-copy mt-4 text-[13px] text-mute">
+              </Button>
+              <Text variant="small" tone="mute" className="mt-4">
                 Preview feature — this form is a demonstration and transmits
                 nothing.
-              </p>
+              </Text>
             </form>
           )}
         </Reveal>
@@ -155,17 +117,21 @@ export default function DesignByAI() {
             ratio="3 / 4"
           />
         </Reveal>
-      </section>
+      </Section>
 
-      <section className="shell grid gap-10 border-t border-rule py-16 md:grid-cols-3 md:py-20">
+      <Section innerClassName="grid gap-10 border-t border-rule pt-[clamp(3rem,5vw,5rem)] md:grid-cols-3">
         {steps.map((s, i) => (
           <Reveal key={s.t} delay={i * 0.07}>
-            <p className="eyebrow mb-4">{String(i + 1).padStart(2, '0')}</p>
-            <h3 className="d4 mb-3">{s.t}</h3>
-            <p className="body-copy max-w-sm">{s.d}</p>
+            <Eyebrow className="mb-4">
+              {String(i + 1).padStart(2, '0')}
+            </Eyebrow>
+            <Heading as="h3" size="heading" className="mb-3">
+              {s.t}
+            </Heading>
+            <Text className="max-w-sm">{s.d}</Text>
           </Reveal>
         ))}
-      </section>
+      </Section>
     </>
   )
 }

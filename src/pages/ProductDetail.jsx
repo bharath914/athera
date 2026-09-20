@@ -4,15 +4,30 @@ import Img from '../components/Img'
 import Reveal from '../components/Reveal'
 import ProductCard from '../components/ProductCard'
 import PageMeta from '../components/PageMeta'
+import {
+  Button,
+  Eyebrow,
+  Heading,
+  Section,
+  SectionHeader,
+  SpecList,
+  Text,
+} from '../components/ui'
 import { getProduct, products } from '../data/products'
 import { formatPrice, cx } from '../lib/format'
 
-function Spec({ label, value }) {
+/** A single closed-by-default disclosure — description, details, delivery. */
+function Disclosure({ title, children, open = false }) {
   return (
-    <div className="flex items-baseline justify-between gap-6 border-b border-rule py-3">
-      <dt className="eyebrow">{label}</dt>
-      <dd className="text-right text-[14px] font-light text-graphite">{value}</dd>
-    </div>
+    <details open={open} className="group border-b border-rule">
+      <summary className="label flex cursor-pointer list-none items-center justify-between py-4 [&::-webkit-details-marker]:hidden">
+        {title}
+        <span aria-hidden="true" className="transition-transform duration-300 group-open:rotate-45">
+          +
+        </span>
+      </summary>
+      <div className="pb-5">{children}</div>
+    </details>
   )
 }
 
@@ -26,162 +41,145 @@ export default function ProductDetail() {
 
   const related = products
     .filter((p) => p.id !== product.id && p.category === product.category)
-    .slice(0, 3)
+    .slice(0, 4)
   const fallback = products
     .filter((p) => p.id !== product.id && p.category !== product.category)
-    .slice(0, 3 - related.length)
+    .slice(0, 4 - related.length)
   const also = [...related, ...fallback]
 
   const d = product.dimensions
+  const specs = [
+    { label: 'Materials', value: product.materials.join(', ') },
+    {
+      label: 'Dimensions',
+      value:
+        [d.w ? `W ${d.w}` : null, d.d ? `D ${d.d}` : null, d.h ? `H ${d.h}` : null]
+          .filter(Boolean)
+          .join(' × ') + ' cm',
+    },
+    ...(d.seat ? [{ label: 'Seat height', value: `${d.seat} cm` }] : []),
+    { label: 'Designed by', value: `${product.designer}, ${product.year}` },
+    { label: 'Guarantee', value: '10 years, frame' },
+  ]
 
   return (
     <>
       <PageMeta title={product.name} description={product.excerpt} />
 
-      <div className="shell pb-8 pt-[100px] sm:pt-[120px]">
-        <nav className="eyebrow flex items-center gap-2">
-          <Link to="/shop" className="link-underline">
+      <div className="shell pb-6 pt-[88px] sm:pt-[104px]">
+        <Eyebrow as="nav" className="flex gap-2">
+          <Link to="/shop" className="transition-colors hover:text-ink">
             Shop
           </Link>
           <span aria-hidden="true">/</span>
-          <Link to={`/shop?category=${product.category}`} className="link-underline">
+          <Link
+            to={`/shop?category=${product.category}`}
+            className="transition-colors hover:text-ink"
+          >
             {product.category}
           </Link>
-          <span aria-hidden="true">/</span>
-          <span className="text-ink">{product.name}</span>
-        </nav>
+        </Eyebrow>
       </div>
 
-      <section className="shell grid gap-10 md:grid-cols-12 md:gap-12">
-        {/* Gallery */}
-        <div className="flex flex-col gap-4 md:col-span-7">
+      <Section flush innerClassName="grid gap-8 lg:grid-cols-12 lg:gap-10">
+        {/* Photographs */}
+        <div className="grid gap-5 sm:grid-cols-2 lg:col-span-8">
           {product.images.map((_, i) => (
-            <Reveal key={i} variant={i === 0 ? 'fade' : 'clip'} amount={0.1}>
+            <Reveal
+              key={i}
+              variant="fade"
+              amount={0.1}
+              className={cx(i === 0 && 'sm:col-span-2')}
+            >
               <Img
-                src={product.img(i, 1400)}
+                src={product.img(i, 2000)}
                 alt={`${product.name} — view ${i + 1}`}
-                ratio={i === 0 ? '4 / 5' : '4 / 3'}
+                ratio={i === 0 ? '4 / 3' : '4 / 5'}
                 priority={i === 0}
-                sizes="(min-width: 768px) 55vw, 100vw"
+                sizes="(min-width: 1024px) 60vw, 100vw"
               />
             </Reveal>
           ))}
         </div>
 
-        {/* Detail column */}
-        <div className="md:col-span-5">
-          <div className="md:sticky md:top-[104px]">
-            <p className="eyebrow mb-4">
-              {product.collection ? 'Collection piece · ' : ''}
-              {product.designer} · {product.year}
-            </p>
-            <h1 className="d2">{product.name}</h1>
-            <p className="mt-4 text-[17px] font-light tabular-nums text-graphite">
+        {/* The ask */}
+        <div className="lg:col-span-4">
+          <div className="lg:sticky lg:top-[96px]">
+            <Heading as="h1" size="title">
+              {product.name}
+            </Heading>
+            <Text variant="lead" tone="ink" className="mt-3 tabular-nums">
               {formatPrice(product.price)}
-              <span className="ml-3 text-[12px] uppercase tracking-widest2 text-mute">
-                incl. taxes
-              </span>
-            </p>
+            </Text>
+            <Text className="mt-6 text-mute">{product.excerpt}</Text>
 
-            <p className="body-copy mt-7">{product.description}</p>
-
-            {/* Finishes */}
-            <div className="mt-9">
-              <p className="eyebrow mb-4">
-                Finish — {product.finishes[finish].label}
-              </p>
-              <div className="flex flex-wrap gap-3">
-                {product.finishes.map((f, i) => (
-                  <button
-                    key={f.label}
-                    type="button"
-                    onClick={() => setFinish(i)}
-                    aria-label={f.label}
-                    aria-pressed={i === finish}
-                    className={cx(
-                      'h-9 w-9 rounded-full border transition-all duration-300',
-                      i === finish
-                        ? 'border-ink ring-1 ring-ink ring-offset-2 ring-offset-paper'
-                        : 'border-rule hover:border-mute'
-                    )}
-                    style={{ backgroundColor: f.hex }}
-                  />
-                ))}
-              </div>
+            <Eyebrow tone="ink" className="mb-3 mt-8">
+              Finish — {product.finishes[finish].label}
+            </Eyebrow>
+            <div className="flex flex-wrap gap-3">
+              {product.finishes.map((f, i) => (
+                <button
+                  key={f.label}
+                  type="button"
+                  onClick={() => setFinish(i)}
+                  aria-label={f.label}
+                  aria-pressed={i === finish}
+                  className={cx(
+                    'h-8 w-8 rounded-full border transition-all duration-300',
+                    i === finish
+                      ? 'border-ink ring-1 ring-ink ring-offset-2 ring-offset-paper'
+                      : 'border-rule hover:border-mute'
+                  )}
+                  style={{ backgroundColor: f.hex }}
+                />
+              ))}
             </div>
 
-            {/* Action */}
-            <div className="mt-9 flex flex-wrap items-center gap-3">
-              <button
-                type="button"
-                onClick={() => setRequested(true)}
-                className="btn-solid flex-1 sm:flex-none"
-              >
+            <div className="mt-8 grid gap-3">
+              <Button block onClick={() => setRequested(true)}>
                 {requested ? 'Piece reserved' : 'Reserve this piece'}
-              </button>
-              <Link to="/contact" className="btn-ghost flex-1 sm:flex-none">
+              </Button>
+              <Button block to="/contact" variant="line">
                 Book a viewing
-              </Link>
+              </Button>
             </div>
             {requested && (
-              <p className="body-copy mt-4">
-                Held for 48 hours. A member of the studio will write to you at
-                the address on your account to confirm finish and delivery
-                window.
-              </p>
+              <Text variant="small" className="mt-3 text-mute">
+                Held for 48 hours. The studio will write to confirm finish and
+                delivery.
+              </Text>
             )}
+            <Eyebrow className="mt-4">Lead time — {product.lead}</Eyebrow>
 
-            <p className="eyebrow mt-6">
-              Lead time — <span className="text-ink">{product.lead}</span>
-            </p>
-
-            {/* Specs */}
-            <dl className="mt-10 border-t border-rule">
-              <Spec label="Materials" value={product.materials.join(', ')} />
-              <Spec
-                label="Dimensions"
-                value={[
-                  d.w ? `W ${d.w}` : null,
-                  d.d ? `D ${d.d}` : null,
-                  d.h ? `H ${d.h}` : null,
-                ]
-                  .filter(Boolean)
-                  .join(' × ') + ' cm'}
-              />
-              {d.seat && <Spec label="Seat height" value={`${d.seat} cm`} />}
-              <Spec label="Designed by" value={`${product.designer}, ${product.year}`} />
-              <Spec label="Guarantee" value="10 years, frame" />
-              <Spec label="Delivery" value="Placed in room, packaging removed" />
-            </dl>
-
-            <p className="body-copy mt-6 text-[13px] text-mute">
-              Made to order in small runs. Timber is a living material —
-              grain, tone and figure will vary between pieces, and that
-              variation is not a fault.
-            </p>
+            <div className="mt-8 border-t border-rule">
+              <Disclosure title="Description" open>
+                <Text className="text-mute">{product.description}</Text>
+              </Disclosure>
+              <Disclosure title="Details">
+                <SpecList items={specs} className="border-t-0" />
+              </Disclosure>
+              <Disclosure title="Delivery & care">
+                <Text className="text-mute">
+                  Made to order in small runs and placed in the room with
+                  packaging removed. Timber is a living material — grain and
+                  tone vary between pieces, and that variation is not a fault.
+                </Text>
+              </Disclosure>
+            </div>
           </div>
         </div>
-      </section>
+      </Section>
 
-      {/* Related */}
-      <section className="shell mt-24 md:mt-36">
-        <div className="mb-10 flex items-baseline justify-between border-t border-rule pt-8">
-          <h2 className="d3">Also consider</h2>
-          <Link
-            to="/shop"
-            className="link-underline text-[11px] uppercase tracking-widest2"
-          >
-            All pieces
-          </Link>
-        </div>
-        <div className="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+      <Section>
+        <SectionHeader title="You may also like" action={{ to: '/shop', label: 'All pieces' }} />
+        <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-4">
           {also.map((p, i) => (
-            <Reveal key={p.id} delay={i * 0.07}>
-              <ProductCard product={p} index={i} />
+            <Reveal key={p.id} variant="fade" delay={i * 0.05}>
+              <ProductCard product={p} />
             </Reveal>
           ))}
         </div>
-      </section>
+      </Section>
     </>
   )
 }

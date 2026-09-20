@@ -1,88 +1,65 @@
 import { Link } from 'react-router-dom'
-import { categories } from '../data/products'
-import Newsletter from './Newsletter'
+import { Eyebrow, Wordmark } from './ui'
 
-const cols = [
+const columns = [
   {
     title: 'Shop',
-    links: categories.slice(0, 4).map((c) => ({
-      to: `/shop?category=${c.slug}`,
-      label: c.name,
-    })),
+    links: [
+      { to: '/shop', label: 'All furniture' },
+      { to: '/furniture', label: 'Categories' },
+      { to: '/collections', label: 'Collections' },
+    ],
   },
   {
     title: 'Studio',
     links: [
-      { to: '/about', label: 'Our approach' },
+      { to: '/about', label: 'About' },
       { to: '/journal', label: 'Journal' },
-      { to: '/collections', label: 'Collections' },
-      { to: '/contact', label: 'Visit us' },
+      { to: '/design-by-ai', label: 'Design your room' },
     ],
   },
   {
-    title: 'Care',
+    title: 'Help',
     links: [
-      { to: '/contact', label: 'Delivery & lead times' },
-      { to: '/contact', label: 'Returns' },
-      { to: '/contact', label: 'Material care' },
-      { to: '/contact', label: 'Trade enquiries' },
+      { to: '/contact', label: 'Contact' },
+      { to: '/profile', label: 'Account' },
+      { to: '/wishlist', label: 'Wishlist' },
     ],
   },
 ]
 
+const item = 'type-body block py-1 text-graphite transition-opacity hover:opacity-60'
+
 export default function Footer() {
   return (
-    <footer className="mt-24 border-t border-rule bg-bone sm:mt-32">
-      <Newsletter />
-
-      <div className="shell grid grid-cols-2 gap-x-8 gap-y-12 border-t border-rule py-16 md:grid-cols-12 md:py-20">
-        <div className="col-span-2 md:col-span-4">
-          <p className="font-display text-[26px] tracking-[0.16em]">AETHERA</p>
-          <p className="body-copy mt-5 max-w-xs">
-            Furniture and objects for calm, functional rooms. Designed in
-            Bengaluru, made in small runs across India.
-          </p>
+    <footer className="mt-[clamp(4rem,7vw,8rem)] border-t border-rule">
+      <div className="shell grid gap-x-10 gap-y-12 py-[clamp(2.5rem,4vw,4.5rem)] sm:grid-cols-3 lg:grid-cols-[2fr_1fr_1fr_1fr]">
+        <div className="sm:col-span-3 lg:col-span-1">
+          <Wordmark size="nav" />
         </div>
 
-        {cols.map((col) => (
-          <div key={col.title} className="md:col-span-2 md:col-start-auto">
-            <p className="eyebrow mb-5">{col.title}</p>
-            <ul className="space-y-3">
+        {columns.map((col) => (
+          <nav key={col.title} aria-label={col.title}>
+            <Eyebrow tone="ink" className="mb-3">
+              {col.title}
+            </Eyebrow>
+            <ul>
               {col.links.map((l) => (
                 <li key={l.label}>
-                  <Link
-                    to={l.to}
-                    className="link-underline text-[14px] font-light text-graphite"
-                  >
+                  <Link to={l.to} className={item}>
                     {l.label}
                   </Link>
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
         ))}
-
-        <div className="col-span-2 md:col-span-2">
-          <p className="eyebrow mb-5">Showroom</p>
-          <p className="text-[14px] font-light leading-relaxed text-graphite">
-            14 Wood Street
-            <br />
-            Richmond Town
-            <br />
-            Bengaluru 560025
-          </p>
-          <p className="mt-4 text-[14px] font-light text-graphite">
-            Tue–Sun, 11–7
-          </p>
-        </div>
       </div>
 
-      <div className="shell flex flex-col gap-3 border-t border-rule py-6 text-[11px] uppercase tracking-widest2 text-mute sm:flex-row sm:items-center sm:justify-between">
-        <p>© {new Date().getFullYear()} Aethera Studio</p>
-        <p className="normal-case tracking-normal">
-          Imagery courtesy of Unsplash contributors.
+      <div className="shell">
+        <p className="type-small border-t border-rule py-6 text-mute">
+          &copy; {new Date().getFullYear()} Aethera. Furniture and interiors for calm, intentional living.
         </p>
-        <p>Privacy · Terms</p>
       </div>
     </footer>
   )

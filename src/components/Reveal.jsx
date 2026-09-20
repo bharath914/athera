@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 
 const variants = {
-  up: { hidden: { opacity: 0, y: 28 }, show: { opacity: 1, y: 0 } },
+  up: { hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } },
   fade: { hidden: { opacity: 0 }, show: { opacity: 1 } },
   left: { hidden: { opacity: 0, x: -24 }, show: { opacity: 1, x: 0 } },
   clip: {
@@ -15,7 +15,7 @@ export default function Reveal({
   as = 'div',
   variant = 'up',
   delay = 0,
-  duration = 0.75,
+  duration = 0.9,
   amount = 0.25,
   className = '',
   once = true,

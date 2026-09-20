@@ -19,7 +19,7 @@ export default function Img({
   return (
     <div
       className={cx('relative overflow-hidden bg-linen', className)}
-      style={{ aspectRatio: ratio }}
+      style={ratio === 'auto' ? undefined : { aspectRatio: ratio }}
     >
       {state !== 'error' && (
         <img

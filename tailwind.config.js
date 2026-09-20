@@ -3,23 +3,25 @@ export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
   theme: {
     extend: {
+      // COS-like: white, black, one grey. Photography carries the colour.
       colors: {
-        paper: '#F6F4EF',
-        bone: '#EFEBE3',
-        linen: '#E4DED3',
-        ink: '#171614',
-        graphite: '#3B3833',
-        mute: '#7C766C',
-        rule: '#D9D2C6',
-        clay: '#9C5B3C',
+        paper: '#FFFFFF',
+        bone: '#F5F4F2',
+        linen: '#ECEAE6',
+        ink: '#111111',
+        graphite: '#222222',
+        mute: '#767676',
+        rule: '#E4E2DE',
+        clay: '#111111',
         moss: '#5E6650',
       },
       fontFamily: {
-        display: ['"Instrument Serif"', 'Georgia', 'serif'],
+        display: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       letterSpacing: {
         widest2: '0.22em',
+        label: '0.06em',
       },
       maxWidth: {
         edge: '96rem',

@@ -2,9 +2,20 @@ import { useState } from 'react'
 import Img from '../components/Img'
 import Reveal from '../components/Reveal'
 import PageMeta from '../components/PageMeta'
+import { Button, Chip, Eyebrow, Field, Heading, PageHeader, Section, Text } from '../components/ui'
 import { imageUrl } from '../data/products'
 
 const subjects = ['A piece', 'Interiors & trade', 'Care or repair', 'Something else']
+
+const details = [
+  {
+    t: 'Showroom',
+    lines: ['14 Wood Street', 'Richmond Town, Bengaluru 560025', 'Tuesday–Sunday, 11–7'],
+  },
+  { t: 'Studio', lines: ['hello@aethera.studio', '+91 80 4000 1900'] },
+  { t: 'Trade & interiors', lines: ['trade@aethera.studio', 'Portfolio required'] },
+  { t: 'Care & repair', lines: ['care@aethera.studio', 'Include your order number'] },
+]
 
 export default function Contact() {
   const [subject, setSubject] = useState(subjects[0])
@@ -17,45 +28,25 @@ export default function Contact() {
         description="Visit the Aethera showroom in Bengaluru, or write to the studio about a piece, a project or a repair."
       />
 
-      <header className="shell pb-14 pt-[112px] sm:pt-[136px]">
-        <Reveal>
-          <p className="eyebrow mb-5">Say hello</p>
-          <h1 className="d1 max-w-[13ch]">Come in, or write.</h1>
-        </Reveal>
-      </header>
+      <PageHeader
+        eyebrow="Say hello"
+        title="Come in, or write."
+        titleClassName="max-w-[13ch]"
+      />
 
-      <section className="shell grid gap-12 md:grid-cols-12">
+      <Section flush innerClassName="grid gap-12 md:grid-cols-12">
         {/* Details */}
         <Reveal className="md:col-span-4">
           <div className="rule">
-            {[
-              {
-                t: 'Showroom',
-                lines: [
-                  '14 Wood Street',
-                  'Richmond Town, Bengaluru 560025',
-                  'Tuesday–Sunday, 11–7',
-                ],
-              },
-              {
-                t: 'Studio',
-                lines: ['hello@aethera.studio', '+91 80 4000 1900'],
-              },
-              {
-                t: 'Trade & interiors',
-                lines: ['trade@aethera.studio', 'Portfolio required'],
-              },
-              {
-                t: 'Care & repair',
-                lines: ['care@aethera.studio', 'Include your order number'],
-              },
-            ].map((b) => (
+            {details.map((b) => (
               <div key={b.t} className="border-b border-rule py-6">
-                <p className="eyebrow mb-3">{b.t}</p>
+                <Eyebrow className="mb-3">
+                  {b.t}
+                </Eyebrow>
                 {b.lines.map((l) => (
-                  <p key={l} className="text-[15px] font-light leading-relaxed text-graphite">
+                  <Text key={l} tone="ink">
                     {l}
-                  </p>
+                  </Text>
                 ))}
               </div>
             ))}
@@ -73,19 +64,17 @@ export default function Contact() {
         <Reveal delay={0.08} className="md:col-span-7 md:col-start-6">
           {sent ? (
             <div className="rule pt-10">
-              <p className="d2 max-w-lg">Thank you — your note is with us.</p>
-              <p className="body-copy mt-5 max-w-md">
+              <Heading size="heading" className="max-w-lg">
+                Thank you — your note is with us.
+              </Heading>
+              <Text className="mt-5 max-w-md">
                 Someone from the studio replies to everything within two working
                 days. If it&apos;s urgent, the showroom phone is answered during
                 opening hours.
-              </p>
-              <button
-                type="button"
-                onClick={() => setSent(false)}
-                className="btn-ghost mt-8"
-              >
+              </Text>
+              <Button variant="line" onClick={() => setSent(false)} className="mt-8">
                 Write another
-              </button>
+              </Button>
             </div>
           ) : (
             <form
@@ -95,65 +84,45 @@ export default function Contact() {
               }}
               className="rule pt-10"
             >
-              <p className="eyebrow mb-5">What is this about?</p>
+              <Eyebrow className="mb-5">
+                What is this about?
+              </Eyebrow>
               <div className="mb-10 flex flex-wrap gap-2">
                 {subjects.map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => setSubject(s)}
-                    aria-pressed={subject === s}
-                    className={
-                      'px-4 py-2 text-[11px] uppercase tracking-widest2 transition-colors duration-300 ' +
-                      (subject === s
-                        ? 'bg-ink text-paper'
-                        : 'border border-rule text-mute hover:border-ink hover:text-ink')
-                    }
-                  >
+                  <Chip key={s} active={subject === s} onClick={() => setSubject(s)}>
                     {s}
-                  </button>
+                  </Chip>
                 ))}
               </div>
 
               <div className="grid gap-8 sm:grid-cols-2">
-                <label>
-                  <span className="eyebrow">Name</span>
-                  <input required className="field mt-2" placeholder="Your name" />
-                </label>
-                <label>
-                  <span className="eyebrow">Email</span>
-                  <input
-                    required
-                    type="email"
-                    className="field mt-2"
-                    placeholder="your@email.com"
-                  />
-                </label>
-                <label className="sm:col-span-2">
-                  <span className="eyebrow">City</span>
-                  <input className="field mt-2" placeholder="Bengaluru" />
-                </label>
-                <label className="sm:col-span-2">
-                  <span className="eyebrow">Message</span>
-                  <textarea
-                    required
-                    rows={5}
-                    className="field mt-2 resize-none"
-                    placeholder="Tell us about the room, or the piece."
-                  />
-                </label>
+                <Field label="Name" required placeholder="Your name" />
+                <Field label="Email" required type="email" placeholder="your@email.com" />
+                <Field
+                  label="City"
+                  placeholder="Bengaluru"
+                  wrapperClassName="sm:col-span-2"
+                />
+                <Field
+                  label="Message"
+                  as="textarea"
+                  required
+                  rows={5}
+                  placeholder="Tell us about the room, or the piece."
+                  wrapperClassName="sm:col-span-2"
+                />
               </div>
 
-              <button type="submit" className="btn-solid mt-10">
+              <Button type="submit" className="mt-10">
                 Send note
-              </button>
-              <p className="body-copy mt-4 text-[13px] text-mute">
+              </Button>
+              <Text variant="small" tone="mute" className="mt-4">
                 This is a demonstration form — nothing is transmitted.
-              </p>
+              </Text>
             </form>
           )}
         </Reveal>
-      </section>
+      </Section>
     </>
   )
 }
