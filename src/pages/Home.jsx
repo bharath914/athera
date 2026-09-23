@@ -1,133 +1,104 @@
-import { Link } from 'react-router-dom'
-import Img from '../components/Img'
-import Reveal from '../components/Reveal'
-import PageMeta from '../components/PageMeta'
-import ProductCard from '../components/ProductCard'
-import {
-  Button,
-  Card,
-  Eyebrow,
-  Heading,
-  Section,
-  SectionHeader,
-  Text,
-  TextLink,
-} from '../components/ui'
-import { products, imageUrl } from '../data/products'
+import { Link, useSearchParams } from 'react-router-dom'
+import Stage, { Piece } from '../components/Stage'
+import { CATS, PRODUCTS, byId, from } from '../data/catalogue'
+import { vars } from '../lib/art'
+import { money } from '../lib/format'
 
-const pairs = [
-  [
-    { name: 'Seating', to: '/shop?category=seating', image: 'photo-1555041469-a586c61ea9bc' },
-    { name: 'Tables', to: '/shop?category=tables', image: 'photo-1604578762246-41134e37f9cc' },
-  ],
-  [
-    { name: 'Lighting', to: '/shop?category=lighting', image: 'photo-1540932239986-30128078f3c5' },
-    { name: 'Textiles', to: '/shop?category=textiles', image: 'photo-1583845112203-29329902332e' },
-  ],
-]
-
-const arrivals = [...products].sort((a, b) => b.year - a.year).slice(0, 4)
-
-function Pair({ items }) {
+function Card({ p }) {
   return (
-    <Section innerClassName="grid gap-5 sm:grid-cols-2">
-      {items.map((it, i) => (
-        <Reveal key={it.name} variant="fade" delay={i * 0.08}>
-          <Card
-            to={it.to}
-            image={imageUrl(it.image, 1800)}
-            alt={it.name}
-            ratio="4 / 5"
-            title={it.name}
-            titleSize="title"
-          />
-        </Reveal>
-      ))}
-    </Section>
+    <Link className="card" to={`/p/${p.id}`}>
+      <Stage p={p} />
+      <div className="card__meta">
+        <h3>{p.name}</h3>
+        <span className="p">From {money(from(p))}</span>
+        <span className="s">{p.sizes.length} sizes · {p.finishes.length} finishes</span>
+      </div>
+    </Link>
+  )
+}
+
+function Collection({ filter, onFilter }) {
+  const list = PRODUCTS.filter(p => filter === 'all' || p.cat === filter)
+  const filters = [
+    { id: 'all', name: 'All pieces', n: PRODUCTS.length },
+    ...CATS.map(c => ({ ...c, n: PRODUCTS.filter(p => p.cat === c.id).length })),
+  ]
+  return (
+    <section className="slide slide--dark coll" id="collection">
+      <div className="rail">
+        <div className="cell">
+          <span className="label">Collection</span>
+          <ul className="filters">
+            {filters.map(f => (
+              <li key={f.id} className={f.id === filter ? 'on' : ''}>
+                <button type="button" aria-pressed={f.id === filter} onClick={() => onFilter(f.id)}>
+                  {f.name}<i>{f.n}</i>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="cell">
+          <p>Every piece is made to order. Pick a colour and a size on the next screen.</p>
+        </div>
+      </div>
+      <div className="coll__main">
+        <div className="coll__head">
+          <h2 className="disp">The<br />collection</h2>
+          <p>Two kinds of furniture, six pieces in all. Fewer things, chosen carefully and built to last.</p>
+        </div>
+        <div className="grid">{list.map(p => <Card key={p.id} p={p} />)}</div>
+      </div>
+    </section>
   )
 }
 
 export default function Home() {
+  const [params, setParams] = useSearchParams()
+  const c = params.get('c')
+  const filter = CATS.some(x => x.id === c) ? c : 'all'
+  const sera = byId('sera'), lorne = byId('lorne'), vale = byId('vale')
+
   return (
     <>
-      <PageMeta
-        title="Furniture for quiet rooms"
-        description="Aethera makes furniture and objects for calm, considered rooms. Solid timber, honest materials, small runs."
-      />
-
-      {/* One headline, one photograph */}
-      <section className="pt-[56px] sm:pt-[64px]">
-        <div className="shell pb-[clamp(1.5rem,3vw,3rem)] pt-[clamp(2.5rem,5vw,5.5rem)] text-center">
-          <Reveal>
-            <Heading as="h1" size="display" className="mx-auto max-w-[14ch]">
-              Furniture for quiet rooms
-            </Heading>
-          </Reveal>
+      <section className="slide hero">
+        <div className="rail">
+          <div className="cell"><span className="label">Design<br />with<br />purpose</span></div>
+          <div className="cell"><p>Six pieces in two categories. Choose the colour and the size, and we build it to order.</p></div>
+          <div className="cell"><span className="label">Athera · 2025</span></div>
         </div>
-        <Link to="/shop?category=seating" className="block">
-          <Img
-            src={imageUrl('photo-1616486338812-3dadae4b4ace', 2600)}
-            alt="A soft sectional in warm light"
-            ratio="auto"
-            priority
-            className="h-[72svh] min-h-[380px] w-full"
-          />
-        </Link>
-        <div className="shell mt-3 flex items-center justify-between gap-6">
-          <Eyebrow>The living room</Eyebrow>
-          <TextLink to="/shop?category=seating" arrow>
-            Shop seating
-          </TextLink>
-        </div>
+        <Stage p={sera} fi={0} si={1} cx={650} vb={960} className="stage--dark">
+          <h1 className="disp">Fewer pieces,<br />made well.</h1>
+          <Link className="btn btn--bone cta arrow" to="/?c=all">Shop the collection</Link>
+          <div className="strip">
+            <div><b>Made to order</b><span>Built for you in four to six weeks.</span></div>
+            <div><b>Delivered &amp; assembled</b><span>Free, white-glove, placed in your room.</span></div>
+            <div><b>Ten-year frames</b><span>Every frame is guaranteed for a decade.</span></div>
+          </div>
+        </Stage>
       </section>
 
-      {/* A line, a button */}
-      <Section innerClassName="text-center">
-        <Reveal>
-          <Text variant="lead" className="mx-auto max-w-[30em]">
-            Furniture and objects designed for calm rooms — solid timber,
-            honest materials, made in small runs and meant to last.
-          </Text>
-          <Button to="/collections" variant="line" className="mt-8">
-            Explore the collections
-          </Button>
-        </Reveal>
-      </Section>
+      <Collection filter={filter} onFilter={id => setParams({ c: id }, { replace: true })} />
 
-      <Pair items={pairs[0]} />
-
-      {/* Full-bleed band */}
-      <Section bleed>
-        <Reveal variant="fade">
-          <Link to="/collections/quiet-hours" className="img-zoom block">
-            <Img
-              src={imageUrl('photo-1616594039964-ae9021a400a0', 2600)}
-              alt="A quiet bedroom"
-              ratio="auto"
-              className="h-[80svh] min-h-[400px] w-full"
-            />
-          </Link>
-        </Reveal>
-        <div className="shell mt-3 flex items-center justify-between gap-6">
-          <Eyebrow>Quiet Hours — the bedroom</Eyebrow>
-          <TextLink to="/collections/quiet-hours" arrow>
-            Open the chapter
-          </TextLink>
+      <section className="slide mood">
+        <div className="mood__l">
+          <div><span className="label muted">Concept &amp; mood</span></div>
+          <div>
+            <h2 className="disp">Materials<br />&amp; mood</h2>
+            <p>We draw on natural textures, soft tones and timeless materials: leather that darkens with use, oak that is oiled rather than lacquered, stone honed by hand.</p>
+          </div>
         </div>
-      </Section>
-
-      <Section>
-        <SectionHeader title="New arrivals" action={{ to: '/shop', label: 'View all' }} />
-        <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-4">
-          {arrivals.map((p, i) => (
-            <Reveal key={p.id} variant="fade" delay={(i % 4) * 0.05}>
-              <ProductCard product={p} />
-            </Reveal>
-          ))}
+        <div className="stage">
+          <div className="floor" />
+          <Piece p={lorne} si={0} cx={225} style={vars(lorne, 0)} />
+          <Piece p={vale} si={1} cx={470} style={vars(vale, 0)} />
         </div>
-      </Section>
-
-      <Pair items={pairs[1]} />
+        <div className="mood__r">
+          <div className="chip chip--leather">Cognac leather</div>
+          <div className="chip chip--oak">Natural oak</div>
+          <div className="chip chip--stone">Travertine</div>
+        </div>
+      </section>
     </>
   )
 }
