@@ -1,16 +1,17 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { byId, priceOf } from '../data/catalogue'
+import { byId } from '../data/catalogue'
 import { SHIP } from './format'
 
 const Ctx = createContext(null)
 export const useShop = () => useContext(Ctx)
 
-const KEY = 'athera.cart'
+const KEY = 'aethera.cart'
+
 const load = () => {
   try {
     return JSON.parse(localStorage.getItem(KEY) || '[]').filter(i => {
       const p = byId(i.pid)
-      return p && p.finishes[i.fi] && p.sizes[i.si] && i.q > 0
+      return p && p.finishes[i.fi] && i.q > 0
     })
   } catch {
     return []
@@ -33,28 +34,33 @@ export function ShopProvider({ children }) {
     }
   }, [cart])
 
-  const add = useCallback((pid, fi, si) => {
+  const add = useCallback((pid, fi = 0) => {
     setCart(c => {
-      const at = c.findIndex(i => i.pid === pid && i.fi === fi && i.si === si)
-      return at < 0 ? [...c, { pid, fi, si, q: 1 }] : c.map((i, n) => (n === at ? { ...i, q: i.q + 1 } : i))
+      const at = c.findIndex(i => i.pid === pid && i.fi === fi)
+      return at < 0 ? [...c, { pid, fi, q: 1 }] : c.map((i, n) => (n === at ? { ...i, q: i.q + 1 } : i))
     })
   }, [])
+
   const setQty = useCallback(
     (at, q) => setCart(c => (q < 1 ? c.filter((_, n) => n !== at) : c.map((i, n) => (n === at ? { ...i, q } : i)))),
     []
   )
+
   const remove = useCallback(at => setCart(c => c.filter((_, n) => n !== at)), [])
+
   const notify = useCallback((msg, to) => {
     setToast({ msg, to })
     clearTimeout(timer.current)
     timer.current = setTimeout(() => setToast(null), 4200)
   }, [])
 
+  useEffect(() => () => clearTimeout(timer.current), [])
+
   const value = useMemo(() => {
-    const subtotal = cart.reduce((a, i) => a + priceOf(byId(i.pid), i.fi, i.si) * i.q, 0)
+    const subtotal = cart.reduce((a, i) => a + byId(i.pid).price * i.q, 0)
     const total = subtotal + SHIP[ship].fee
     const place = ({ name, email }) => {
-      setOrder({ no: 'ATH-' + String(Date.now()).slice(-6), name, email, ship, items: cart, total })
+      setOrder({ no: 'AE-' + String(Date.now()).slice(-6), name, email, ship, items: cart, total })
       setCart([])
     }
     return {

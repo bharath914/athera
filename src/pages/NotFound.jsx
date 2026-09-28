@@ -2,10 +2,13 @@ import { Link } from 'react-router-dom'
 
 export default function NotFound() {
   return (
-    <section className="slide empty">
-      <h1 className="disp">Not found</h1>
-      <p>That page isn't in the collection.</p>
-      <Link className="btn btn--solid arrow" to="/?c=all">See the collection</Link>
+    <section className="sec">
+      <div className="wrap empty">
+        <span className="eyebrow">404</span>
+        <h1 className="disp d2">This page has been put away</h1>
+        <p className="lead">The piece or page you were looking for is not here any more.</p>
+        <Link className="btn btn--solid" to="/shop">Browse the furniture</Link>
+      </div>
     </section>
   )
 }

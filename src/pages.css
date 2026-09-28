@@ -1,0 +1,166 @@
+/* =========================================================================
+   Aethera — screens
+   Listing, detail, spaces, cart, checkout and the room assistant. Tokens and
+   shared primitives live in index.css.
+   ========================================================================= */
+
+.price { font-size: .95rem; color: var(--ink); font-variant-numeric: tabular-nums }
+.ulink { border-bottom: 1px solid var(--rule) }
+.ulink:hover { border-color: var(--ink) }
+
+.phead { display: flex; flex-direction: column; gap: 24px; max-width: 62ch; margin-bottom: 72px }
+.phead .lead { max-width: 56ch }
+.phead--short { margin-bottom: 48px; gap: 20px }
+
+.empty { display: flex; flex-direction: column; align-items: center; gap: 26px; text-align: center; padding: 72px 0 }
+.empty .lead { max-width: 42ch }
+
+.trail {
+  list-style: none; display: flex; gap: 16px; margin: 0; padding: 0;
+  font-size: .68rem; letter-spacing: .2em; text-transform: uppercase; color: var(--mute);
+}
+.trail li + li::before { content: "/"; margin-right: 16px; color: var(--rule) }
+.trail .now { color: var(--ink) }
+.trail .done a:hover { color: var(--ink) }
+
+/* ---------- listing --------------------------------------------------- */
+
+.filters {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-bottom: 20px; margin-bottom: 64px; border-bottom: 1px solid var(--rule);
+}
+.filters ul { display: flex; gap: 36px; list-style: none; margin: 0; padding: 0 }
+.filter {
+  background: none; border: 0; padding: 0 0 6px; cursor: pointer;
+  font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; color: var(--mute);
+  border-bottom: 1px solid transparent;
+  transition: color .25s var(--ease), border-color .25s var(--ease);
+}
+.filter:hover, .filter.on { color: var(--ink); border-color: var(--ink) }
+
+.plp { row-gap: 76px }
+.plp__foot {
+  margin-top: 88px; padding-top: 28px; border-top: 1px solid var(--rule);
+  display: flex; justify-content: space-between; align-items: center; gap: 40px;
+}
+.plp__foot .fine { margin: 0; max-width: 46ch }
+
+/* ---------- product detail -------------------------------------------- */
+
+.pdp { padding-top: 48px }
+.pdp__in { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 80px; align-items: start }
+.pdp__gallery { display: flex; flex-direction: column; gap: 20px }
+.pdp__side { position: sticky; top: 122px }
+.pdp__panel { display: flex; flex-direction: column; gap: 26px; max-width: 48ch }
+.pdp__panel .lead { font-size: 1rem }
+
+.crumb { display: flex; gap: 10px; font-size: .68rem; letter-spacing: .2em; text-transform: uppercase; color: var(--mute) }
+.crumb a:hover { color: var(--ink) }
+
+.pdp__price { margin: -14px 0 0; font-size: 1.2rem; color: var(--ink); font-variant-numeric: tabular-nums }
+.pdp__opt { display: flex; flex-direction: column; gap: 16px; padding-top: 24px; border-top: 1px solid var(--rule) }
+.pdp__optHead { display: flex; justify-content: space-between; align-items: baseline }
+.pdp__optVal { font-size: .88rem; color: var(--ink) }
+.pdp__buy { display: flex; flex-direction: column; gap: 12px }
+
+.spec { margin: 0; display: flex; flex-direction: column; border-top: 1px solid var(--rule) }
+.spec > div { display: grid; grid-template-columns: 124px minmax(0, 1fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid var(--rule) }
+.spec dt { font-size: .68rem; letter-spacing: .2em; text-transform: uppercase; color: var(--mute) }
+.spec dd { margin: 0; font-size: .9rem }
+.spec dd span { display: block }
+
+.note { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 20px 56px }
+.note .eyebrow { grid-column: 1; grid-row: 1 / span 2 }
+.note__body { grid-column: 2; margin: 0; font-size: 1.12rem; line-height: 1.75; max-width: 64ch }
+.note .fine { grid-column: 2; margin: 0 }
+
+/* ---------- spaces ---------------------------------------------------- */
+
+.spreads { display: flex; flex-direction: column; gap: 128px }
+.spread { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 80px; align-items: center }
+.spread--flip .img { order: 2 }
+.spread__t { display: flex; flex-direction: column; gap: 24px; align-items: flex-start }
+
+.sroom { position: relative }
+.sroom > .img { width: 100% }
+.sroom::after {
+  content: ""; position: absolute; inset: auto 0 0 0; height: 62%;
+  background: linear-gradient(180deg, rgba(23, 22, 20, 0), rgba(23, 22, 20, .64));
+  pointer-events: none;
+}
+.sroom__t { position: absolute; left: 0; right: 0; bottom: 52px; z-index: 2; display: flex; flex-direction: column; gap: 16px }
+.sroom__t .eyebrow { color: rgba(246, 244, 239, .78) }
+.sroom__t .disp { color: var(--paper) }
+
+.sroom__intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 72px; align-items: start }
+.sroom__intro .disp { max-width: 18ch }
+
+.srooms__next { display: flex; justify-content: space-between; align-items: flex-end; gap: 56px; padding-top: 36px; border-top: 1px solid var(--rule) }
+.srooms__links { display: flex; gap: 44px; margin-top: 18px }
+.srooms__links a { color: var(--ink); transition: color .25s var(--ease) }
+.srooms__links a:hover { color: var(--clay) }
+
+/* ---------- cart + checkout ------------------------------------------- */
+
+.cart { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); gap: 80px; align-items: start }
+.clines { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule) }
+.cline { display: grid; grid-template-columns: 104px minmax(0, 1fr) auto auto; gap: 36px; align-items: center; padding: 28px 0; border-bottom: 1px solid var(--rule) }
+.cline__t { display: flex; flex-direction: column; gap: 6px; align-items: flex-start }
+.cline__t .fine { margin: 0 }
+.cline__amt { min-width: 96px; text-align: right; font-size: 1rem; color: var(--ink); font-variant-numeric: tabular-nums }
+
+.sum { position: sticky; top: 122px; display: flex; flex-direction: column; gap: 20px; padding: 38px; background: var(--bone) }
+.sum__row { display: flex; justify-content: space-between; font-size: .92rem }
+.sum__total { padding-top: 18px; border-top: 1px solid var(--rule); font-size: 1.05rem; color: var(--ink) }
+.sum__total b { font-weight: 400; font-variant-numeric: tabular-nums }
+.sum__ship { display: flex; flex-direction: column; gap: 10px }
+.sum__ship label {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 2px 14px; align-items: center;
+  padding: 14px 16px; background: var(--paper); border: 1px solid var(--rule); cursor: pointer;
+  transition: border-color .25s var(--ease);
+}
+.sum__ship label.on { border-color: var(--ink) }
+.sum__ship input { grid-row: span 2; accent-color: var(--ink) }
+.sum__ship b { font-weight: 400; font-size: .88rem; color: var(--ink) }
+.sum__ship small { grid-column: 2; font-size: .74rem; color: var(--mute) }
+.sum__ship em { grid-row: span 2; font-style: normal; font-size: .86rem }
+.sum .fine { margin: 0 }
+
+.co { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 80px; align-items: start }
+.co__form { display: flex; flex-direction: column; gap: 52px; max-width: 620px }
+.co__form .fine { margin: 0 }
+.colines { list-style: none; margin: 0; padding: 0 0 22px; display: flex; flex-direction: column; gap: 18px; border-bottom: 1px solid var(--rule) }
+.colines li { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 16px; align-items: center }
+.colines .pname { font-size: .95rem }
+.colines .fine { margin: 2px 0 0 }
+.colines li > span { font-size: .9rem; font-variant-numeric: tabular-nums }
+
+.conf { padding: 64px 0 var(--sec) }
+.conf__in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); gap: 88px; align-items: start }
+.conf__t { display: flex; flex-direction: column; gap: 28px; align-items: flex-start }
+.conf__t .spec { width: 100% }
+
+/* ---------- room assistant -------------------------------------------- */
+
+.rooms { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px }
+.room { display: flex; flex-direction: column; gap: 18px; padding: 0; border: 0; background: none; text-align: left; cursor: pointer }
+.room .img { outline: 1px solid transparent; outline-offset: 7px; transition: outline-color .3s var(--ease) }
+.room:hover .img { outline-color: var(--rule) }
+.room.on .img { outline-color: var(--ink) }
+.room__t { display: flex; flex-direction: column; gap: 6px }
+.room__t .fine { margin: 0 }
+.rooms__hint { margin: 48px 0 0; max-width: 62ch }
+
+.read { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 80px; align-items: start }
+.read__t { display: flex; flex-direction: column; gap: 26px }
+.read__list { margin: 0; display: flex; flex-direction: column; border-top: 1px solid var(--rule) }
+.read__list > div { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--rule) }
+.read__list dt { font-size: .68rem; letter-spacing: .2em; text-transform: uppercase; color: var(--mute) }
+.read__list dd { margin: 0; font-size: .92rem }
+.read__note { margin: 0; font-family: var(--display); font-size: 1.32rem; line-height: 1.5; color: var(--ink); max-width: 40ch }
+
+.picks { align-items: stretch }
+.pick { display: flex; flex-direction: column; gap: 18px }
+.pick__t { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 16px; align-items: baseline }
+.pick__t .fine { grid-column: 1 / -1; margin: 8px 0 0 }
+.pick .btn { margin-top: auto }

@@ -1,12 +1,17 @@
-# Athera — project context
+# Aethera — project context
 
-Storefront for **Athera**, a made-to-order furniture brand: two categories
-(Seating, Tables), six pieces. Core flow: **piece → colour & size → checkout →
-confirmation**. React 18 + Vite + React Router. No backend, no photography.
+Desktop-only storefront for **Aethera**, a luxury furniture brand: thirteen
+pieces across four categories, three spaces, and a room assistant. React 18 +
+Vite + React Router. No backend.
 
-> The earlier COS-inspired editorial storefront ("Aethera", 18 products, white /
-> Inter / Unsplash photography) lives on the branch
-> `claude/aethera-website-design-vfcikd`. This branch replaced it.
+The IA comes from the user's own Figma wireframe (`Lofi-wireframe.pdf` in the
+root): nav → hero → room assistant → new arrivals → shop by space → browse
+categories → testimonials → crafted to last → philosophy → footer. Keep that
+order and those section names unless the user says otherwise.
+
+> Two earlier passes live on other branches: the COS-inspired editorial site on
+> `claude/aethera-website-design-vfcikd`, and the warm slide-deck build with
+> SVG-drawn furniture at commit `fe80dd1` on this branch. Both are superseded.
 
 ## Commands
 
@@ -17,70 +22,80 @@ npm run build    # → dist/
 npm run preview  # http://localhost:4173/athera/
 ```
 
-Base path is `/athera/` (GitHub Pages). `public/404.html` bounces deep links back
-through the router. `VITE_HASH_ROUTER=1` switches `src/main.jsx` to `HashRouter`.
+Base path is `/athera/` (GitHub Pages). `public/404.html` bounces deep links
+back through the router. `VITE_HASH_ROUTER=1` switches `src/main.jsx` to
+`HashRouter`.
 
 ## Design
 
-Modelled on a slide-deck reference: separate sharp-edged panels ("slides") on a
-tan ground, ivory and walnut panels, thin flared display capitals, small tracked
-labels. Warm and quiet; the furniture is the colour.
+Paper and ink: near-white grounds, hairline rules, one accent, and photography
+doing all the colour work. Luxury comes from typography, whitespace and
+composition — never from chips, badges, cards-within-cards or motion.
 
 | Token | Value | Use |
 | --- | --- | --- |
-| `--tan` | `#9C7F5F` | page ground, nav |
-| `--ivory` | `#EFEAE1` | light panels |
-| `--walnut` | `#241A14` | dark panels |
-| `--bone` | `#EADFCF` | type on dark |
-| `--ink` / `--muted` | `#221A14` / `#75685A` | type on ivory |
-| `--cognac` | `#A0602F` | focus, selected states, hover |
+| `--paper` | `#F6F4EF` | page ground |
+| `--bone` / `--linen` | `#EFEBE3` / `#E4DED3` | alternating sections, image placeholder |
+| `--ink` / `--graphite` | `#171614` / `#3B3833` | headings, body |
+| `--mute` | `#7C766C` | eyebrows, captions |
+| `--rule` | `#D9D2C6` | hairlines |
+| `--clay` | `#9C5B3C` | the single accent, used sparingly |
+| `--walnut` | `#241A14` | the one dark section (philosophy) |
 
-Type: **Italiana** (display, uppercase, `.disp`) + **Jost** (300/400 body,
-uppercase tracked `.label`). No Tailwind classes are used; `src/index.css` holds
-all styling (Tailwind is installed but its directives were removed).
+Type: **Italiana** (display, uppercase, `.disp` + `.d1/.d2/.d3`) and **Jost**
+(300/400 body, `.eyebrow` for tracked small caps). No Tailwind classes are
+used; Tailwind is installed but its directives were removed.
 
-## How the furniture works
+**Desktop only by intent.** `body { min-width: 1180px }` and there are no media
+queries. Design against a 1280–1680 canvas; do not add mobile breakpoints
+unless asked.
 
-There are no images. Every piece is drawn as SVG in front elevation
-(`src/lib/art.js`, one `DRAW[kind]` function each) and recoloured with CSS
-custom properties set from the chosen finish (`vars(p, fi)` → `--c --lo --hi
---leg`). Those are registered with `@property`, so a colour change animates.
+Stylesheets: `src/index.css` holds tokens, primitives (buttons, links, image,
+nav, footer, cards, forms) and the homepage; `src/pages.css` holds the other
+screens. Both are imported from `src/main.jsx`.
 
-- `Stage` = wall + floor + one `Piece`. The floor is bottom-anchored and sized
-  by `aspect-ratio` from `--ar`, so it lines up with the drawing at any height.
-- Size changes swap the drawing's geometry (`sizes[i].W`, `k`) and its dimension
-  line. Shared gradients/blur live in `Defs` (rendered once in `Layout`).
-- Gradients are shared, colour-independent overlays (`gV`, `gH`), never
-  per-piece `var()` gradients: duplicate ids in one document resolve to the first.
+## Photography
+
+Every photo is an Unsplash id in `src/data/catalogue.js`, rendered through
+`<Img/>` (`src/components/Img.jsx`), which reserves the aspect ratio, fades the
+photo in, and falls back to a tonal block so a layout never collapses. `img(id,
+w)` builds the CDN URL.
+
+The set was curated for one look — warm neutrals, daylight, no strong colour
+casts. When swapping a photo, check it in place: a single saturated image
+(orange lamplight, teal upholstery) breaks the whole page.
 
 ## Structure
 
 ```
 src/
-  data/catalogue.js   PRODUCTS (finishes with upcharge, sizes with price), CATS
-  lib/art.js          drawing functions, colour mixing, vars()
-  lib/format.js       money ($), SHIP options, eta()
-  lib/shop.jsx        cart + delivery choice + last order + toast (localStorage cart)
-  components/         Layout (nav, footer, toast, scroll), Stage (Stage, Piece, Defs)
-  pages/              Home, Product, Checkout, Done, NotFound
-  index.css           the whole stylesheet
+  data/catalogue.js   CATEGORIES, PRODUCTS, SPACES, MATERIALS, VOICES, ROOMS + lookups
+  lib/format.js       money ($), SHIP, eta(), dims(), cx()
+  lib/shop.jsx        cart, delivery choice, last order, toast (localStorage)
+  components/         Layout (nav, footer, toast, scroll), Img, ProductCard
+  pages/              Home, Shop, Product, Spaces, Space, Cart, Checkout, Done, Assistant, NotFound
+  index.css           tokens, primitives, homepage
+  pages.css           listing, detail, spaces, cart, checkout, assistant
 ```
 
-Routes: `/` (and `/?c=seating|tables|all` for the collection filter), `/p/:id`,
-`/checkout`, `/done`. To add a piece: add an entry to `PRODUCTS` and, if it is a
-new shape, a `DRAW` function keyed by its `kind`.
+Routes: `/`, `/shop` (`?c=seating|tables|storage|lighting`), `/p/:id`,
+`/spaces`, `/spaces/:id`, `/cart`, `/checkout`, `/done`, `/assistant`.
+
+To add a piece: add an entry to `PRODUCTS` with `cat`, `spaces`, three image
+ids and its finishes. Add `arrival: true` to put it in New Arrivals.
 
 ## Decisions and gotchas
 
-- **Prices are `$`**, placeholders. Total = size price + finish upcharge.
-- **Checkout is a prototype**: card fields are cosmetic, nothing is sent or
-  stored beyond the cart in `localStorage`. The page says so.
-- **Category links use `?c=`** (same route, no remount) and `ScrollManager` in
-  `Layout` smooth-scrolls to `#collection`.
-- **Contrast:** light finishes (bone, oat, travertine) are chosen to stay
-  readable on the greige `stage--pdp` wall; check any new finish there.
-- **Watch class collisions.** `.done` once styled both the confirmation slide
-  and the completed-step marker, so every finished step inherited
-  `min-height:520px`. The confirmation slide is `.conf` now; keep page-level and
-  state-level class names in separate namespaces.
-- `Lofi-wireframe.pdf` in the root is from the earlier COS/wireframe passes.
+- **Prices are `$`**, placeholders. One price per piece; finishes do not change it.
+- **Checkout is a prototype**: the card fields are cosmetic, nothing is sent,
+  and the page says so. The cart is the only thing persisted (`aethera.cart`).
+- **The Room Assistant uses three prepared rooms** (`ROOMS`) — no upload, no
+  model call, no key. Each room carries its reading (light, proportion,
+  palette), a note, and three picks with a written reason. It is meant to read
+  as editorial judgement, not as a dashboard.
+- **Cart and checkout are separate pages** (`/cart`, `/checkout`), as the
+  wireframe's nav implies.
+- The product gallery is the whole left column on `/p/:id`; the right column is
+  sticky (`top: 122px`, clearing the 86px nav).
+- `Lofi-wireframe.pdf` uses subsetted fonts, so its text does not copy out of a
+  PDF reader cleanly; the IA above is the decoded version of it.

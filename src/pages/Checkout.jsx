@@ -1,6 +1,6 @@
-import { Link, useNavigate } from 'react-router-dom'
-import Stage from '../components/Stage'
-import { byId, priceOf } from '../data/catalogue'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
+import Img from '../components/Img'
+import { byId } from '../data/catalogue'
 import { SHIP, eta, money } from '../lib/format'
 import { useShop } from '../lib/shop'
 
@@ -13,43 +13,11 @@ const Field = ({ id, label, ...rest }) => (
 
 const digits = (e, max) => e.target.value.replace(/\D/g, '').slice(0, max)
 
-function Line({ item, at }) {
-  const { setQty, remove } = useShop()
-  const p = byId(item.pid)
-  return (
-    <li className="line">
-      <Stage p={p} fi={item.fi} si={item.si} />
-      <div>
-        <h3>{p.name}</h3>
-        <p>{p.finishes[item.fi].n} · {p.sizes[item.si].l}</p>
-        <div className="qty">
-          <button type="button" aria-label={`Fewer ${p.name}`} onClick={() => setQty(at, item.q - 1)}>−</button>
-          <span aria-live="polite">{item.q}</span>
-          <button type="button" aria-label={`More ${p.name}`} onClick={() => setQty(at, item.q + 1)}>+</button>
-        </div>
-      </div>
-      <div className="amt">
-        <span>{money(priceOf(p, item.fi, item.si) * item.q)}</span>
-        <button type="button" className="link" onClick={() => remove(at)}>Remove</button>
-      </div>
-    </li>
-  )
-}
-
 export default function Checkout() {
-  const { cart, ship, setShip, subtotal, total, place } = useShop()
+  const { cart, ship, subtotal, total, place } = useShop()
   const navigate = useNavigate()
 
-  if (!cart.length) {
-    return (
-      <section className="slide empty">
-        <span className="label muted">Your cart</span>
-        <h1 className="disp">Nothing here yet</h1>
-        <p>Pick a piece, choose its colour and size, and it will wait for you here.</p>
-        <Link className="btn btn--solid arrow" to="/?c=all">See the collection</Link>
-      </section>
-    )
-  }
+  if (!cart.length) return <Navigate to="/cart" replace />
 
   const submit = e => {
     e.preventDefault()
@@ -59,66 +27,91 @@ export default function Checkout() {
   }
 
   return (
-    <>
-      <div className="trail" aria-label="Order steps">
-        <span className="done">Piece</span><i /><span className="done">Colour &amp; size</span><i /><span className="now">Checkout</span>
-      </div>
-      <section className="slide slide--dark co">
-        <div className="co__l">
-          <div>
-            <span className="label muted">Your order</span>
-            <h1 className="disp">Checkout</h1>
-          </div>
-          <ul className="lines">{cart.map((item, at) => <Line key={`${item.pid}-${item.fi}-${item.si}`} item={item} at={at} />)}</ul>
-          <div className="sums">
-            <div><span>Subtotal</span><span>{money(subtotal)}</span></div>
-            <div><span>{SHIP[ship].n}</span><span>{SHIP[ship].fee ? money(SHIP[ship].fee) : 'Free'}</span></div>
-            <div className="tot"><span>Total</span><b>{money(total)}</b></div>
-          </div>
+    <section className="sec">
+      <div className="wrap">
+        <div className="phead phead--short">
+          <ol className="trail" aria-label="Order steps">
+            <li className="done"><Link to="/cart">Cart</Link></li>
+            <li className="now">Details</li>
+            <li>Confirmation</li>
+          </ol>
+          <h1 className="disp d1">Checkout</h1>
         </div>
 
-        <form className="co__r" style={{ background: 'var(--ivory)', color: 'var(--ink)' }} onSubmit={submit}>
-          <fieldset>
-            <legend>Contact</legend>
-            <Field id="email" label="Email" type="email" placeholder="you@example.com" autoComplete="email" />
-          </fieldset>
-          <fieldset>
-            <legend>Delivery</legend>
-            <Field id="name" label="Full name" placeholder="Your name" autoComplete="name" />
-            <Field id="addr" label="Address" placeholder="Street and number" autoComplete="street-address" />
-            <div className="row">
-              <Field id="city" label="City" placeholder="City" autoComplete="address-level2" />
-              <Field id="zip" label="Postcode" placeholder="Postcode" autoComplete="postal-code" />
+        <div className="co">
+          <form className="co__form" onSubmit={submit}>
+            <fieldset>
+              <legend>Contact</legend>
+              <Field id="email" label="Email" type="email" placeholder="you@example.com" autoComplete="email" />
+            </fieldset>
+
+            <fieldset>
+              <legend>Delivery</legend>
+              <Field id="name" label="Full name" placeholder="Your name" autoComplete="name" />
+              <Field id="addr" label="Address" placeholder="Street and number" autoComplete="street-address" />
+              <div className="row">
+                <Field id="city" label="City" placeholder="City" autoComplete="address-level2" />
+                <Field id="zip" label="Postcode" placeholder="Postcode" autoComplete="postal-code" />
+              </div>
+              <div className="field">
+                <label htmlFor="country">Country</label>
+                <select id="country" name="country" autoComplete="country-name" defaultValue="United States">
+                  {['United States', 'United Kingdom', 'India', 'Canada', 'Australia', 'Germany'].map(c => (
+                    <option key={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Payment</legend>
+              <Field
+                id="card" label="Card number" placeholder="0000 0000 0000 0000"
+                inputMode="numeric" maxLength={19} autoComplete="cc-number"
+                onInput={e => { e.target.value = digits(e, 16).replace(/(.{4})/g, '$1 ').trim() }}
+              />
+              <div className="row">
+                <Field
+                  id="exp" label="Expiry" placeholder="MM / YY"
+                  inputMode="numeric" maxLength={7} autoComplete="cc-exp"
+                  onInput={e => { const d = digits(e, 4); e.target.value = d.length > 2 ? `${d.slice(0, 2)} / ${d.slice(2)}` : d }}
+                />
+                <Field id="cvc" label="CVC" placeholder="000" inputMode="numeric" maxLength={4} autoComplete="cc-csc" />
+              </div>
+              <p className="fine">Design prototype — nothing is charged, and nothing is stored.</p>
+            </fieldset>
+
+            <button className="btn btn--solid btn--block" type="submit">Place order · {money(total)}</button>
+          </form>
+
+          <aside className="sum">
+            <h2 className="eyebrow">Your order</h2>
+            <ul className="colines">
+              {cart.map(i => {
+                const p = byId(i.pid)
+                return (
+                  <li key={`${i.pid}-${i.fi}`}>
+                    <Img id={p.images[0]} alt={p.name} ratio="1 / 1" w={200} />
+                    <div>
+                      <h3 className="pname">{p.name}</h3>
+                      <p className="fine">{p.finishes[i.fi].label} · {i.q}</p>
+                    </div>
+                    <span>{money(p.price * i.q)}</span>
+                  </li>
+                )
+              })}
+            </ul>
+            <div className="sum__row"><span>Subtotal</span><span>{money(subtotal)}</span></div>
+            <div className="sum__row">
+              <span>{SHIP[ship].n}</span>
+              <span>{SHIP[ship].fee ? money(SHIP[ship].fee) : 'Free'}</span>
             </div>
-            <div className="field">
-              <label htmlFor="country">Country</label>
-              <select id="country" name="country" autoComplete="country-name" defaultValue="United States">
-                {['United States', 'United Kingdom', 'India', 'Canada', 'Australia', 'Germany'].map(c => <option key={c}>{c}</option>)}
-              </select>
-            </div>
-            <div className="ship" role="radiogroup" aria-label="Delivery method">
-              {Object.entries(SHIP).map(([k, s]) => (
-                <label key={k}>
-                  <input type="radio" name="ship" value={k} checked={ship === k} onChange={() => setShip(k)} />
-                  <b>{s.n}</b><small>Ready {eta(...s.w)}</small><em>{s.fee ? '+' + money(s.fee) : 'Free'}</em>
-                </label>
-              ))}
-            </div>
-          </fieldset>
-          <fieldset>
-            <legend>Payment</legend>
-            <Field id="card" label="Card number" placeholder="0000 0000 0000 0000" inputMode="numeric" maxLength={19} autoComplete="cc-number"
-              onInput={e => { e.target.value = digits(e, 16).replace(/(.{4})/g, '$1 ').trim() }} />
-            <div className="row">
-              <Field id="exp" label="Expiry" placeholder="MM / YY" inputMode="numeric" maxLength={7} autoComplete="cc-exp"
-                onInput={e => { const d = digits(e, 4); e.target.value = d.length > 2 ? `${d.slice(0, 2)} / ${d.slice(2)}` : d }} />
-              <Field id="cvc" label="CVC" placeholder="000" inputMode="numeric" maxLength={4} autoComplete="cc-csc" />
-            </div>
-            <p className="fine" style={{ textAlign: 'left' }}>Design prototype: nothing is charged and nothing is stored.</p>
-          </fieldset>
-          <button className="btn btn--solid btn--block" type="submit">Place order · {money(total)}</button>
-        </form>
-      </section>
-    </>
+            <div className="sum__row sum__total"><span>Total</span><b>{money(total)}</b></div>
+            <p className="fine">Ready {eta(...SHIP[ship].w)} · delivered assembled</p>
+            <Link className="linkbtn" to="/cart">Edit cart</Link>
+          </aside>
+        </div>
+      </div>
+    </section>
   )
 }

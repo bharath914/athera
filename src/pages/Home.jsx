@@ -1,102 +1,196 @@
-import { Link, useSearchParams } from 'react-router-dom'
-import Stage, { Piece } from '../components/Stage'
-import { CATS, PRODUCTS, byId, from } from '../data/catalogue'
-import { vars } from '../lib/art'
-import { money } from '../lib/format'
+import { Link } from 'react-router-dom'
+import Img from '../components/Img'
+import ProductCard from '../components/ProductCard'
+import { CATEGORIES, MATERIALS, SPACES, VOICES, arrivals } from '../data/catalogue'
 
-function Card({ p }) {
-  return (
-    <Link className="card" to={`/p/${p.id}`}>
-      <Stage p={p} />
-      <div className="card__meta">
-        <h3>{p.name}</h3>
-        <span className="p">From {money(from(p))}</span>
-        <span className="s">{p.sizes.length} sizes · {p.finishes.length} finishes</span>
-      </div>
-    </Link>
-  )
-}
+const STEPS = [
+  { n: '01', t: 'Choose a room', d: 'Start from one of three rooms we have photographed, measured and lit.' },
+  { n: '02', t: 'Read the room', d: 'Light, proportion and palette, noted the way a designer would note them.' },
+  { n: '03', t: 'See the pieces', d: 'Three pieces chosen for that room, with the reasoning kept in plain words.' },
+]
 
-function Collection({ filter, onFilter }) {
-  const list = PRODUCTS.filter(p => filter === 'all' || p.cat === filter)
-  const filters = [
-    { id: 'all', name: 'All pieces', n: PRODUCTS.length },
-    ...CATS.map(c => ({ ...c, n: PRODUCTS.filter(p => p.cat === c.id).length })),
-  ]
+function Head({ eyebrow, title, lead, to, cta = 'View all' }) {
   return (
-    <section className="slide slide--dark coll" id="collection">
-      <div className="rail">
-        <div className="cell">
-          <span className="label">Collection</span>
-          <ul className="filters">
-            {filters.map(f => (
-              <li key={f.id} className={f.id === filter ? 'on' : ''}>
-                <button type="button" aria-pressed={f.id === filter} onClick={() => onFilter(f.id)}>
-                  {f.name}<i>{f.n}</i>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="cell">
-          <p>Every piece is made to order. Pick a colour and a size on the next screen.</p>
-        </div>
+    <div className="head">
+      <div className="head__t">
+        <span className="eyebrow">{eyebrow}</span>
+        <h2 className="disp d2">{title}</h2>
+        {lead && <p className="lead">{lead}</p>}
       </div>
-      <div className="coll__main">
-        <div className="coll__head">
-          <h2 className="disp">The<br />collection</h2>
-          <p>Two kinds of furniture, six pieces in all. Fewer things, chosen carefully and built to last.</p>
-        </div>
-        <div className="grid">{list.map(p => <Card key={p.id} p={p} />)}</div>
-      </div>
-    </section>
+      {to && <Link className="tlink" to={to}>{cta}</Link>}
+    </div>
   )
 }
 
 export default function Home() {
-  const [params, setParams] = useSearchParams()
-  const c = params.get('c')
-  const filter = CATS.some(x => x.id === c) ? c : 'all'
-  const sera = byId('sera'), lorne = byId('lorne'), vale = byId('vale')
-
   return (
     <>
-      <section className="slide hero">
-        <div className="rail">
-          <div className="cell"><span className="label">Design<br />with<br />purpose</span></div>
-          <div className="cell"><p>Six pieces in two categories. Choose the colour and the size, and we build it to order.</p></div>
-          <div className="cell"><span className="label">Athera · 2025</span></div>
-        </div>
-        <Stage p={sera} fi={0} si={1} cx={650} vb={960} className="stage--dark">
-          <h1 className="disp">Fewer pieces,<br />made well.</h1>
-          <Link className="btn btn--bone cta arrow" to="/?c=all">Shop the collection</Link>
-          <div className="strip">
-            <div><b>Made to order</b><span>Built for you in four to six weeks.</span></div>
-            <div><b>Delivered &amp; assembled</b><span>Free, white-glove, placed in your room.</span></div>
-            <div><b>Ten-year frames</b><span>Every frame is guaranteed for a decade.</span></div>
+      {/* ---------- hero ---------- */}
+      <section className="hero">
+        <div className="wrap hero__in">
+          <div className="hero__t">
+            <span className="eyebrow">Aethera · Est. 2019</span>
+            <h1 className="disp d1">Design spaces<br />that feel quieter.</h1>
+            <p className="lead">
+              Furniture and interiors curated to bring warmth, balance and clarity into
+              everyday life. Thoughtfully designed for homes that value comfort over clutter.
+            </p>
+            <div className="hero__cta">
+              <Link className="btn btn--solid" to="/spaces">Explore spaces</Link>
+              <Link className="btn btn--quiet" to="/assistant">Design your room</Link>
+            </div>
           </div>
-        </Stage>
+          <Img
+            className="hero__img"
+            id="photo-1567016376408-0226e4d0c1ea"
+            alt="A quiet room in late morning light"
+            ratio="4 / 5"
+            priority
+          />
+        </div>
       </section>
 
-      <Collection filter={filter} onFilter={id => setParams({ c: id }, { replace: true })} />
-
-      <section className="slide mood">
-        <div className="mood__l">
-          <div><span className="label muted">Concept &amp; mood</span></div>
-          <div>
-            <h2 className="disp">Materials<br />&amp; mood</h2>
-            <p>We draw on natural textures, soft tones and timeless materials: leather that darkens with use, oak that is oiled rather than lacquered, stone honed by hand.</p>
+      {/* ---------- room assistant ---------- */}
+      <section className="sec sec--bone">
+        <div className="wrap">
+          <Head
+            eyebrow="Room assistant"
+            title="Design your space smarter"
+            lead="Tell us which room you are working with. We read its light, proportion and palette, then suggest the few pieces that belong in it."
+          />
+          <div className="ai">
+            <div className="ai__pair">
+              <figure>
+                <Img id="photo-1534094830444-3a1e21f7e3e7" alt="A room before" ratio="1 / 1" w={800} />
+                <figcaption className="eyebrow">Before</figcaption>
+              </figure>
+              <figure>
+                <Img id="photo-1772797583328-f83bc3f94f80" alt="The same room, furnished" ratio="1 / 1" w={800} />
+                <figcaption className="eyebrow">After</figcaption>
+              </figure>
+            </div>
+            <ol className="ai__steps">
+              {STEPS.map(s => (
+                <li key={s.n}>
+                  <span className="eyebrow">{s.n}</span>
+                  <h3 className="pname">{s.t}</h3>
+                  <p className="fine">{s.d}</p>
+                </li>
+              ))}
+              <li className="ai__go">
+                <Link className="btn btn--solid" to="/assistant">See how it works</Link>
+              </li>
+            </ol>
           </div>
         </div>
-        <div className="stage">
-          <div className="floor" />
-          <Piece p={lorne} si={0} cx={225} style={vars(lorne, 0)} />
-          <Piece p={vale} si={1} cx={470} style={vars(vale, 0)} />
+      </section>
+
+      {/* ---------- new arrivals ---------- */}
+      <section className="sec">
+        <div className="wrap">
+          <Head
+            eyebrow="New arrivals"
+            title="Recently curated"
+            lead="Pieces designed to bring warmth, comfort and timeless simplicity into your home."
+            to="/shop"
+          />
+          <div className="grid-4">
+            {arrivals().map(p => <ProductCard key={p.id} p={p} />)}
+          </div>
         </div>
-        <div className="mood__r">
-          <div className="chip chip--leather">Cognac leather</div>
-          <div className="chip chip--oak">Natural oak</div>
-          <div className="chip chip--stone">Travertine</div>
+      </section>
+
+      {/* ---------- shop by space ---------- */}
+      <section className="sec sec--tight">
+        <div className="wrap">
+          <Head
+            eyebrow="Shop by space"
+            title="Designed for every room"
+            lead="Explore furniture and layouts tailored to the way you live."
+            to="/spaces"
+          />
+          <div className="grid-3 spaces">
+            {SPACES.map(s => (
+              <Link className="scard" key={s.id} to={`/spaces/${s.id}`}>
+                <Img id={s.cover} alt={s.name} ratio="3 / 4" w={800} />
+                <div className="scard__t">
+                  <h3 className="disp d3">{s.name}</h3>
+                  <p className="fine">{s.tagline}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- categories ---------- */}
+      <section className="sec sec--tight">
+        <div className="wrap">
+          <Head
+            eyebrow="Browse categories"
+            title="For every corner"
+            lead="Thoughtfully curated collections for every corner of your home."
+            to="/shop"
+          />
+          <div className="grid-4 cats">
+            {CATEGORIES.map(c => (
+              <Link className="ccard" key={c.id} to={`/shop?c=${c.id}`}>
+                <Img id={c.image} alt={c.name} ratio="1 / 1" w={700} />
+                <h3 className="pname">{c.name}</h3>
+                <p className="fine">{c.items}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- voices ---------- */}
+      <section className="sec sec--bone">
+        <div className="wrap">
+          <Head eyebrow="Testimonials" title="Loved by thoughtful homeowners" />
+          <div className="grid-3 voices">
+            {VOICES.map(v => (
+              <figure key={v.name}>
+                <blockquote>{v.quote}</blockquote>
+                <figcaption className="eyebrow">{v.name} · {v.place}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- materials ---------- */}
+      <section className="sec">
+        <div className="wrap">
+          <Head
+            eyebrow="Crafted to last"
+            title="Materials, chosen once"
+            lead="Carefully selected materials and timeless construction, designed for everyday living."
+          />
+          <div className="grid-3 mats">
+            {MATERIALS.map(m => (
+              <article key={m.name}>
+                <Img id={m.image} alt={m.name} ratio="5 / 6" w={800} />
+                <h3 className="pname">{m.name}</h3>
+                <p className="fine">{m.note}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- philosophy ---------- */}
+      <section className="sec sec--dark">
+        <div className="wrap philo">
+          <span className="eyebrow">Brand philosophy</span>
+          <p className="disp d2">
+            We make fewer things, in smaller runs, for rooms that are meant to be lived in
+            rather than looked at.
+          </p>
+          <div className="hero__cta">
+            <Link className="btn" to="/spaces">Explore spaces</Link>
+            <Link className="btn" to="/assistant">Design your room</Link>
+          </div>
         </div>
       </section>
     </>

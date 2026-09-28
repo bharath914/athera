@@ -1,5 +1,5 @@
 import { Link, Navigate } from 'react-router-dom'
-import Stage from '../components/Stage'
+import Img from '../components/Img'
 import { byId } from '../data/catalogue'
 import { SHIP, eta, money } from '../lib/format'
 import { useShop } from '../lib/shop'
@@ -7,35 +7,50 @@ import { useShop } from '../lib/shop'
 export default function Done() {
   const { order: o } = useShop()
   if (!o) return <Navigate to="/" replace />
-  const lead = o.items[0]
-  const p = byId(lead.pid)
+
   const s = SHIP[o.ship]
+  const lead = byId(o.items[0].pid)
 
   return (
-    <section className="slide conf">
-      <div className="conf__l">
-        <div>
-          <span className="label muted">Order confirmed</span>
-          <h1 className="disp">Thank you,<br />{o.name.split(' ')[0] || 'friend'}</h1>
+    <section className="conf">
+      <div className="wrap conf__in">
+        <div className="conf__t">
+          <ol className="trail" aria-label="Order steps">
+            <li className="done">Cart</li>
+            <li className="done">Details</li>
+            <li className="now">Confirmation</li>
+          </ol>
+          <h1 className="disp d1">Thank you,<br />{o.name.split(' ')[0] || 'friend'}</h1>
+          <p className="lead">
+            Your order is with the workshop. We will write when it goes into production, and
+            again when it is ready to be delivered.
+          </p>
+
+          <dl className="spec">
+            <div><dt>Order</dt><dd>{o.no}</dd></div>
+            <div>
+              <dt>Pieces</dt>
+              <dd>
+                {o.items.map(i => {
+                  const p = byId(i.pid)
+                  return <span key={`${i.pid}-${i.fi}`}>{i.q} × {p.name}, {p.finishes[i.fi].label}</span>
+                })}
+              </dd>
+            </div>
+            <div><dt>Delivery</dt><dd>{s.n}</dd></div>
+            <div><dt>Ready</dt><dd>{eta(...s.w)}</dd></div>
+            <div><dt>Total</dt><dd>{money(o.total)}</dd></div>
+          </dl>
+
+          <p className="fine">Prototype — no email is sent and nothing was charged.</p>
+          <div className="hero__cta">
+            <Link className="btn btn--solid" to="/shop">Back to the furniture</Link>
+            <Link className="btn btn--quiet" to="/assistant">Design another room</Link>
+          </div>
         </div>
-        <dl>
-          <dt>Order</dt><dd>{o.no}</dd>
-          <dt>Items</dt>
-          <dd>
-            {o.items.map(i => {
-              const q = byId(i.pid)
-              return <span key={`${i.pid}-${i.fi}-${i.si}`} style={{ display: 'block' }}>{i.q} × {q.name}, {q.finishes[i.fi].n}, {q.sizes[i.si].l}</span>
-            })}
-          </dd>
-          <dt>Ready</dt><dd>{eta(...s.w)}</dd>
-          <dt>Total</dt><dd>{money(o.total)}</dd>
-        </dl>
-        <p className="muted" style={{ margin: 0, fontSize: '.8rem' }}>Prototype: no email is sent and nothing was charged.</p>
-        <div><Link className="btn btn--solid arrow" to="/?c=all">Back to the collection</Link></div>
+
+        <Img id={lead.images[0]} alt={lead.name} ratio="4 / 5" w={1000} priority />
       </div>
-      <Stage p={p} fi={lead.fi} si={lead.si} className="stage--pdp">
-        <span className="tag"><i />{p.finishes[lead.fi].n}</span>
-      </Stage>
     </section>
   )
 }
