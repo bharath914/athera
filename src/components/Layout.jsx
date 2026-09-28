@@ -1,7 +1,9 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
-import { SPACES } from '../data/catalogue'
+import CartDrawer from './CartDrawer'
+import { CATEGORIES, SPACES } from '../data/catalogue'
 import { cx } from '../lib/format'
+import { useReveals } from '../lib/motion'
 import { useShop } from '../lib/shop'
 
 const LINKS = [
@@ -10,10 +12,27 @@ const LINKS = [
   { to: '/assistant', label: 'Room Assistant' },
 ]
 
-function Nav() {
-  const { count } = useShop()
+/**
+ * Minimal navigation. It floats over the hero with no ground of its own, and
+ * settles onto paper as soon as the page moves — no blur, no glass.
+ */
+function Nav({ onMenu }) {
+  const { count, wish, account } = useShop()
+  const { pathname } = useLocation()
+  const [top, setTop] = useState(true)
+
+  useEffect(() => {
+    const onScroll = () => setTop(window.scrollY < 40)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  // only the landing page has a hero for the nav to float over
+  const float = top && pathname === '/'
+
   return (
-    <header className="nav">
+    <header className={cx('nav', float && 'nav--float')}>
       <div className="nav__in">
         <Link className="mark" to="/" aria-label="Aethera, home">Aethera</Link>
         <nav className="nav__links" aria-label="Main">
@@ -21,11 +40,63 @@ function Nav() {
             <NavLink key={l.to} to={l.to}>{l.label}</NavLink>
           ))}
         </nav>
-        <Link className="nav__cart" to="/cart">
-          Cart <span className="nav__n">{count}</span>
-        </Link>
+        <div className="nav__util">
+          <NavLink className="nav__u nav__u--acct" to="/account">
+            {account ? account.name?.split(' ')[0] || 'Account' : 'Sign in'}
+          </NavLink>
+          <NavLink className="nav__u nav__u--wish" to="/wishlist">
+            Saved <span className="nav__n">{wish.length}</span>
+          </NavLink>
+          <NavLink className="nav__u" to="/cart">
+            Cart <span className="nav__n">{count}</span>
+          </NavLink>
+          <button className="nav__menu nav__u" type="button" onClick={onMenu}>
+            Menu
+          </button>
+        </div>
       </div>
     </header>
+  )
+}
+
+/** The compact navigation: a full-screen editorial overlay, not a dropdown. */
+function Menu({ open, onClose }) {
+  const { count, wish, account } = useShop()
+
+  useEffect(() => {
+    if (!open) return
+    const onKey = e => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', onKey)
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prev
+    }
+  }, [open, onClose])
+
+  return (
+    <div className={cx('menu', open && 'on')} role="dialog" aria-modal="true" aria-label="Menu" aria-hidden={!open}>
+      <div className="menu__top">
+        <span className="mark">Aethera</span>
+        <button className="menu__x" type="button" onClick={onClose} aria-label="Close menu">&times;</button>
+      </div>
+      <nav className="menu__nav" aria-label="Main">
+        {LINKS.map(l => <Link key={l.to} to={l.to} onClick={onClose}>{l.label}</Link>)}
+      </nav>
+      <div className="menu__util">
+        <Link className="nav__u" to="/account" onClick={onClose}>
+          {account ? account.name?.split(' ')[0] || 'Account' : 'Sign in'}
+        </Link>
+        <Link className="nav__u" to="/wishlist" onClick={onClose}>
+          Saved <span className="nav__n">{wish.length}</span>
+        </Link>
+        <Link className="nav__u" to="/cart" onClick={onClose}>
+          Cart <span className="nav__n">{count}</span>
+        </Link>
+        <Link className="nav__u" to="/track" onClick={onClose}>Track an order</Link>
+      </div>
+    </div>
   )
 }
 
@@ -37,28 +108,31 @@ function Footer() {
           <div className="foot__brand">
             <span className="mark">Aethera</span>
             <p className="fine">
-              Furniture and interiors curated for calm, intentional living — made in small
-              runs, delivered assembled, and built to age rather than date.
+              Furniture made in small runs and delivered assembled, for rooms meant to be
+              lived in rather than looked at.
             </p>
           </div>
           <div>
-            <h4>Navigation</h4>
+            <h4>Shop</h4>
             <ul>
-              {LINKS.map(l => <li key={l.to}><Link to={l.to}>{l.label}</Link></li>)}
-              <li><Link to="/cart">Cart</Link></li>
+              {CATEGORIES.map(c => (
+                <li key={c.id}><Link to={`/shop?c=${c.id}`}>{c.short}</Link></li>
+              ))}
             </ul>
           </div>
           <div>
             <h4>Spaces</h4>
             <ul>
               {SPACES.map(s => <li key={s.id}><Link to={`/spaces/${s.id}`}>{s.name}</Link></li>)}
+              <li><Link to="/assistant">Room Assistant</Link></li>
             </ul>
           </div>
           <div>
-            <h4>Studio</h4>
+            <h4>Help</h4>
             <ul>
-              <li><span className="mute">Instagram</span></li>
-              <li><span className="mute">Pinterest</span></li>
+              <li><Link to="/track">Track an order</Link></li>
+              <li><Link to="/wishlist">Wishlist</Link></li>
+              <li><Link to="/account">Sign in</Link></li>
               <li><span className="mute">hello@aethera.studio</span></li>
             </ul>
           </div>
@@ -72,20 +146,6 @@ function Footer() {
   )
 }
 
-function Toast() {
-  const { toast } = useShop()
-  return (
-    <div className={cx('toast', toast && 'on')} role="status" aria-live="polite">
-      {toast && (
-        <>
-          <span>{toast.msg}</span>
-          <Link to={toast.to}>View cart</Link>
-        </>
-      )}
-    </div>
-  )
-}
-
 /** Every navigation starts at the top of the new page. */
 function ScrollTop() {
   const { pathname } = useLocation()
@@ -94,15 +154,23 @@ function ScrollTop() {
 }
 
 export default function Layout() {
+  const { pathname } = useLocation()
+  const [menu, setMenu] = useState(false)
+
+  useReveals()
+  useEffect(() => { setMenu(false) }, [pathname])
+
   return (
     <>
       <ScrollTop />
-      <Nav />
-      <main>
+      <Nav onMenu={() => setMenu(true)} />
+      <Menu open={menu} onClose={() => setMenu(false)} />
+      {/* the landing page's hero runs under the fixed nav; every other page clears it */}
+      <main key={pathname} data-home={pathname === '/' ? '' : undefined}>
         <Outlet />
       </main>
       <Footer />
-      <Toast />
+      <CartDrawer />
     </>
   )
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { img } from '../data/catalogue'
+import { img, imgAt } from '../data/catalogue'
 import { cx } from '../lib/format'
 
 /**
@@ -8,36 +8,55 @@ import { cx } from '../lib/format'
  * or collapses.
  *
  * `id` is an Unsplash photo id; pass `src` instead for anything else.
+ *
+ * Ratios come from the brief: 16:9 for the homepage hero, 4:5 for editorial,
+ * 3:4 for product cards, 1:1 and 4:5 in the product gallery. Where a crop has
+ * to change below 640px — the hero does — pass `ar` and `arSm` and the CDN
+ * returns two genuinely different crops rather than one crop letterboxed.
  */
 export default function Img({
   id,
   src,
   alt = '',
   ratio = '4 / 5',
+  ratioSm,
+  ar,
+  arSm,
   w = 1400,
+  wSm = 900,
   className = '',
   position = 'center',
   priority = false,
+  ...rest
 }) {
   const [state, setState] = useState('loading')
-  const url = src || img(id, w)
+  const url = src || (ar ? imgAt(id, w, ar) : img(id, w))
+
+  const common = {
+    alt,
+    loading: priority ? 'eager' : 'lazy',
+    decoding: 'async',
+    fetchpriority: priority ? 'high' : 'auto',
+    style: { objectPosition: position },
+    onLoad: () => setState('loaded'),
+    onError: () => setState('error'),
+  }
 
   return (
     <div
       className={cx('img', state === 'loaded' && 'img--on', className)}
-      style={ratio === 'auto' ? undefined : { aspectRatio: ratio }}
+      style={{ '--ar': ratio, '--ar-sm': ratioSm || ratio }}
+      {...rest}
     >
       {state !== 'error' && (
-        <img
-          src={url}
-          alt={alt}
-          loading={priority ? 'eager' : 'lazy'}
-          decoding="async"
-          fetchpriority={priority ? 'high' : 'auto'}
-          style={{ objectPosition: position }}
-          onLoad={() => setState('loaded')}
-          onError={() => setState('error')}
-        />
+        arSm && id ? (
+          <picture>
+            <source media="(max-width: 640px)" srcSet={imgAt(id, wSm, arSm)} />
+            <img src={url} {...common} />
+          </picture>
+        ) : (
+          <img src={url} {...common} />
+        )
       )}
       {state === 'error' && alt && <span className="img__fb">{alt}</span>}
     </div>

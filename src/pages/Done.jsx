@@ -1,6 +1,6 @@
 import { Link, Navigate } from 'react-router-dom'
 import Img from '../components/Img'
-import { byId } from '../data/catalogue'
+import { byId, cover } from '../data/catalogue'
 import { SHIP, eta, money } from '../lib/format'
 import { useShop } from '../lib/shop'
 
@@ -15,11 +15,7 @@ export default function Done() {
     <section className="conf">
       <div className="wrap conf__in">
         <div className="conf__t">
-          <ol className="trail" aria-label="Order steps">
-            <li className="done">Cart</li>
-            <li className="done">Details</li>
-            <li className="now">Confirmation</li>
-          </ol>
+          <span className="eyebrow">Order confirmed</span>
           <h1 className="disp d1">Thank you,<br />{o.name.split(' ')[0] || 'friend'}</h1>
           <p className="lead">
             Your order is with the workshop. We will write when it goes into production, and
@@ -42,14 +38,18 @@ export default function Done() {
             <div><dt>Total</dt><dd>{money(o.total)}</dd></div>
           </dl>
 
-          <p className="fine">Prototype — no email is sent and nothing was charged.</p>
+          <p className="fine">
+            Keep your order number — <b>{o.no}</b> — to follow the build. Prototype: no email is
+            sent and nothing was charged.
+          </p>
+
           <div className="hero__cta">
-            <Link className="btn btn--solid" to="/shop">Back to the furniture</Link>
-            <Link className="btn btn--quiet" to="/assistant">Design another room</Link>
+            <Link className="btn btn--solid" to={`/track?no=${o.no}`}>Track this order</Link>
+            <Link className="btn btn--quiet" to="/shop">Back to the furniture</Link>
           </div>
         </div>
 
-        <Img id={lead.images[0]} alt={lead.name} ratio="4 / 5" w={1000} priority />
+        <Img id={cover(lead)} alt={lead.name} ratio="4 / 5" w={1000} priority />
       </div>
     </section>
   )

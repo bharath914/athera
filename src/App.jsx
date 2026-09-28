@@ -1,4 +1,3 @@
-import { Routes, Route } from 'react-router-dom'
 import { ShopProvider } from './lib/shop'
 import Layout from './components/Layout'
 import Home from './pages/Home'
@@ -7,28 +6,48 @@ import Product from './pages/Product'
 import Spaces from './pages/Spaces'
 import Space from './pages/Space'
 import Assistant from './pages/Assistant'
+import Wishlist from './pages/Wishlist'
+import Account from './pages/Account'
 import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
 import Done from './pages/Done'
+import Track from './pages/Track'
 import NotFound from './pages/NotFound'
 
-export default function App() {
+/**
+ * Cart, wishlist and account state sit above the layout so they survive every
+ * navigation.
+ */
+function Root() {
   return (
     <ShopProvider>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/shop" element={<Shop />} />
-          <Route path="/p/:id" element={<Product />} />
-          <Route path="/spaces" element={<Spaces />} />
-          <Route path="/spaces/:id" element={<Space />} />
-          <Route path="/assistant" element={<Assistant />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/done" element={<Done />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
+      <Layout />
     </ShopProvider>
   )
 }
+
+/**
+ * A data router rather than <BrowserRouter>, because view transitions — the
+ * shared-image expansion when a piece opens — are only available through
+ * RouterProvider.
+ */
+export const routes = [
+  {
+    element: <Root />,
+    children: [
+      { path: '/', element: <Home /> },
+      { path: '/shop', element: <Shop /> },
+      { path: '/p/:id', element: <Product /> },
+      { path: '/spaces', element: <Spaces /> },
+      { path: '/spaces/:id', element: <Space /> },
+      { path: '/assistant', element: <Assistant /> },
+      { path: '/wishlist', element: <Wishlist /> },
+      { path: '/account', element: <Account /> },
+      { path: '/cart', element: <Cart /> },
+      { path: '/checkout', element: <Checkout /> },
+      { path: '/done', element: <Done /> },
+      { path: '/track', element: <Track /> },
+      { path: '*', element: <NotFound /> },
+    ],
+  },
+]

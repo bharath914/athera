@@ -1,32 +1,83 @@
 import { useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import Img from '../components/Img'
+import { Link, useParams, useViewTransitionState } from 'react-router-dom'
+import Gallery from '../components/Gallery'
 import ProductCard from '../components/ProductCard'
+import SaveButton from '../components/SaveButton'
 import NotFound from './NotFound'
 import { PRODUCTS, SPACES, byId, catById } from '../data/catalogue'
-import { dims, money } from '../lib/format'
+import { checkPostcode, dims, money } from '../lib/format'
 import { useShop } from '../lib/shop'
 
+/** '10–12 weeks' → 10; 'In stock' → 0. */
+const leadWeeks = lead => {
+  const n = String(lead).match(/\d+/)
+  return n ? Number(n[0]) : 0
+}
+
+/** Delivery and availability check — postcode in, service area and window out. */
+function Availability({ p }) {
+  const [code, setCode] = useState('')
+  const [result, setResult] = useState(null)
+  const [miss, setMiss] = useState(false)
+
+  const submit = e => {
+    e.preventDefault()
+    const r = checkPostcode(code, leadWeeks(p.lead))
+    setResult(r)
+    setMiss(!r)
+  }
+
+  return (
+    <div className="avail">
+      <div className="pdp__optHead">
+        <span className="eyebrow">Delivery and availability</span>
+        <span className="pdp__optVal">{p.stock}</span>
+      </div>
+      <form className="avail__f" onSubmit={submit}>
+        <div className="field">
+          <label htmlFor="zipcheck">Postcode</label>
+          <input
+            id="zipcheck"
+            name="zipcheck"
+            inputMode="numeric"
+            placeholder="e.g. 10012"
+            value={code}
+            onChange={e => { setCode(e.target.value); setResult(null); setMiss(false) }}
+          />
+        </div>
+        <button className="btn btn--quiet" type="submit">Check</button>
+      </form>
+      {result && (
+        <p className="fine" role="status">
+          {result.area} service area — delivered between {result.from} and {result.to}, assembled
+          and placed in the room of your choice.
+        </p>
+      )}
+      {miss && (
+        <p className="fine" role="status">Enter at least four digits to check your area.</p>
+      )}
+      {!result && !miss && (
+        <p className="fine">Lead time {p.lead}. White-glove delivery is included.</p>
+      )}
+    </div>
+  )
+}
+
 function Detail({ p }) {
+  const opening = useViewTransitionState(`/p/${p.id}`)
   const [fi, setFi] = useState(0)
-  const { add, notify } = useShop()
-  const navigate = useNavigate()
+  const { add } = useShop()
   const cat = catById(p.cat)
   const finish = p.finishes[fi]
   const related = PRODUCTS.filter(x => x.cat === p.cat && x.id !== p.id).slice(0, 3)
   const spaces = SPACES.filter(s => p.spaces.includes(s.id))
-
-  const addCart = () => { add(p.id, fi); notify(`${p.name} · ${finish.label} added`, '/cart') }
-  const buyNow = () => { add(p.id, fi); navigate('/cart') }
 
   return (
     <>
       <section className="pdp">
         <div className="wrap pdp__in">
           <div className="pdp__gallery">
-            {p.images.map((id, i) => (
-              <Img key={id} id={id} alt={`${p.name}, view ${i + 1}`} ratio={i === 0 ? '4 / 5' : '3 / 4'} priority={i === 0} />
-            ))}
+            <Gallery p={p} opening={opening} />
           </div>
 
           <div className="pdp__side">
@@ -34,12 +85,12 @@ function Detail({ p }) {
               <nav className="crumb" aria-label="Breadcrumb">
                 <Link to="/shop">Furniture</Link>
                 <span>/</span>
-                <Link to={`/shop?c=${cat.id}`}>{cat.name}</Link>
+                <Link to={`/shop?c=${cat.id}`}>{cat.short}</Link>
               </nav>
 
-              <h1 className="disp d2">{p.name}</h1>
+              <h1 className="ptitle">{p.name}</h1>
               <p className="pdp__price">{money(p.price)}</p>
-              <p className="lead">{p.excerpt}</p>
+              <p className="pdp__excerpt">{p.excerpt}</p>
 
               <div className="pdp__opt">
                 <div className="pdp__optHead">
@@ -63,40 +114,79 @@ function Detail({ p }) {
                 </div>
               </div>
 
-              <div className="pdp__buy">
-                <button className="btn btn--solid btn--block" type="button" onClick={addCart}>Add to cart</button>
-                <button className="btn btn--quiet btn--block" type="button" onClick={buyNow}>Buy now</button>
+              <div className="pdp__acts">
+                <button
+                  className="btn btn--solid btn--block"
+                  type="button"
+                  onClick={() => add(p.id, fi)}
+                >
+                  Add to cart
+                </button>
+                <SaveButton id={p.id} name={p.name} withLabel className="pdp__save" />
               </div>
 
+              <Availability p={p} />
+
               <dl className="spec">
-                <div><dt>Materials</dt><dd>{p.materials.join(', ')}</dd></div>
                 <div><dt>Dimensions</dt><dd>{dims(p.dim)}{p.dim.seat ? ` · seat ${p.dim.seat} cm` : ''}</dd></div>
+                <div><dt>Materials</dt><dd>{p.materials.join(', ')}</dd></div>
                 <div><dt>Designer</dt><dd>{p.designer}, {p.year}</dd></div>
-                <div><dt>Lead time</dt><dd>{p.lead}</dd></div>
-                <div><dt>Delivery</dt><dd>White-glove, assembled and placed</dd></div>
               </dl>
 
-              <p className="fine">Thirty-day returns · ten-year frame guarantee</p>
+              <details className="disc">
+                <summary>Care instructions</summary>
+                <p>{p.care}</p>
+              </details>
+
+              <details className="disc">
+                <summary>Delivery and returns</summary>
+                <p>
+                  White-glove delivery is included: the piece arrives assembled and is placed in
+                  the room you choose, with the packaging taken away. Thirty-day returns, and a
+                  ten-year guarantee on every frame.
+                </p>
+              </details>
+
+              <p className="fine">
+                Secure checkout · guest checkout available · no account required
+              </p>
             </div>
           </div>
+        </div>
+
+        {/* below the desktop canvas the panel scrolls away, so the one action
+            that matters follows the reader down the page */}
+        <div className="stickybuy">
+          <div className="stickybuy__t">
+            <span className="pname">{p.name}</span>
+            <span className="price">{money(p.price)} · {finish.label}</span>
+          </div>
+          <button className="btn btn--solid" type="button" onClick={() => add(p.id, fi)}>
+            Add to cart
+          </button>
         </div>
       </section>
 
       <section className="sec sec--tight sec--bone">
-        <div className="wrap note">
-          <span className="eyebrow">On this piece</span>
-          <p className="note__body">{p.description}</p>
-          {spaces.length > 0 && (
-            <p className="fine">
-              Shown in{' '}
-              {spaces.map((s, i) => (
-                <span key={s.id}>
-                  {i > 0 && ', '}
-                  <Link className="ulink" to={`/spaces/${s.id}`}>{s.name.toLowerCase()}</Link>
-                </span>
-              ))}.
-            </p>
-          )}
+        <div className="wrap story">
+          <div className="story__t">
+            <span className="eyebrow">Craftsmanship</span>
+            <h2 className="disp d3">How it is made</h2>
+          </div>
+          <div className="story__b">
+            <p>{p.description}</p>
+            {spaces.length > 0 && (
+              <p className="fine">
+                Shown in{' '}
+                {spaces.map((s, i) => (
+                  <span key={s.id}>
+                    {i > 0 && ', '}
+                    <Link className="ulink" to={`/spaces/${s.id}`}>{s.name.toLowerCase()}</Link>
+                  </span>
+                ))}.
+              </p>
+            )}
+          </div>
         </div>
       </section>
 
@@ -105,8 +195,8 @@ function Detail({ p }) {
           <div className="wrap">
             <div className="head">
               <div className="head__t">
-                <span className="eyebrow">More {cat.name.toLowerCase()}</span>
-                <h2 className="disp d2">Pieces that sit well together</h2>
+                <span className="eyebrow">Related pieces</span>
+                <h2 className="disp d2">More {cat.short.toLowerCase()}</h2>
               </div>
               <Link className="tlink" to={`/shop?c=${cat.id}`}>View all</Link>
             </div>

@@ -1,17 +1,17 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Img from '../components/Img'
-import { ROOMS, byId } from '../data/catalogue'
+import { ROOMS, byId, cover } from '../data/catalogue'
 import { cx, money } from '../lib/format'
 import { useShop } from '../lib/shop'
 
 function Pick({ pick }) {
   const p = byId(pick.id)
-  const { add, notify } = useShop()
+  const { add } = useShop()
   return (
     <article className="pick">
       <Link to={`/p/${p.id}`}>
-        <Img id={p.images[0]} alt={p.name} ratio="4 / 5" w={800} />
+        <Img id={cover(p)} alt={p.name} ratio="3 / 4" w={800} />
       </Link>
       <div className="pick__t">
         <h3 className="pname"><Link to={`/p/${p.id}`}>{p.name}</Link></h3>
@@ -21,7 +21,7 @@ function Pick({ pick }) {
       <button
         className="btn btn--quiet btn--block"
         type="button"
-        onClick={() => { add(p.id, 0); notify(`${p.name} added`, '/cart') }}
+        onClick={() => add(p.id, 0)}
       >
         Add to cart
       </button>
@@ -32,12 +32,9 @@ function Pick({ pick }) {
 export default function Assistant() {
   const [id, setId] = useState(null)
   const room = ROOMS.find(r => r.id === id) || null
-  const { add, notify } = useShop()
+  const { addMany } = useShop()
 
-  const addAll = () => {
-    room.picks.forEach(x => add(x.id, 0))
-    notify(`${room.picks.length} pieces added`, '/cart')
-  }
+  const addAll = () => addMany(room.picks.map(x => ({ pid: x.id, fi: 0 })))
 
   return (
     <>

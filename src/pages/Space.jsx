@@ -39,7 +39,7 @@ export default function Space() {
             <Link className="tlink" to="/shop">All furniture</Link>
           </div>
           <div className="grid-3">
-            {pieces.map(p => <ProductCard key={p.id} p={p} showCat />)}
+            {pieces.map(p => <ProductCard key={p.id} p={p} />)}
           </div>
         </div>
       </section>

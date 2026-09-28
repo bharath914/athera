@@ -1,198 +1,291 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Img from '../components/Img'
+import Newsletter from '../components/Newsletter'
 import ProductCard from '../components/ProductCard'
-import { CATEGORIES, MATERIALS, SPACES, VOICES, arrivals } from '../data/catalogue'
+import { CATEGORIES, CRAFT, EDITORIAL, PRODUCTS, SPACES, bestsellers } from '../data/catalogue'
+import { cx } from '../lib/format'
+import { useParallax } from '../lib/motion'
 
-const STEPS = [
-  { n: '01', t: 'Choose a room', d: 'Start from one of three rooms we have photographed, measured and lit.' },
-  { n: '02', t: 'Read the room', d: 'Light, proportion and palette, noted the way a designer would note them.' },
-  { n: '03', t: 'See the pieces', d: 'Three pieces chosen for that room, with the reasoning kept in plain words.' },
-]
+/**
+ * The landing page carries the brief's nine parts, in the visual concept's
+ * rhythm: no two consecutive sections share a shape. Full-screen visual ·
+ * editorial index · horizontal row · asymmetric composition · grid ·
+ * split-screen · texture band · spread · closing.
+ *
+ * Navigation and footer live in Layout.
+ */
 
-function Head({ eyebrow, title, lead, to, cta = 'View all' }) {
+/** One featured piece per category, so the row shows the range. */
+const featured = CATEGORIES
+  .map(c => PRODUCTS.find(p => p.cat === c.id && p.featured))
+  .filter(Boolean)
+
+/** Best-sellers the featured row has not already shown. */
+const shown = new Set(featured.map(p => p.id))
+const best = bestsellers().filter(p => !shown.has(p.id)).slice(0, 3)
+
+const lead = EDITORIAL[0]
+const ceramics = EDITORIAL.find(e => e.id === 'ceramics')
+
+function Head({ eyebrow, title, lead: text, to, cta = 'View all' }) {
   return (
     <div className="head">
       <div className="head__t">
-        <span className="eyebrow">{eyebrow}</span>
-        <h2 className="disp d2">{title}</h2>
-        {lead && <p className="lead">{lead}</p>}
+        <span className="eyebrow" data-reveal="">{eyebrow}</span>
+        <h2 className="disp d2" data-reveal="" data-delay="1">{title}</h2>
+        {text && <p className="lead" data-reveal="" data-delay="2">{text}</p>}
       </div>
-      {to && <Link className="tlink" to={to}>{cta}</Link>}
+      {to && <Link className="tlink" data-reveal="" data-delay="2" to={to}>{cta}</Link>}
+    </div>
+  )
+}
+
+/** Shop by category, as an index against one large frame rather than a grid. */
+function CategoryIndex() {
+  const [at, setAt] = useState(0)
+
+  return (
+    <div className="cindex">
+      <div className="cindex__stage cindex__frame" data-reveal="mask">
+        {CATEGORIES.map((c, i) => (
+          <Img
+            key={c.id}
+            id={c.image}
+            alt={c.name}
+            ratio="4 / 5"
+            w={1000}
+            priority={i === 0}
+            className={cx(i === at && 'on')}
+          />
+        ))}
+      </div>
+
+      <div>
+        <ul className="cindex__list">
+          {CATEGORIES.map((c, i) => (
+            <li key={c.id} data-reveal="" data-delay={Math.min(i, 5)}>
+              <Link
+                to={`/shop?c=${c.id}`}
+                onMouseEnter={() => setAt(i)}
+                onFocus={() => setAt(i)}
+              >
+                <span className="cindex__n">{String(i + 1).padStart(2, '0')}</span>
+                <h3 className="cindex__name">{c.short}</h3>
+                <span className="cindex__items">{c.items}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <div className="cindex__foot" data-reveal="">
+          <p className="fine">{PRODUCTS.length} pieces in all, made to order.</p>
+          <Link className="tlink" to="/shop">All furniture</Link>
+        </div>
+      </div>
     </div>
   )
 }
 
 export default function Home() {
+  const heroRef = useParallax(5)
+  const editRef = useParallax(4)
+  const [leadSpace, ...restSpaces] = SPACES
+
   return (
     <>
-      {/* ---------- hero ---------- */}
+      {/* ---------- 1 · hero — full-screen visual ---------- */}
       <section className="hero">
-        <div className="wrap hero__in">
-          <div className="hero__t">
-            <span className="eyebrow">Aethera · Est. 2019</span>
-            <h1 className="disp d1">Design spaces<br />that feel quieter.</h1>
-            <p className="lead">
-              Furniture and interiors curated to bring warmth, balance and clarity into
-              everyday life. Thoughtfully designed for homes that value comfort over clutter.
-            </p>
-            <div className="hero__cta">
-              <Link className="btn btn--solid" to="/spaces">Explore spaces</Link>
-              <Link className="btn btn--quiet" to="/assistant">Design your room</Link>
-            </div>
-          </div>
+        <div className="hero__media par" ref={heroRef}>
           <Img
-            className="hero__img"
-            id="photo-1567016376408-0226e4d0c1ea"
-            alt="A quiet room in late morning light"
-            ratio="4 / 5"
+            id="photo-1774477178005-bff823e43be8"
+            alt="Late afternoon light crossing a plastered wall and two low chairs"
+            ratio="16 / 9"
+            ratioSm="4 / 5"
+            ar="16:9"
+            arSm="4:5"
+            w={2200}
             priority
           />
         </div>
-      </section>
-
-      {/* ---------- room assistant ---------- */}
-      <section className="sec sec--bone">
         <div className="wrap">
-          <Head
-            eyebrow="Room assistant"
-            title="Design your space smarter"
-            lead="Tell us which room you are working with. We read its light, proportion and palette, then suggest the few pieces that belong in it."
-          />
-          <div className="ai">
-            <div className="ai__pair">
-              <figure>
-                <Img id="photo-1534094830444-3a1e21f7e3e7" alt="A room before" ratio="1 / 1" w={800} />
-                <figcaption className="eyebrow">Before</figcaption>
-              </figure>
-              <figure>
-                <Img id="photo-1772797583328-f83bc3f94f80" alt="The same room, furnished" ratio="1 / 1" w={800} />
-                <figcaption className="eyebrow">After</figcaption>
-              </figure>
+          <div className="hero__t">
+            <span className="eyebrow" data-reveal="">Furniture for calm, intentional living</span>
+            <h1 className="disp d1" data-reveal="" data-delay="1">Design spaces<br />that feel quieter.</h1>
+            <p className="lead" data-reveal="" data-delay="2">
+              Furniture made in small runs, for homes that value comfort over clutter.
+            </p>
+            <div className="hero__cta" data-reveal="" data-delay="3">
+              <Link className="btn btn--solid" to="/shop">Explore the collection</Link>
+              <Link className="btn btn--quiet" to="/assistant">Design your room</Link>
             </div>
-            <ol className="ai__steps">
-              {STEPS.map(s => (
-                <li key={s.n}>
-                  <span className="eyebrow">{s.n}</span>
-                  <h3 className="pname">{s.t}</h3>
-                  <p className="fine">{s.d}</p>
-                </li>
-              ))}
-              <li className="ai__go">
-                <Link className="btn btn--solid" to="/assistant">See how it works</Link>
-              </li>
-            </ol>
           </div>
         </div>
+        <span className="hero__scroll" aria-hidden="true">Scroll</span>
       </section>
 
-      {/* ---------- new arrivals ---------- */}
+      {/* ---------- 2 · shop by category — editorial index ---------- */}
       <section className="sec">
         <div className="wrap">
           <Head
-            eyebrow="New arrivals"
-            title="Recently curated"
-            lead="Pieces designed to bring warmth, comfort and timeless simplicity into your home."
-            to="/shop"
+            eyebrow="Shop by category"
+            title="Seven ways in"
+            lead="The whole collection, grouped the way a room is actually put together."
           />
-          <div className="grid-4">
-            {arrivals().map(p => <ProductCard key={p.id} p={p} />)}
+          <CategoryIndex />
+        </div>
+      </section>
+
+      {/* ---------- 3 · featured collection — horizontal row ---------- */}
+      <section className="sec sec--tight sec--bone">
+        <div className="wrap">
+          <Head
+            eyebrow="Featured collection"
+            title="One from each group"
+            lead="Seven pieces, one drawn from every part of the collection."
+            to="/shop"
+            cta="All furniture"
+          />
+          <div className="hrow">
+            {featured.map((p, i) => (
+              <ProductCard key={p.id} p={p} priority={i < 2} delay={Math.min(i, 3)} />
+            ))}
+          </div>
+          <p className="fine hrow__hint" data-reveal="">Scroll for more</p>
+        </div>
+      </section>
+
+      {/* ---------- 4 · lifestyle editorial — asymmetric composition ---------- */}
+      <section className="sec">
+        <div className="wrap g12 edit">
+          <div className="edit__lead par" ref={editRef} data-reveal="mask">
+            <Img id={lead.image} alt={lead.title} ratio="4 / 5" w={1400} />
+          </div>
+
+          <div className="edit__t">
+            <span className="eyebrow" data-reveal="">Editorial</span>
+            <h2 className="disp d2" data-reveal="" data-delay="1">{lead.title}</h2>
+            <p className="lead" data-reveal="" data-delay="2">
+              We photograph rooms at the hour they are least used — before the day starts, or
+              after it has gone quiet. Warm daylight, soft shadows, natural textures left
+              visible, and enough space around a piece to see what it is.
+            </p>
+            <Link className="tlink" data-reveal="" data-delay="3" to="/spaces">See the rooms</Link>
+          </div>
+
+          <div className="edit__detail" data-reveal="mask">
+            <Img id={ceramics.image} alt={ceramics.title} ratio="1 / 1" w={900} />
+          </div>
+
+          <div className="edit__cap" data-reveal="">
+            <p className="fine">{ceramics.title} — {ceramics.note}</p>
           </div>
         </div>
       </section>
 
-      {/* ---------- shop by space ---------- */}
+      {/* ---------- 5 · best-selling — grid ---------- */}
+      <section className="sec sec--tight sec--bone">
+        <div className="wrap">
+          <Head
+            eyebrow="Best-selling"
+            title="What people actually buy"
+            lead="The pieces that leave the workshop most often."
+            to="/shop"
+            cta="All furniture"
+          />
+          <div className="grid-3">
+            {best.map((p, i) => <ProductCard key={p.id} p={p} delay={Math.min(i, 3)} />)}
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- 6 · shop by space — split-screen ---------- */}
       <section className="sec sec--tight">
         <div className="wrap">
           <Head
             eyebrow="Shop by space"
             title="Designed for every room"
-            lead="Explore furniture and layouts tailored to the way you live."
+            lead="Three rooms, each a short list rather than a catalogue."
             to="/spaces"
+            cta="All spaces"
           />
-          <div className="grid-3 spaces">
-            {SPACES.map(s => (
-              <Link className="scard" key={s.id} to={`/spaces/${s.id}`}>
-                <Img id={s.cover} alt={s.name} ratio="3 / 4" w={800} />
-                <div className="scard__t">
-                  <h3 className="disp d3">{s.name}</h3>
-                  <p className="fine">{s.tagline}</p>
-                </div>
-              </Link>
-            ))}
+        </div>
+        <div className="split">
+          <Link className="split__pane split--lead" to={`/spaces/${leadSpace.id}`} data-reveal="mask">
+            <Img id={leadSpace.cover} alt={leadSpace.name} ratio="21 / 9" w={2000} />
+            <div className="split__t">
+              <h3 className="disp d3">{leadSpace.name}</h3>
+              <p className="fine">{leadSpace.tagline}</p>
+            </div>
+          </Link>
+          {restSpaces.map((s, i) => (
+            <Link className="split__pane" key={s.id} to={`/spaces/${s.id}`} data-reveal="mask" data-delay={i + 1}>
+              <Img id={s.cover} alt={s.name} ratio="4 / 5" w={1200} />
+              <div className="split__t">
+                <h3 className="disp d3">{s.name}</h3>
+                <p className="fine">{s.tagline}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* ---------- 7 · a cropped texture band ---------- */}
+      <section className="band" data-reveal="mask">
+        <Img id={CRAFT[0].image} alt="" ratio="32 / 9" w={2000} position="center 60%" />
+        <div className="band__t">
+          <div className="wrap">
+            <p>Quarter-sawn, oiled, and left to settle with use.</p>
           </div>
         </div>
       </section>
 
-      {/* ---------- categories ---------- */}
+      {/* ---------- 8 · craftsmanship ---------- */}
       <section className="sec sec--tight">
-        <div className="wrap">
-          <Head
-            eyebrow="Browse categories"
-            title="For every corner"
-            lead="Thoughtfully curated collections for every corner of your home."
-            to="/shop"
+        <div className="wrap craft">
+          <Img
+            id={CRAFT[6].image}
+            alt={CRAFT[6].name}
+            ratio="4 / 5"
+            w={1100}
+            className="craft__img"
+            data-reveal="mask"
           />
-          <div className="grid-4 cats">
-            {CATEGORIES.map(c => (
-              <Link className="ccard" key={c.id} to={`/shop?c=${c.id}`}>
-                <Img id={c.image} alt={c.name} ratio="1 / 1" w={700} />
-                <h3 className="pname">{c.name}</h3>
-                <p className="fine">{c.items}</p>
-              </Link>
-            ))}
+          <div className="craft__t">
+            <span className="eyebrow" data-reveal="">Craftsmanship</span>
+            <h2 className="disp d2" data-reveal="" data-delay="1">Close enough<br />to see the work</h2>
+            <p className="lead" data-reveal="" data-delay="2">
+              Every piece is made to order in a small workshop. Timber is oiled rather than
+              lacquered, cloth is washed before it is cut, and stone is honed by hand — so the
+              surfaces settle with use instead of wearing out.
+            </p>
+            <dl className="craft__list" data-reveal="" data-delay="3">
+              {CRAFT.map(c => (
+                <div key={c.name}>
+                  <Img id={c.image} alt="" ratio="1 / 1" w={160} className="craft__thumb" />
+                  <dt>{c.name}</dt>
+                  <dd>{c.note}</dd>
+                </div>
+              ))}
+            </dl>
+            <Link className="tlink" data-reveal="" to="/shop">See the pieces</Link>
           </div>
         </div>
       </section>
 
-      {/* ---------- voices ---------- */}
-      <section className="sec sec--bone">
-        <div className="wrap">
-          <Head eyebrow="Testimonials" title="Loved by thoughtful homeowners" />
-          <div className="grid-3 voices">
-            {VOICES.map(v => (
-              <figure key={v.name}>
-                <blockquote>{v.quote}</blockquote>
-                <figcaption className="eyebrow">{v.name} · {v.place}</figcaption>
-              </figure>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- materials ---------- */}
-      <section className="sec">
-        <div className="wrap">
-          <Head
-            eyebrow="Crafted to last"
-            title="Materials, chosen once"
-            lead="Carefully selected materials and timeless construction, designed for everyday living."
-          />
-          <div className="grid-3 mats">
-            {MATERIALS.map(m => (
-              <article key={m.name}>
-                <Img id={m.image} alt={m.name} ratio="5 / 6" w={800} />
-                <h3 className="pname">{m.name}</h3>
-                <p className="fine">{m.note}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- philosophy ---------- */}
-      <section className="sec sec--dark">
-        <div className="wrap philo">
-          <span className="eyebrow">Brand philosophy</span>
-          <p className="disp d2">
-            We make fewer things, in smaller runs, for rooms that are meant to be lived in
-            rather than looked at.
+      {/* ---------- 9 · brand philosophy ---------- */}
+      <section className="sec sec--tight sec--dark">
+        <div className="wrap statement">
+          <span className="eyebrow" data-reveal="">Our philosophy</span>
+          <p className="disp" data-reveal="" data-delay="1">
+            We make fewer things, in smaller runs, for rooms meant to be lived in rather than
+            looked at.
           </p>
-          <div className="hero__cta">
-            <Link className="btn" to="/spaces">Explore spaces</Link>
-            <Link className="btn" to="/assistant">Design your room</Link>
-          </div>
+          <Link className="tlink" data-reveal="" data-delay="2" to="/shop">Explore the collection</Link>
         </div>
       </section>
+
+      {/* ---------- 10 · newsletter ---------- */}
+      <Newsletter />
     </>
   )
 }
