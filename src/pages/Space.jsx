@@ -54,7 +54,6 @@ export default function Space() {
               ))}
             </div>
           </div>
-          <Link className="btn btn--quiet" to="/assistant">Design your room</Link>
         </div>
       </section>
     </>

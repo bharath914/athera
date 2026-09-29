@@ -9,7 +9,6 @@ import { useShop } from '../lib/shop'
 const LINKS = [
   { to: '/shop', label: 'Furniture' },
   { to: '/spaces', label: 'Spaces' },
-  { to: '/assistant', label: 'Room Assistant' },
 ]
 
 /**
@@ -124,7 +123,6 @@ function Footer() {
             <h4>Spaces</h4>
             <ul>
               {SPACES.map(s => <li key={s.id}><Link to={`/spaces/${s.id}`}>{s.name}</Link></li>)}
-              <li><Link to="/assistant">Room Assistant</Link></li>
             </ul>
           </div>
           <div>

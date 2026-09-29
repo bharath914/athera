@@ -5,7 +5,6 @@ import Shop from './pages/Shop'
 import Product from './pages/Product'
 import Spaces from './pages/Spaces'
 import Space from './pages/Space'
-import Assistant from './pages/Assistant'
 import Wishlist from './pages/Wishlist'
 import Account from './pages/Account'
 import Cart from './pages/Cart'
@@ -40,7 +39,6 @@ export const routes = [
       { path: '/p/:id', element: <Product /> },
       { path: '/spaces', element: <Spaces /> },
       { path: '/spaces/:id', element: <Space /> },
-      { path: '/assistant', element: <Assistant /> },
       { path: '/wishlist', element: <Wishlist /> },
       { path: '/account', element: <Account /> },
       { path: '/cart', element: <Cart /> },

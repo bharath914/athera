@@ -222,7 +222,7 @@ export default function Shop() {
               <p className="fine">
                 Every piece is made to order in a small workshop. Lead times are shown on each piece.
               </p>
-              <Link className="tlink" to="/assistant">Not sure where to start? Use the room assistant</Link>
+              <Link className="tlink" to="/spaces">Not sure where to start? Shop by space</Link>
             </div>
           </div>
         </div>

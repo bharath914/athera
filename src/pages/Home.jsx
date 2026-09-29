@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Img from '../components/Img'
+import { useCategoryVariant } from '../components/CategoryVariants'
 import Newsletter from '../components/Newsletter'
 import ProductCard from '../components/ProductCard'
 import { CATEGORIES, CRAFT, EDITORIAL, PRODUCTS, SPACES, bestsellers } from '../data/catalogue'
@@ -90,6 +91,7 @@ export default function Home() {
   const heroRef = useParallax(5)
   const editRef = useParallax(4)
   const [leadSpace, ...restSpaces] = SPACES
+  const [variant, switcher] = useCategoryVariant()
 
   return (
     <>
@@ -116,7 +118,7 @@ export default function Home() {
             </p>
             <div className="hero__cta" data-reveal="" data-delay="3">
               <Link className="btn btn--solid" to="/shop">Explore the collection</Link>
-              <Link className="btn btn--quiet" to="/assistant">Design your room</Link>
+              <Link className="btn btn--quiet" to="/spaces">Shop by space</Link>
             </div>
           </div>
         </div>
@@ -131,7 +133,8 @@ export default function Home() {
             title="Seven ways in"
             lead="The whole collection, grouped the way a room is actually put together."
           />
-          <CategoryIndex />
+          {switcher}
+          {variant.node || <CategoryIndex />}
         </div>
       </section>
 
