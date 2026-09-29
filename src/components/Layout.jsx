@@ -144,10 +144,15 @@ function Footer() {
   )
 }
 
-/** Every navigation starts at the top of the new page. */
+/** Every navigation starts at the top of the new page — or at its #anchor, once the page has laid out. */
 function ScrollTop() {
-  const { pathname } = useLocation()
-  useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }) }, [pathname])
+  const { pathname, hash } = useLocation()
+  useEffect(() => {
+    if (!hash) { window.scrollTo({ top: 0, behavior: 'instant' }); return }
+    const go = () => document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: 'instant', block: 'start' })
+    const ts = [60, 500, 1400].map(ms => setTimeout(go, ms))
+    return () => ts.forEach(clearTimeout)
+  }, [pathname, hash])
   return null
 }
 

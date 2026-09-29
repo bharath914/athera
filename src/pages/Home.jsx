@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Img from '../components/Img'
 import CategoryCarousel from '../components/CategoryCarousel'
+import FeaturedCollection, { collectionIds } from '../components/FeaturedCollection'
 import Newsletter from '../components/Newsletter'
 import ProductCard from '../components/ProductCard'
 import { CATEGORIES, CRAFT, EDITORIAL, PRODUCTS, SPACES, bestsellers } from '../data/catalogue'
@@ -17,13 +18,8 @@ import { useParallax } from '../lib/motion'
  * Navigation and footer live in Layout.
  */
 
-/** One featured piece per category, so the row shows the range. */
-const featured = CATEGORIES
-  .map(c => PRODUCTS.find(p => p.cat === c.id && p.featured))
-  .filter(Boolean)
-
-/** Best-sellers the featured row has not already shown. */
-const shown = new Set(featured.map(p => p.id))
+/** Best-sellers the featured collection has not already shown. */
+const shown = new Set(collectionIds('b'))
 const best = bestsellers().filter(p => !shown.has(p.id)).slice(0, 3)
 
 const lead = EDITORIAL[0]
@@ -138,22 +134,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---------- 3 · featured collection — horizontal row ---------- */}
-      <section className="sec sec--tight sec--bone">
+      {/* ---------- 3 · featured collection — one story, a few pieces ---------- */}
+      <section className="sec sec--bone sec--fit" id="featured">
         <div className="wrap">
-          <Head
-            eyebrow="Featured collection"
-            title="One from each group"
-            lead="Seven pieces, one drawn from every part of the collection."
-            to="/shop"
-            cta="All furniture"
-          />
-          <div className="hrow">
-            {featured.map((p, i) => (
-              <ProductCard key={p.id} p={p} priority={i < 2} delay={Math.min(i, 3)} />
-            ))}
-          </div>
-          <p className="fine hrow__hint" data-reveal="">Scroll for more</p>
+          <FeaturedCollection variant="b" />
         </div>
       </section>
 
