@@ -1,6 +1,6 @@
 # Aethera — project context
 
-Desktop-only storefront for **Aethera**, a luxury furniture brand: eighteen
+Desktop-only storefront for **Aethera**, a luxury furniture brand: seventy-three
 pieces across seven categories, three spaces, and a room assistant. React 18 +
 Vite + React Router. No backend.
 
@@ -224,13 +224,13 @@ Seven categories, named as the brief names them:
 
 | id | Name | Pieces |
 | --- | --- | --- |
-| `sofas` | Sofas and lounge chairs | 4 |
-| `tables` | Coffee and side tables | 2 |
-| `dining` | Dining tables and chairs | 3 (the writing desk lives here) |
-| `beds` | Beds and bedside tables | 2 |
-| `storage` | Shelves and storage cabinets | 2 |
-| `lighting` | Floor and table lamps | 2 |
-| `objects` | Rugs, cushions and ceramic objects | 3 |
+| `sofas` | Sofas and lounge chairs | 10 |
+| `tables` | Coffee and side tables | 10 |
+| `dining` | Dining tables and chairs | 10 (the writing desk lives here) |
+| `beds` | Beds and bedside tables | 10 |
+| `storage` | Shelves and storage cabinets | 10 |
+| `lighting` | Floor and table lamps | 11 |
+| `objects` | Rugs, cushions and ceramic objects | 12 |
 
 To add a piece: add an entry to `PRODUCTS` with `cat`, `spaces`, `size`
 (`small`/`medium`/`large`, which drives the size filter), `care`, `stock`, its
