@@ -21,21 +21,21 @@
   --beige: #E4DED3;
   --taupe: #7C766C;
   --sage: #7E8A73;
-  --walnut: #241A14;
-  --charcoal: #2B2A27;
+  --walnut: #2A1B14;
+  --charcoal: #2E1E16;
 
   /* the names the layout uses */
-  --paper: var(--warm-white);
-  --bone: var(--sand);
-  --linen: var(--beige);
-  --mute: var(--taupe);
+  --paper: #EFE8DB;
+  --bone: #E6DDCC;
+  --linen: #DDD2BE;
+  --mute: #6B5A4D;
 
   /* ink — charcoal, never pure black */
   --ink: var(--charcoal);
-  --graphite: #4A463E;
+  --graphite: #4A382D;
 
   /* line + accent */
-  --rule: #D9D2C6;
+  --rule: #D3C9B6;
   --rule-d: rgba(246, 244, 239, .18);
   --accent: var(--sage);
 

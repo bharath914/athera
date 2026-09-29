@@ -108,7 +108,7 @@ export const VARIANTS = [
 /** Reads ?cv= and returns [variant, switcher]. */
 export function useCategoryVariant() {
   const [sp, setSp] = useSearchParams()
-  const id = sp.get('cv') || 'index'
+  const id = 'mosaic'
   const v = VARIANTS.find(x => x.id === id) || VARIANTS[0]
   const switcher = (
     <div className="cvsw" role="tablist" aria-label="Category layout variation">

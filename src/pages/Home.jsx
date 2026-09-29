@@ -91,7 +91,7 @@ export default function Home() {
   const heroRef = useParallax(5)
   const editRef = useParallax(4)
   const [leadSpace, ...restSpaces] = SPACES
-  const [variant, switcher] = useCategoryVariant()
+  const [variant] = useCategoryVariant()
 
   return (
     <>
@@ -133,7 +133,6 @@ export default function Home() {
             title="Seven ways in"
             lead="The whole collection, grouped the way a room is actually put together."
           />
-          {switcher}
           {variant.node || <CategoryIndex />}
         </div>
       </section>
