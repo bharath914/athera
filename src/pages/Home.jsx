@@ -131,7 +131,7 @@ export default function Home() {
             eyebrow="Shop by category"
             title="Seven ways in"
             lead="The whole collection, grouped the way a room is actually put together."
-            to="/shop"
+            to="/categories"
             cta="View all  ›"
           />
           <CategoryCarousel variant="a" />

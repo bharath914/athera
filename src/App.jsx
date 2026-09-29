@@ -3,6 +3,7 @@ import Layout from './components/Layout'
 import Home from './pages/Home'
 import Shop from './pages/Shop'
 import Product from './pages/Product'
+import Categories from './pages/Categories'
 import Spaces from './pages/Spaces'
 import Space from './pages/Space'
 import Wishlist from './pages/Wishlist'
@@ -37,6 +38,7 @@ export const routes = [
       { path: '/', element: <Home /> },
       { path: '/shop', element: <Shop /> },
       { path: '/p/:id', element: <Product /> },
+      { path: '/categories', element: <Categories /> },
       { path: '/spaces', element: <Spaces /> },
       { path: '/spaces/:id', element: <Space /> },
       { path: '/wishlist', element: <Wishlist /> },
