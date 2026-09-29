@@ -773,3 +773,31 @@ legend { padding: 0 0 4px; font-size: .68rem; letter-spacing: .26em; text-transf
   .cpan__p, .cpan__p.on { flex: none; height: 120px }
   .cpan__p.on { height: 320px }
 }
+
+/* ---------- shop by category · slow carousel ---------- */
+.cc { --cc-move: 2400ms; --cc-gap: 24px }
+.cc__view { overflow: hidden }
+.cc__track { display: flex; transition: transform var(--cc-move) cubic-bezier(.45, 0, .2, 1) }
+.cc__s { flex: 0 0 30%; min-width: 0; padding-right: var(--cc-gap); display: flex; flex-direction: column; transition: flex-basis var(--cc-move) cubic-bezier(.45, 0, .2, 1) }
+.cc__s.on { flex-basis: 70% }
+.cc--snap .cc__track, .cc--snap .cc__s { transition: none !important }
+.cc__frame { position: relative; display: block; overflow: hidden; height: clamp(420px, 44vw, 620px) }
+.cc__frame .img { position: absolute; inset: 0; height: 100%; aspect-ratio: auto }
+.cc__cap { display: flex; flex-direction: column; gap: 6px; padding-top: 18px }
+.cc__name { font-family: var(--display); font-size: clamp(1.2rem, 1.7vw, 1.6rem); text-transform: uppercase; letter-spacing: .02em; line-height: 1.1; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.cc__items { font-size: .76rem; color: var(--mute); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+
+/* B · taller frames */
+.cc--b .cc__frame { height: clamp(460px, 48vw, 680px) }
+
+/* C · the lead is at full strength, the rest recede; a counter and a slow bar underneath */
+.cc--c .cc__s .cc__frame, .cc--c .cc__s .cc__cap { opacity: .55; transition: opacity var(--cc-move) ease }
+.cc--c .cc__s.on .cc__frame, .cc--c .cc__s.on .cc__cap { opacity: 1 }
+@media (max-width: 980px) {
+  .cc { --cc-gap: 14px }
+  .cc__frame, .cc--b .cc__frame { height: 380px }
+  .cc__s { flex-basis: 30% } .cc__s.on { flex-basis: 70% }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cc__track, .cc__s { transition: none }
+}

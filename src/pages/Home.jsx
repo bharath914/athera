@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Img from '../components/Img'
-import { useCategoryVariant } from '../components/CategoryVariants'
+import CategoryCarousel from '../components/CategoryCarousel'
 import Newsletter from '../components/Newsletter'
 import ProductCard from '../components/ProductCard'
 import { CATEGORIES, CRAFT, EDITORIAL, PRODUCTS, SPACES, bestsellers } from '../data/catalogue'
@@ -91,7 +91,6 @@ export default function Home() {
   const heroRef = useParallax(5)
   const editRef = useParallax(4)
   const [leadSpace, ...restSpaces] = SPACES
-  const [variant] = useCategoryVariant()
 
   return (
     <>
@@ -132,8 +131,10 @@ export default function Home() {
             eyebrow="Shop by category"
             title="Seven ways in"
             lead="The whole collection, grouped the way a room is actually put together."
+            to="/shop"
+            cta="View all  ›"
           />
-          {variant.node || <CategoryIndex />}
+          <CategoryCarousel variant="a" />
         </div>
       </section>
 
