@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import Img from '../components/Img'
 import CategoryCarousel from '../components/CategoryCarousel'
 import FeaturedCollection, { collectionIds } from '../components/FeaturedCollection'
+import LifestyleEditorial from '../components/LifestyleEditorial'
 import Newsletter from '../components/Newsletter'
 import ProductCard from '../components/ProductCard'
 import { CATEGORIES, CRAFT, EDITORIAL, PRODUCTS, SPACES, bestsellers } from '../data/catalogue'
@@ -84,7 +85,6 @@ function CategoryIndex() {
 }
 
 export default function Home() {
-  const editRef = useParallax(4)
   const [leadSpace, ...restSpaces] = SPACES
 
   return (
@@ -137,32 +137,7 @@ export default function Home() {
       </section>
 
       {/* ---------- 4 · lifestyle editorial — asymmetric composition ---------- */}
-      <section className="sec">
-        <div className="wrap g12 edit">
-          <div className="edit__lead par" ref={editRef} data-reveal="mask">
-            <Img id={lead.image} alt={lead.title} ratio="4 / 5" w={1400} />
-          </div>
-
-          <div className="edit__t">
-            <span className="eyebrow" data-reveal="">Editorial</span>
-            <h2 className="disp d2" data-reveal="" data-delay="1">{lead.title}</h2>
-            <p className="lead" data-reveal="" data-delay="2">
-              We photograph rooms at the hour they are least used — before the day starts, or
-              after it has gone quiet. Warm daylight, soft shadows, natural textures left
-              visible, and enough space around a piece to see what it is.
-            </p>
-            <Link className="tlink" data-reveal="" data-delay="3" to="/spaces">See the rooms</Link>
-          </div>
-
-          <div className="edit__detail" data-reveal="mask">
-            <Img id={ceramics.image} alt={ceramics.title} ratio="1 / 1" w={900} />
-          </div>
-
-          <div className="edit__cap" data-reveal="">
-            <p className="fine">{ceramics.title} — {ceramics.note}</p>
-          </div>
-        </div>
-      </section>
+      <LifestyleEditorial variant="c" />
 
       {/* ---------- 5 · best-selling — grid ---------- */}
       <section className="sec sec--tight sec--bone" id="bestselling">

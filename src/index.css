@@ -827,3 +827,53 @@ html { scroll-snap-type: y proximity }
 @keyframes hero-settle { from { transform: scale(1.16) } to { transform: scale(1) } }
 .hero__media .img img { transform-origin: 50% 62%; animation: hero-settle 14s cubic-bezier(.16, .6, .2, 1) both }
 @media (prefers-reduced-motion: reduce) { .hero__media .img img { animation: none } }
+
+/* ---------- lifestyle editorial: cinematic, full-bleed, one line in the negative space ---------- */
+:root { --rl-cap: clamp(64px, 11svh, 96px) }
+.life { position: relative; scroll-snap-align: start; scroll-margin-top: var(--nav-h) }
+.sc { position: relative; overflow: hidden; color: var(--warm-white); isolation: isolate }
+.sc .img { position: absolute; inset: 0; height: 100%; aspect-ratio: auto }
+.sc::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none }
+.sc--tl::after { background: linear-gradient(135deg, rgba(36, 26, 20, .66) 0%, rgba(36, 26, 20, .3) 30%, rgba(36, 26, 20, 0) 58%) }
+.sc__t { position: absolute; z-index: 2; margin: 0; max-width: 17ch; font-size: clamp(1.5rem, 4.4svh, 2.6rem); line-height: 1.15; color: var(--warm-white); text-decoration: none }
+.sc--tl .sc__t { top: clamp(28px, 8svh, 88px); left: var(--gutter) }
+.sc__t span { display: inline-block; opacity: .8; transition: transform var(--t-hover) var(--ease) }
+.sc__t:hover span { transform: translateX(6px) }
+
+/* A · reel: a letterboxed band that changes scene slowly, the line underneath like a subtitle */
+.life--a { height: var(--fit); display: flex; flex-direction: column; justify-content: center }
+.rl__band { position: relative; width: 100%; height: min(42.86vw, calc(var(--fit) - var(--rl-cap))); overflow: hidden; background: var(--linen) }
+.rl__f { position: absolute; inset: 0; opacity: 0; transition: opacity 2.4s var(--ease) }
+.rl__f.on { opacity: 1 }
+.rl__f .img { position: absolute; inset: 0; height: 100%; aspect-ratio: auto }
+.rl__f .img img { transform: scale(1); transition: opacity var(--t-image) var(--ease), transform 9s linear }
+.rl__f.on .img img { transform: scale(1.12) }
+.rl__cap { position: relative; height: var(--rl-cap) }
+.rl__cap .sc__t { top: 50%; left: var(--gutter); max-width: none; transform: translateY(-50%); color: var(--ink); font-size: clamp(1.25rem, 3.4svh, 1.9rem); opacity: 0; pointer-events: none; transition: opacity 1.6s var(--ease) }
+.rl__cap .sc__t.on { opacity: 1; pointer-events: auto }
+
+/* B · film strip: the page scrolls down while three scenes slide sideways */
+.life--b { height: calc(var(--fit) * 3.6); scroll-snap-align: none }
+.fs__stage { position: sticky; top: var(--nav-h); height: var(--fit); overflow: hidden }
+.fs__track { display: flex; width: 300vw; height: 100%; will-change: transform }
+.fs__p { flex: 0 0 100vw; height: 100% }
+.fs__p .sc__t { opacity: 0; transform: translateY(14px); transition: opacity 1.3s var(--ease) .35s, transform 1.3s var(--ease) .35s }
+.fs__p.on .sc__t { opacity: 1; transform: none }
+
+/* C · opening frame: a small frame opens to full-bleed, then the line arrives */
+.life--c { height: calc(var(--fit) * 2.6); scroll-snap-align: none }
+.op__stage { position: sticky; top: var(--nav-h); height: var(--fit); overflow: hidden; background: var(--paper) }
+.op__img { position: absolute; inset: 0; will-change: clip-path, transform }
+.op__img .img { position: absolute; inset: 0; height: 100%; aspect-ratio: auto }
+.op__t { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity 1.4s var(--ease) }
+.op__t.on { opacity: 1 }
+.op__t .sc__t { pointer-events: auto }
+
+@media (max-width: 980px) {
+  .life--a { height: auto; display: block }
+  .rl__band { height: 68svh }
+  .rl__cap { height: 72px }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rl__f, .rl__f .img img, .rl__cap .sc__t, .fs__p .sc__t, .op__t { transition: none }
+}
