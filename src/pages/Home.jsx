@@ -1,14 +1,11 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Img from '../components/Img'
 import CategoryCarousel from '../components/CategoryCarousel'
-import FeaturedCollection, { collectionIds } from '../components/FeaturedCollection'
+import FeaturedCollection from '../components/FeaturedCollection'
 import LifestyleEditorial from '../components/LifestyleEditorial'
-import Newsletter from '../components/Newsletter'
-import ProductCard from '../components/ProductCard'
-import { CATEGORIES, CRAFT, EDITORIAL, PRODUCTS, SPACES, bestsellers } from '../data/catalogue'
+import Philosophy from '../components/Philosophy'
+import { CATEGORIES, PRODUCTS, SPACES } from '../data/catalogue'
 import { cx } from '../lib/format'
-import { useParallax } from '../lib/motion'
 
 /**
  * The landing page carries the brief's nine parts, in the visual concept's
@@ -18,13 +15,6 @@ import { useParallax } from '../lib/motion'
  *
  * Navigation and footer live in Layout.
  */
-
-/** Best-sellers the featured collection has not already shown. */
-const shown = new Set(collectionIds('b'))
-const best = bestsellers().filter(p => !shown.has(p.id)).slice(0, 3)
-
-const lead = EDITORIAL[0]
-const ceramics = EDITORIAL.find(e => e.id === 'ceramics')
 
 function Head({ eyebrow, title, lead: text, to, cta = 'View all' }) {
   return (
@@ -139,21 +129,8 @@ export default function Home() {
       {/* ---------- 4 · lifestyle editorial — asymmetric composition ---------- */}
       <LifestyleEditorial variant="c" />
 
-      {/* ---------- 5 · best-selling — grid ---------- */}
-      <section className="sec sec--tight sec--bone" id="bestselling">
-        <div className="wrap">
-          <Head
-            eyebrow="Best-selling"
-            title="What people actually buy"
-            lead="The pieces that leave the workshop most often."
-            to="/shop"
-            cta="All furniture"
-          />
-          <div className="grid-3">
-            {best.map((p, i) => <ProductCard key={p.id} p={p} delay={Math.min(i, 3)} />)}
-          </div>
-        </div>
-      </section>
+      {/* ---------- brand philosophy — statement, close-ups, evidence ---------- */}
+      <Philosophy variant="b" />
 
       {/* ---------- 6 · shop by space — split-screen ---------- */}
       <section className="sec sec--tight">
@@ -186,63 +163,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---------- 7 · a cropped texture band ---------- */}
-      <section className="band" data-reveal="mask">
-        <Img id={CRAFT[0].image} alt="" ratio="32 / 9" w={2000} position="center 60%" />
-        <div className="band__t">
-          <div className="wrap">
-            <p>Quarter-sawn, oiled, and left to settle with use.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- 8 · craftsmanship ---------- */}
-      <section className="sec sec--tight">
-        <div className="wrap craft">
-          <Img
-            id={CRAFT[6].image}
-            alt={CRAFT[6].name}
-            ratio="4 / 5"
-            w={1100}
-            className="craft__img"
-            data-reveal="mask"
-          />
-          <div className="craft__t">
-            <span className="eyebrow" data-reveal="">Craftsmanship</span>
-            <h2 className="disp d2" data-reveal="" data-delay="1">Close enough<br />to see the work</h2>
-            <p className="lead" data-reveal="" data-delay="2">
-              Every piece is made to order in a small workshop. Timber is oiled rather than
-              lacquered, cloth is washed before it is cut, and stone is honed by hand — so the
-              surfaces settle with use instead of wearing out.
-            </p>
-            <dl className="craft__list" data-reveal="" data-delay="3">
-              {CRAFT.map(c => (
-                <div key={c.name}>
-                  <Img id={c.image} alt="" ratio="1 / 1" w={160} className="craft__thumb" />
-                  <dt>{c.name}</dt>
-                  <dd>{c.note}</dd>
-                </div>
-              ))}
-            </dl>
-            <Link className="tlink" data-reveal="" to="/shop">See the pieces</Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- 9 · brand philosophy ---------- */}
-      <section className="sec sec--tight sec--dark">
-        <div className="wrap statement">
-          <span className="eyebrow" data-reveal="">Our philosophy</span>
-          <p className="disp" data-reveal="" data-delay="1">
-            We make fewer things, in smaller runs, for rooms meant to be lived in rather than
-            looked at.
-          </p>
-          <Link className="tlink" data-reveal="" data-delay="2" to="/shop">Explore the collection</Link>
-        </div>
-      </section>
-
-      {/* ---------- 10 · newsletter ---------- */}
-      <Newsletter />
     </>
   )
 }

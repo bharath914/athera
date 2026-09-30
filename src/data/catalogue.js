@@ -17,7 +17,7 @@ export const img = (id, w = 1400) =>
 export const imgAt = (id, w, ar, fp) => {
   const [rw, rh] = ar.split(':').map(Number)
   // fp = [x, y] in 0–1: the point the crop stays centred on, so a tall phone crop keeps the subject
-  const focal = fp ? `&crop=focalpoint&fp-x=${fp[0]}&fp-y=${fp[1]}` : ''
+  const focal = fp ? `&crop=focalpoint&fp-x=${fp[0]}&fp-y=${fp[1]}${fp[2] ? `&fp-z=${fp[2]}` : ''}` : ''
   return `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&h=${Math.round(
     (w * rh) / rw
   )}&q=85${focal}`
