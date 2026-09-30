@@ -84,7 +84,6 @@ function CategoryIndex() {
 }
 
 export default function Home() {
-  const heroRef = useParallax(5)
   const editRef = useParallax(4)
   const [leadSpace, ...restSpaces] = SPACES
 
@@ -92,36 +91,32 @@ export default function Home() {
     <>
       {/* ---------- 1 · hero — full-screen visual ---------- */}
       <section className="hero">
-        <div className="hero__media par" ref={heroRef}>
+        <div className="hero__media">
           <Img
-            id="photo-1774477178005-bff823e43be8"
-            alt="Late afternoon light crossing a plastered wall and two low chairs"
+            id="photo-1745429523617-0d837856ca35"
+            alt="A taupe sofa against a taupe wall, softly lit"
             ratio="16 / 9"
-            ratioSm="4 / 5"
+            ratioSm="3 / 4"
             ar="16:9"
-            arSm="4:5"
-            w={2200}
+            arSm="3:4"
+            fp={[0.5, 0.62]}
+            w={2600}
+            position="center 62%"
             priority
           />
         </div>
         <div className="wrap">
           <div className="hero__t">
-            <span className="eyebrow" data-reveal="">Furniture for calm, intentional living</span>
-            <h1 className="disp d1" data-reveal="" data-delay="1">Design spaces<br />that feel quieter.</h1>
-            <p className="lead" data-reveal="" data-delay="2">
-              Furniture made in small runs, for homes that value comfort over clutter.
-            </p>
-            <div className="hero__cta" data-reveal="" data-delay="3">
+            <h1 className="disp d1" data-reveal="">Design spaces<br />that feel quieter.</h1>
+            <div className="hero__cta" data-reveal="" data-delay="1">
               <Link className="btn btn--solid" to="/shop">Explore the collection</Link>
-              <Link className="btn btn--quiet" to="/spaces">Shop by space</Link>
             </div>
           </div>
         </div>
-        <span className="hero__scroll" aria-hidden="true">Scroll</span>
       </section>
 
       {/* ---------- 2 · shop by category — editorial index ---------- */}
-      <section className="sec">
+      <section className="sec" id="categories">
         <div className="wrap">
           <Head
             eyebrow="Shop by category"
@@ -170,7 +165,7 @@ export default function Home() {
       </section>
 
       {/* ---------- 5 · best-selling — grid ---------- */}
-      <section className="sec sec--tight sec--bone">
+      <section className="sec sec--tight sec--bone" id="bestselling">
         <div className="wrap">
           <Head
             eyebrow="Best-selling"

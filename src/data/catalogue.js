@@ -14,11 +14,13 @@ export const img = (id, w = 1400) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=85`
 
 /** A crop at a named ratio — used for the hero, which ships two crops. */
-export const imgAt = (id, w, ar) => {
+export const imgAt = (id, w, ar, fp) => {
   const [rw, rh] = ar.split(':').map(Number)
+  // fp = [x, y] in 0–1: the point the crop stays centred on, so a tall phone crop keeps the subject
+  const focal = fp ? `&crop=focalpoint&fp-x=${fp[0]}&fp-y=${fp[1]}` : ''
   return `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&h=${Math.round(
     (w * rh) / rw
-  )}&q=85`
+  )}&q=85${focal}`
 }
 
 /* ---------- categories (the seven groups in the brief) ---------- */
@@ -30,7 +32,7 @@ export const CATEGORIES = [
     short: 'Sofas & lounge chairs',
     items: 'Sofas, lounge chairs, stools',
     tagline: 'Built around the way a room is actually used, not the way it photographs.',
-    image: 'photo-1745429523617-0d837856ca35',
+    image: 'photo-1578500494198-246f612d3b3d',
   },
   {
     id: 'tables',
@@ -38,7 +40,7 @@ export const CATEGORIES = [
     short: 'Coffee & side tables',
     items: 'Coffee tables, side tables',
     tagline: 'Low surfaces in solid timber and honest stone, sized for the room around them.',
-    image: 'photo-1730104231026-46e3cf7c3141',
+    image: 'photo-1620812067822-899be8a6a9a7',
   },
   {
     id: 'dining',
@@ -46,7 +48,7 @@ export const CATEGORIES = [
     short: 'Dining tables & chairs',
     items: 'Dining tables, dining chairs, desks',
     tagline: 'Tables sized for the meal that runs long, and chairs you can stay in.',
-    image: 'photo-1572297259518-0974576b6738',
+    image: 'photo-1749476101600-90b2eb7efa89',
   },
   {
     id: 'beds',
@@ -54,7 +56,7 @@ export const CATEGORIES = [
     short: 'Beds & bedside tables',
     items: 'Beds, headboards, bedside tables',
     tagline: 'The least demanding pieces in the house, so the room can recede.',
-    image: 'photo-1552558636-f6a8f071c2b3',
+    image: 'photo-1688383454669-9f5cc5991778',
   },
   {
     id: 'storage',
@@ -62,7 +64,7 @@ export const CATEGORIES = [
     short: 'Shelves & storage',
     items: 'Shelving, sideboards, cabinets',
     tagline: 'Pieces that hold the everyday without announcing it.',
-    image: 'photo-1776482128045-66c880f2ed3a',
+    image: 'photo-1650475496371-d7544a32563d',
   },
   {
     id: 'lighting',
@@ -70,7 +72,7 @@ export const CATEGORIES = [
     short: 'Floor & table lamps',
     items: 'Floor lamps, table lamps',
     tagline: 'Paper, linen and blown glass — light softened before it reaches the room.',
-    image: 'photo-1778731525276-3d026f4ad45d',
+    image: 'photo-1769255119650-f658d3dbc397',
   },
   {
     id: 'objects',
@@ -155,10 +157,10 @@ export const PRODUCTS = [
     lead: '10–12 weeks',
     stock: 'Made to order',
     images: [
-      { id: 'photo-1768144092684-c1a5dd6c7aad', view: 'Front' },
+      { id: 'photo-1672345158827-7f4aa9467b49', view: 'Front' },
+      { id: 'photo-1528458909336-e7a0adfed0a5', view: 'Detail' },
       { id: 'photo-1758448755778-90ebf4d0f1e7', view: 'Three-quarter' },
       { id: 'photo-1745301558339-44eb3217d5da', view: 'Side' },
-      { id: 'photo-1528458909336-e7a0adfed0a5', view: 'Detail' },
     ],
   },
   {
@@ -218,10 +220,10 @@ export const PRODUCTS = [
     lead: '6–8 weeks',
     stock: 'Made to order',
     images: [
-      { id: 'photo-1785535573662-417e82193598', view: 'Front' },
+      { id: 'photo-1684165610413-2401399e0e59', view: 'Front' },
+      { id: 'photo-1789655468281-c4a264d1410c', view: 'Detail' },
       { id: 'photo-1758448755952-42b404bc6f39', view: 'Three-quarter' },
       { id: 'photo-1768946131536-39b5f3ec329d', view: 'Side' },
-      { id: 'photo-1789655468281-c4a264d1410c', view: 'Detail' },
     ],
   },
   {
@@ -276,10 +278,10 @@ export const PRODUCTS = [
     lead: '7–9 weeks',
     stock: 'Made to order',
     images: [
-      { id: 'photo-1784653548743-496e53468a5d', view: 'Front' },
+      { id: 'photo-1777513538143-8525eb3943f6', view: 'Front' },
+      { id: 'photo-1583418007992-a8e33a92e7ad', view: 'Detail' },
       { id: 'photo-1784653548992-624a30f590cd', view: 'Three-quarter' },
       { id: 'photo-1787539386477-5324beb6eec7', view: 'Side' },
-      { id: 'photo-1583418007992-a8e33a92e7ad', view: 'Detail' },
     ],
   },
   {
@@ -800,7 +802,7 @@ export const PRODUCTS = [
     lead: '10 weeks',
     stock: 'Made to order',
     images: [
-      { id: 'photo-1684165610413-2401399e0e59', view: 'Front' },
+      { id: 'photo-1694721025063-08eff99ba558', view: 'Front' },
     ],
   },
   {

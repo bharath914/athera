@@ -11,11 +11,11 @@ import Img from './Img'
  */
 
 const COLLECTIONS = [
-  { name: 'The Quiet Morning Collection', image: 'photo-1638531540340-9c3d9f3c3077', to: '/shop?c=beds' },
-  { name: 'Living in Oak', image: 'photo-1772442363851-738a548f6c5c', to: '/shop?m=oak' },
-  { name: 'Objects for Slow Evenings', image: 'photo-1772208392358-19e96bee3a73', to: '/shop?c=objects' },
-  { name: 'The Linen & Walnut Collection', image: 'photo-1701422052139-e72ee5e67249', to: '/shop?m=walnut' },
-  { name: 'Made in Cane', image: 'photo-1698417931857-23a611285438', to: '/shop' },
+  { name: 'The Quiet Morning Collection', image: 'photo-1617325247661-675ab4b64ae2', to: '/shop?c=beds' },
+  { name: 'Living in Oak', image: 'photo-1763279934323-edb3735f6a6e', to: '/shop?m=oak' },
+  { name: 'Objects for Slow Evenings', image: 'photo-1667312939978-64cf31718a6e', to: '/shop?c=objects' },
+  { name: 'The Linen & Walnut Collection', image: 'photo-1694721025063-08eff99ba558', to: '/shop?m=walnut' },
+  { name: 'Made in Cane', image: 'photo-1758486561455-ebd0d3ba7423', to: '/shop' },
 ]
 
 export const collectionIds = () => []

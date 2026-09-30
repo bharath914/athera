@@ -22,6 +22,7 @@ export default function Img({
   ratioSm,
   ar,
   arSm,
+  fp,
   w = 1400,
   wSm = 900,
   className = '',
@@ -30,7 +31,7 @@ export default function Img({
   ...rest
 }) {
   const [state, setState] = useState('loading')
-  const url = src || (ar ? imgAt(id, w, ar) : img(id, w))
+  const url = src || (ar ? imgAt(id, w, ar, fp) : img(id, w))
 
   const common = {
     alt,
@@ -51,7 +52,7 @@ export default function Img({
       {state !== 'error' && (
         arSm && id ? (
           <picture>
-            <source media="(max-width: 640px)" srcSet={imgAt(id, wSm, arSm)} />
+            <source media="(max-width: 980px), (orientation: portrait)" srcSet={imgAt(id, wSm, arSm, fp)} />
             <img src={url} {...common} />
           </picture>
         ) : (

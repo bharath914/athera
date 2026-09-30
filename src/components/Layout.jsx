@@ -33,7 +33,19 @@ function Nav({ onMenu }) {
   return (
     <header className={cx('nav', float && 'nav--float')}>
       <div className="nav__in">
-        <Link className="mark" to="/" aria-label="Aethera, home">Aethera</Link>
+        <Link
+          className="mark"
+          to="/"
+          aria-label="Aethera, home"
+          onClick={e => {
+            // already home: glide up to the hero in place — no navigation, no page fade
+            if (pathname === '/') {
+              e.preventDefault()
+              if (window.location.hash) window.history.replaceState(null, '', window.location.pathname + window.location.search)
+              window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })
+            }
+          }}
+        >Aethera</Link>
         <nav className="nav__links" aria-label="Main">
           {LINKS.map(l => (
             <NavLink key={l.to} to={l.to}>{l.label}</NavLink>
@@ -42,9 +54,6 @@ function Nav({ onMenu }) {
         <div className="nav__util">
           <NavLink className="nav__u nav__u--acct" to="/account">
             {account ? account.name?.split(' ')[0] || 'Account' : 'Sign in'}
-          </NavLink>
-          <NavLink className="nav__u nav__u--wish" to="/wishlist">
-            Saved <span className="nav__n">{wish.length}</span>
           </NavLink>
           <NavLink className="nav__u" to="/cart">
             Cart <span className="nav__n">{count}</span>

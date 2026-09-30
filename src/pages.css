@@ -239,7 +239,7 @@
 .cline__t .fine { margin: 0 }
 .cline__amt { min-width: 96px; text-align: right; font-size: 1rem; color: var(--ink); font-variant-numeric: tabular-nums }
 
-.sum { position: sticky; top: calc(var(--nav-h) + 36px); display: flex; flex-direction: column; gap: 20px; padding: 40px; background: var(--bone) }
+.sum { position: sticky; top: calc(var(--nav-h) + 36px); display: flex; flex-direction: column; gap: 20px; padding: 40px; background: var(--bone); border: 1px solid var(--rule) }
 .sum__row { display: flex; justify-content: space-between; gap: 16px; font-size: .92rem }
 .sum__total { padding-top: 18px; border-top: 1px solid var(--rule); font-size: 1.05rem; color: var(--ink) }
 .sum__total b { font-weight: 400; font-variant-numeric: tabular-nums }
@@ -327,7 +327,7 @@
 .acct__f .field { width: 100% }
 .acct__f .row { width: 100% }
 .acct__f .fine { margin: 0 }
-.acct__side { display: flex; flex-direction: column; gap: 16px; padding: 36px; background: var(--bone) }
+.acct__side { display: flex; flex-direction: column; gap: 16px; padding: 36px; background: var(--bone); border: 1px solid var(--rule) }
 .acct__side .eyebrow:not(:first-child) { margin-top: 18px }
 .acct__side .fine { margin: 0 }
 .acct__orders { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px }
@@ -391,13 +391,6 @@
   .nav__links, .nav__u--acct, .nav__u--wish { display: none }
   .nav__menu { display: inline-flex; border: 0; background: none; cursor: pointer }
 
-  /* hero stacks: type first, then the photograph at full width */
-  .hero { min-height: 0; display: block; padding: calc(var(--nav-h) + 48px) 0 0 }
-  .hero__media { position: relative; inset: auto; margin-top: 52px }
-  .hero__media .img { height: auto; aspect-ratio: var(--ar-sm, 16 / 9) }
-  .hero__t { max-width: none }
-  .hero__t .lead { max-width: 46ch }
-  .hero__scroll { display: none }
 
   .grid-4, .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)) }
   .head { grid-template-columns: minmax(0, 1fr); gap: 24px }

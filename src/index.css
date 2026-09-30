@@ -25,9 +25,9 @@
   --charcoal: #2E1E16;
 
   /* the names the layout uses */
-  --paper: #EFE8DB;
-  --bone: #E6DDCC;
-  --linen: #DDD2BE;
+  --paper: #FFFFFF;
+  --bone: #FFFFFF;
+  --linen: #F2F0EB;
   --mute: #6B5A4D;
 
   /* ink — charcoal, never pure black */
@@ -169,9 +169,7 @@ main[data-home] { padding-top: 0 }
 .sec { padding: var(--sec) 0 }
 .sec--tight { padding: var(--sec-tight) 0 }
 .sec--bone { background: var(--bone) }
-.sec--dark { background: var(--walnut); color: var(--linen) }
-.sec--dark .eyebrow, .sec--dark .mute { color: rgba(234, 228, 216, .62) }
-.sec--dark .rule, .sec--dark .head { border-color: var(--rule-d) }
+.sec--dark { background: var(--paper) } /* one ground across the site: no dark section for now */
 
 .rule { border: 0; border-top: 1px solid var(--rule); margin: 0 }
 
@@ -191,7 +189,6 @@ main[data-home] { padding-top: 0 }
   color: var(--ink);
   text-wrap: balance;
 }
-.sec--dark .disp { color: var(--linen) }
 
 .d1 { font-size: clamp(3.2rem, 5.6vw, 6rem) }
 .d2 { font-size: clamp(2.2rem, 3.8vw, 4rem) }
@@ -275,8 +272,6 @@ main[data-home] { padding-top: 0 }
 .btn--quiet:hover { background: transparent; border-color: var(--ink); color: var(--ink) }
 .btn--block { width: 100% }
 .btn[disabled] { opacity: .4; pointer-events: none }
-.sec--dark .btn { border-color: var(--linen); color: var(--linen) }
-.sec--dark .btn:hover { background: var(--linen); color: var(--walnut) }
 
 /* a thin underline that slides in, rather than a border that changes colour */
 .tlink {
@@ -296,12 +291,6 @@ main[data-home] { padding-top: 0 }
   transition: background-size var(--t-hover) var(--ease), color var(--t-hover) var(--ease);
 }
 .tlink:hover { background-size: 100% 1px, 100% 1px }
-.sec--dark .tlink {
-  color: var(--linen);
-  background-image:
-    linear-gradient(currentColor, currentColor),
-    linear-gradient(var(--rule-d), var(--rule-d));
-}
 
 .ulink {
   background:
@@ -333,6 +322,9 @@ main[data-home] { padding-top: 0 }
   width: 100%; height: 100%;
   object-fit: cover;
   opacity: 0;
+  /* one warm, slightly muted grade over every photograph, so pictures from
+     different photographers read as a single set */
+  filter: sepia(.07) saturate(.9) contrast(.97);
   transition: opacity var(--t-image) var(--ease), transform 1.2s var(--ease);
 }
 .img--on img { opacity: 1 }
@@ -569,40 +561,6 @@ legend { padding: 0 0 4px; font-size: .68rem; letter-spacing: .26em; text-transf
    No two consecutive sections share a shape.
    ========================================================================= */
 
-/* 1 · hero — image across two thirds, type in the open ground beside it */
-.hero {
-  position: relative;
-  min-height: 92vh;
-  display: grid; align-items: center;
-  padding: calc(var(--nav-h) + 56px) 0 80px;
-  isolation: isolate;
-}
-/* .wrap centres itself with auto margins, which inside a grid resolves as
-   shrink-to-fit — so the hero's wrap has to claim the column explicitly */
-.hero > .wrap { position: relative; width: 100% }
-.hero__media {
-  position: absolute; z-index: -1;
-  inset: 0;
-}
-.hero__media .img { height: 100%; aspect-ratio: auto }
-/* the headline has to live in the third of the page the photograph leaves,
-   so it is set a notch below the page's largest display size */
-.hero__t {
-  display: flex; flex-direction: column; align-items: flex-start;
-  gap: 30px; max-width: 30vw;
-}
-.hero__t .d1 { font-size: clamp(2.6rem, 4.5vw, 4.5rem) }
-.hero__t .lead { max-width: 34ch }
-.hero__cta { display: flex; gap: 16px; flex-wrap: wrap }
-.hero__scroll {
-  position: absolute; left: var(--gutter); bottom: 44px;
-  display: flex; align-items: center; gap: 14px;
-  font-size: .62rem; letter-spacing: .28em; text-transform: uppercase; color: var(--mute);
-}
-.hero__scroll::after {
-  content: ""; width: 56px; height: 1px; background: var(--rule);
-}
-
 /* 2 · shop by category — an index, not a grid of cards */
 .cindex { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 88px; align-items: center }
 .cindex__stage { position: relative }
@@ -706,26 +664,6 @@ legend { padding: 0 0 4px; font-size: .68rem; letter-spacing: .26em; text-transf
 .news__f .fine { margin: 0 }
 .news__done { margin: 0; font-family: var(--display); font-size: 1.35rem; line-height: 1.5; color: var(--ink); max-width: 34ch }
 
-/* desktop hero: the photograph fills the section; type and nav sit on it in warm white,
-   with a soft charcoal wash on the type side so the copy reads on any crop */
-@media (min-width: 981px) {
-  .hero__media::after {
-    content: ""; position: absolute; inset: 0; pointer-events: none;
-    background: linear-gradient(90deg, rgba(36,26,20,.66) 0%, rgba(36,26,20,.4) 34%, rgba(36,26,20,0) 66%),
-                linear-gradient(180deg, rgba(36,26,20,.5) 0%, rgba(36,26,20,0) 22%);
-  }
-  .hero { color: var(--warm-white) }
-  .hero__t { max-width: 34vw }
-  .hero .disp, .hero .eyebrow, .hero .lead { color: rgba(246, 244, 239, .92) }
-  .hero .btn--solid { background: var(--warm-white); border-color: var(--warm-white); color: var(--charcoal) }
-  .hero .btn--solid:hover { background: transparent; color: var(--warm-white) }
-  .hero .btn--quiet { border-color: rgba(246, 244, 239, .7); color: var(--warm-white) }
-  .hero .btn--quiet:hover { background: var(--warm-white); border-color: var(--warm-white); color: var(--charcoal) }
-  .hero__scroll { color: rgba(246, 244, 239, .85) }
-  .hero__scroll::after { background: rgba(246, 244, 239, .6) }
-  .nav--float .mark, .nav--float .nav__links a, .nav--float .nav__u { color: var(--warm-white) }
-  .nav--float .nav__n { border-color: rgba(246, 244, 239, .7) }
-}
 
 /* ---------- shop by category · review variations (cv) ---------- */
 .cvsw { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 0 0 48px; padding: 14px 0; border-top: 1px dashed var(--rule); border-bottom: 1px dashed var(--rule) }
@@ -845,3 +783,42 @@ html { scroll-snap-type: y proximity }
   .fcs .fcl__img { flex: none; aspect-ratio: 4 / 5 }
   .fcs .fcl--1 { grid-column: 1 / -1 !important }
 }
+
+/* ---------- hero: one full-bleed photograph that fills the screen on any device ---------- */
+.hero {
+  position: relative; isolation: isolate; overflow: hidden;
+  height: 100svh; min-height: 520px;
+  display: flex; align-items: flex-start;
+  padding: calc(var(--nav-h) + clamp(20px, 7svh, 84px)) 0 0;
+  color: var(--warm-white);
+}
+.hero > .wrap { position: relative; width: 100% }
+.hero__media { position: absolute; inset: 0; z-index: -1 }
+.hero__media .img { height: 100%; aspect-ratio: auto }
+/* a soft wash where the words sit, and a little weight under the navigation */
+.hero__media::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(120deg, rgba(36, 26, 20, .72) 0%, rgba(36, 26, 20, .4) 30%, rgba(36, 26, 20, 0) 58%),
+    linear-gradient(180deg, rgba(36, 26, 20, .38) 0%, rgba(36, 26, 20, 0) 22%);
+}
+.hero__t { display: flex; flex-direction: column; align-items: flex-start; gap: clamp(14px, 2.6svh, 28px); max-width: min(34ch, 90%) }
+.hero__t .d1 { font-size: clamp(2.1rem, min(6svh, 6.4vw), 4.2rem) }
+.hero__t .lead { max-width: 34ch; font-size: clamp(.9rem, 1.9svh, 1.08rem) }
+.hero .disp, .hero .eyebrow, .hero .lead { color: var(--warm-white) }
+.hero .lead { opacity: .92 }
+.hero__cta { display: flex; gap: 14px; flex-wrap: wrap }
+.hero .btn--solid { background: var(--warm-white); border-color: var(--warm-white); color: var(--charcoal) }
+.hero .btn--solid:hover { background: transparent; color: var(--warm-white) }
+.hero .btn--quiet { border-color: rgba(246, 244, 239, .7); color: var(--warm-white) }
+.hero .btn--quiet:hover { background: var(--warm-white); border-color: var(--warm-white); color: var(--charcoal) }
+.hero__scroll { display: none }
+
+/* the navigation floats over the photograph in warm white, then settles onto the page */
+.nav--float .mark, .nav--float .nav__links a, .nav--float .nav__u { color: var(--warm-white) }
+.nav--float .nav__n { border-color: rgba(246, 244, 239, .7) }
+
+/* slow motion: the photograph settles from a close, held frame out to the full room, so its detail is revealed rather than shown at once */
+@keyframes hero-settle { from { transform: scale(1.16) } to { transform: scale(1) } }
+.hero__media .img img { transform-origin: 50% 62%; animation: hero-settle 14s cubic-bezier(.16, .6, .2, 1) both }
+@media (prefers-reduced-motion: reduce) { .hero__media .img img { animation: none } }
