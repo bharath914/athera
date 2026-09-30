@@ -130,7 +130,7 @@ export default function Home() {
       <LifestyleEditorial variant="c" />
 
       {/* ---------- brand philosophy — statement, close-ups, evidence ---------- */}
-      <Philosophy variant="b" />
+      <Philosophy variant="a" />
 
       {/* ---------- 6 · shop by space — split-screen ---------- */}
       <section className="sec sec--tight">

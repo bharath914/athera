@@ -2,52 +2,53 @@ import { Link } from 'react-router-dom'
 import Img from './Img'
 
 /**
- * Brand philosophy: a strong statement, close-ups of hands and joinery, and
- * evidence rather than adjectives — every number here is already true of a
- * piece in the catalogue.
+ * Brand philosophy: what the brand believes, not how it is made. One statement
+ * of intent and three principles, set in strong type against still, quiet
+ * photography — light on a wall, a window, a pair of vases — with no tools or
+ * workshop in sight.
  *
- *   a · split      the hands photograph fills the left half, the statement and
- *                  three proofs sit in the space on the right
- *   b · spread     the statement runs across the page in large type above four
- *                  material close-ups, each with its own proof
- *   c · pair       statement, a joinery photograph and a hands photograph side
- *                  by side, each captioned with what it shows
+ *   a · manifesto   statement and principles on the left, one tall photograph
+ *                   bleeding off the right
+ *   b · principles  the statement across the page, three principles in a row,
+ *                   a wide strip of light beneath
+ *   c · still       a full-bleed wall of light, the statement and principles
+ *                   set into its empty space
  *
  * Every layout is sized from the viewport, so it fits one screen.
  */
 
 const STATEMENT = 'We make fewer things, in smaller runs, for rooms meant to be lived in rather than looked at.'
 
-const IMG = {
-  chisel: { id: 'photo-1497219055242-93359eeed651', alt: 'A pair of hands cutting a curve into pale timber with a chisel', at: '38% center' },
-  joint: { id: 'photo-1561435375-c3e1b6fdd7d7', alt: 'A timber section with a mortise cut cleanly into it', at: 'center' },
-  grain: { id: 'photo-1566733622605-eedf4a0f8223', alt: 'Straight, close grain running down a board', at: 'center' },
-  walnut: { id: 'photo-1697507695420-04623ccff2af', alt: 'Deep, figured walnut grain', at: 'center' },
-}
-
-const PROOF = [
-  { n: '11', t: 'layers of walnut veneer', d: 'pressed into every shell chair' },
-  { n: '3', t: 'hours', d: 'to weave one paper-cord seat by hand' },
-  { n: '10', t: 'years', d: 'frame guarantee on the dining chair' },
-  { n: '11', t: 'makers', d: 'in one workshop, making to order' },
+const PRINCIPLES = [
+  { n: '01', t: 'Quiet over loud.', d: 'A piece should settle into a room, not announce itself.' },
+  { n: '02', t: 'Fewer, and made for you.', d: 'Everything is made to order in small runs, so nothing is made twice by accident.' },
+  { n: '03', t: 'Kept, not replaced.', d: 'Seats are re-woven, covers replaced and timber re-oiled — a piece is looked after, not thrown out.' },
 ]
 
-const cta = <Link className="tlink" to="/shop">Explore the collection</Link>
-
-function Photo({ k, w = 1600, ratio = '4 / 5', priority = false }) {
-  const p = IMG[k]
-  // a focal point asks the CDN for a genuinely tighter crop, not just a positioned one
-  return <Img id={p.id} alt={p.alt} ratio={ratio} w={w} position={p.at} priority={priority} {...(p.fp ? { ar: ratio.replace(/\s/g, '').replace('/', ':'), fp: p.fp } : {})} />
+const IMG = {
+  vases: { id: 'photo-1772442364499-52f96e8fc4d4', alt: 'Two textured stoneware vases with dry branches beside a curtained window', at: 'center 60%' },
+  shadow: { id: 'photo-1789292249119-5f349a3031e9', alt: 'Sunlight casting soft geometric shadows across a plain wall', at: 'center 40%' },
+  light: { id: 'photo-1643699302640-e8dd689194f4', alt: 'Soft light falling across a white wall', at: 'center' },
 }
 
-function Proof({ p }) {
+function Photo({ k, w = 1800, ratio = '4 / 5', priority = false }) {
+  const p = IMG[k]
+  return <Img id={p.id} alt={p.alt} ratio={ratio} w={w} position={p.at} priority={priority} />
+}
+
+function Principle({ p }) {
   return (
-    <div className="ph__proof">
-      <span className="ph__n disp">{p.n}</span>
-      <span className="ph__d"><b>{p.t}</b> {p.d}</span>
+    <div className="pp">
+      <span className="pp__n">{p.n}</span>
+      <div className="pp__b">
+        <h3 className="disp pp__t">{p.t}</h3>
+        <p className="pp__d">{p.d}</p>
+      </div>
     </div>
   )
 }
+
+const cta = <Link className="tlink" to="/shop">Explore the collection</Link>
 
 export default function Philosophy({ variant = 'a' }) {
   if (variant === 'b') {
@@ -58,14 +59,12 @@ export default function Philosophy({ variant = 'a' }) {
             <span className="eyebrow" data-reveal="">Our philosophy</span>
             <p className="disp ph__big" data-reveal="" data-delay="1">{STATEMENT}</p>
           </div>
-          <div className="ph__row">
-            {[['chisel', PROOF[3]], ['joint', PROOF[0]], ['grain', PROOF[1]], ['walnut', PROOF[2]]].map(([k, p], i) => (
-              <div className="ph__col" key={k} data-reveal="" data-delay={Math.min(i + 1, 4)}>
-                <div className="ph__ph"><Photo k={k} w={1000} ratio="3 / 4" /></div>
-                <Proof p={p} />
-              </div>
+          <div className="ph__three">
+            {PRINCIPLES.map((p, i) => (
+              <div key={p.n} data-reveal="" data-delay={i + 1}><Principle p={p} /></div>
             ))}
           </div>
+          <div className="ph__strip" data-reveal="mask"><Photo k="shadow" w={2400} ratio="21 / 9" /></div>
         </div>
       </section>
     )
@@ -74,20 +73,17 @@ export default function Philosophy({ variant = 'a' }) {
   if (variant === 'c') {
     return (
       <section className="ph ph--c" id="philosophy">
+        <div className="ph__bg"><Photo k="shadow" w={2400} ratio="16 / 9" priority /></div>
         <div className="wrap ph__wrap">
-          <div className="ph__side">
+          <div className="ph__head">
             <span className="eyebrow" data-reveal="">Our philosophy</span>
-            <p className="disp ph__mid" data-reveal="" data-delay="1">{STATEMENT}</p>
-            <span data-reveal="" data-delay="2">{cta}</span>
+            <p className="disp ph__big" data-reveal="" data-delay="1">{STATEMENT}</p>
           </div>
-          <figure className="ph__fig ph__fig--lo" data-reveal="mask">
-            <div className="ph__ph"><Photo k="joint" w={1400} ratio="3 / 4" /></div>
-            <figcaption>Cut to fit, then fitted once — no bracket, no filler.</figcaption>
-          </figure>
-          <figure className="ph__fig" data-reveal="mask" data-delay="2">
-            <div className="ph__ph"><Photo k="chisel" w={1400} ratio="3 / 4" /></div>
-            <figcaption>Made to order in a workshop of eleven people.</figcaption>
-          </figure>
+          <div className="ph__three">
+            {PRINCIPLES.map((p, i) => (
+              <div key={p.n} data-reveal="" data-delay={i + 1}><Principle p={p} /></div>
+            ))}
+          </div>
         </div>
       </section>
     )
@@ -95,15 +91,15 @@ export default function Philosophy({ variant = 'a' }) {
 
   return (
     <section className="ph ph--a" id="philosophy">
-      <div className="ph__img" data-reveal="mask"><Photo k="chisel" w={1800} priority /></div>
       <div className="ph__body">
         <span className="eyebrow" data-reveal="">Our philosophy</span>
         <p className="disp ph__mid" data-reveal="" data-delay="1">{STATEMENT}</p>
         <div className="ph__list" data-reveal="" data-delay="2">
-          {PROOF.slice(0, 3).map(p => <Proof key={p.t} p={p} />)}
+          {PRINCIPLES.map(p => <Principle key={p.n} p={p} />)}
         </div>
         <span data-reveal="" data-delay="3">{cta}</span>
       </div>
+      <div className="ph__img" data-reveal="mask"><Photo k="vases" w={1800} ratio="2 / 3" priority /></div>
     </section>
   )
 }

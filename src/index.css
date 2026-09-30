@@ -878,48 +878,50 @@ html { scroll-snap-type: y proximity }
   .rl__f, .rl__f .img img, .rl__cap .sc__t, .fs__p .sc__t, .op__t { transition: none }
 }
 
-/* ---------- brand philosophy: strong type, close-ups, evidence — each layout fits one screen ---------- */
+/* ---------- brand philosophy: what we believe — a statement and three principles, each layout fits one screen ---------- */
 .ph { position: relative; scroll-snap-align: start; scroll-margin-top: var(--nav-h) }
-.ph__ph { position: relative; overflow: hidden; flex: 1; min-height: 0 }
-.ph__ph .img, .ph__img .img { position: absolute; inset: 0; height: 100%; aspect-ratio: auto }
-.ph__mid { margin: 0; max-width: 21ch; font-size: clamp(1.4rem, min(3.9svh, 2.7vw), 2.5rem); line-height: 1.16; color: var(--ink) }
-.ph__proof { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: baseline }
-.ph__n { font-size: clamp(1.9rem, 5.4svh, 3.3rem); line-height: 1; color: var(--ink); min-width: 1.2ch }
-.ph__d { font-size: clamp(.78rem, 1.75svh, .95rem); line-height: 1.4; color: var(--graphite) }
-.ph__d b { font-weight: 400; color: var(--ink) }
+.ph .img { position: absolute; inset: 0; height: 100%; aspect-ratio: auto }
+.pp { display: grid; grid-template-columns: 3.2ch minmax(0, 1fr); gap: 14px; align-items: baseline }
+.pp__n { font-size: .68rem; letter-spacing: .2em; color: var(--mute); font-variant-numeric: tabular-nums }
+.pp__t { margin: 0 0 clamp(4px, .9svh, 8px); font-size: clamp(1.05rem, 2.7svh, 1.55rem); line-height: 1.15; color: var(--ink) }
+.pp__d { margin: 0; max-width: 40ch; font-size: clamp(.8rem, 1.8svh, .95rem); line-height: 1.55; color: var(--graphite) }
 
-/* A · split: the hands fill the left half */
-.ph--a { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); height: var(--fit) }
+/* A · manifesto: statement and principles on the left, one tall photograph bleeding off the right */
+.ph--a { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); height: var(--fit) }
+.ph__body { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: clamp(14px, 3svh, 32px); padding: 0 clamp(32px, 5vw, 88px) 0 max(var(--gutter), 4vw) }
+.ph__mid { margin: 0; max-width: 20ch; font-size: clamp(1.7rem, min(5svh, 3.4vw), 3.1rem); line-height: 1.1; color: var(--ink) }
+.ph__list { width: 100%; max-width: 560px; border-top: 1px solid var(--rule) }
+.ph__list .pp { padding: clamp(8px, 1.7svh, 16px) 0; border-bottom: 1px solid var(--rule) }
 .ph__img { position: relative }
-.ph__body { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: clamp(12px, 2.8svh, 30px); padding: 0 max(var(--gutter), 4vw) 0 clamp(32px, 5vw, 88px) }
-.ph__list { width: 100%; border-top: 1px solid var(--rule) }
-.ph__list .ph__proof { padding: clamp(7px, 1.5svh, 15px) 0; border-bottom: 1px solid var(--rule) }
 
-/* B · spread: the statement runs across the page above four close-ups */
+/* B · principles: the statement across the page, three principles, a wide strip of light beneath */
 .ph--b { height: var(--fit); display: flex; align-items: center; padding: clamp(12px, 2.6svh, 32px) 0 }
-.ph--b .ph__wrap { width: 100%; height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr); gap: clamp(12px, 2.6svh, 28px) }
+.ph--b .ph__wrap { width: 100%; height: 100%; display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: clamp(14px, 3svh, 32px) }
 .ph__head { display: flex; flex-direction: column; gap: clamp(8px, 1.6svh, 16px) }
-.ph__big { margin: 0; max-width: 34ch; font-size: clamp(1.6rem, min(5.2svh, 3.5vw), 3.3rem); line-height: 1.1; color: var(--ink) }
-.ph__row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 22px); min-height: 0 }
-.ph__col { display: flex; flex-direction: column; gap: clamp(8px, 1.5svh, 14px); min-height: 0 }
-.ph--b .ph__n { font-size: clamp(1.6rem, 4.6svh, 2.8rem) }
+.ph__big { margin: 0; max-width: 30ch; font-size: clamp(1.6rem, min(5.2svh, 3.5vw), 3.3rem); line-height: 1.08; color: var(--ink) }
+.ph__three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 3vw, 48px) }
+.ph__three .pp { padding-top: clamp(10px, 2svh, 18px); border-top: 1px solid var(--rule) }
+.ph__strip { position: relative; overflow: hidden; min-height: 0 }
 
-/* C · pair: statement, a joinery photograph, a hands photograph */
-.ph--c { height: var(--fit); display: flex; align-items: center }
-.ph--c .ph__wrap { width: 100%; height: 100%; display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 4fr) minmax(0, 4fr); gap: clamp(20px, 3vw, 44px); padding-block: clamp(12px, 3svh, 36px) }
-.ph__side { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: clamp(12px, 2.6svh, 28px) }
-.ph__fig { margin: 0; display: flex; flex-direction: column; gap: clamp(8px, 1.5svh, 14px); min-height: 0 }
-.ph__fig--lo { margin-top: clamp(24px, 8svh, 96px) }
-.ph__fig figcaption { font-size: clamp(.78rem, 1.75svh, .92rem); line-height: 1.45; color: var(--graphite) }
+/* C · still: a full-bleed wall of light, the words set into its empty space */
+.ph--c { height: var(--fit); display: flex; align-items: center; isolation: isolate; color: var(--warm-white) }
+.ph__bg { position: absolute; inset: 0; z-index: -1 }
+.ph__bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(36, 26, 20, .58) 0%, rgba(36, 26, 20, .32) 46%, rgba(36, 26, 20, .12) 100%), linear-gradient(0deg, rgba(36, 26, 20, .46), rgba(36, 26, 20, 0) 45%) }
+.ph--c .ph__wrap { width: 100%; height: 100%; padding-block: clamp(20px, 6svh, 72px); display: flex; flex-direction: column; justify-content: space-between }
+.ph--c .ph__big { max-width: 24ch; color: var(--warm-white) }
+.ph--c .eyebrow { color: rgba(246, 244, 239, .78) }
+.ph--c .pp__n { color: rgba(246, 244, 239, .7) }
+.ph--c .pp__t { color: var(--warm-white) }
+.ph--c .pp__d { color: rgba(246, 244, 239, .85) }
+.ph--c .ph__three .pp { border-top-color: rgba(246, 244, 239, .34) }
 
 @media (max-width: 980px) {
   .ph--a { grid-template-columns: minmax(0, 1fr); height: auto }
-  .ph__img { height: 62svh }
-  .ph__body { padding: 48px var(--gutter) }
+  .ph--a .ph__img { height: 60svh; order: -1 }
+  .ph__body { padding: 40px var(--gutter) 56px }
   .ph--b, .ph--c { height: auto; display: block; padding: var(--sec-tight) 0 }
-  .ph--b .ph__wrap, .ph--c .ph__wrap { height: auto; grid-template-columns: minmax(0, 1fr) }
-  .ph--b .ph__wrap { grid-template-rows: none }
-  .ph__row { grid-template-columns: repeat(2, minmax(0, 1fr)) }
-  .ph__col .ph__ph, .ph__fig .ph__ph { flex: none; height: 42svh }
-  .ph__fig--lo { margin-top: 0 }
+  .ph--b .ph__wrap { grid-template-rows: none; display: flex; flex-direction: column }
+  .ph__three { grid-template-columns: minmax(0, 1fr) }
+  .ph__strip { height: 44svh }
+  .ph--c .ph__wrap { gap: 40px }
 }
